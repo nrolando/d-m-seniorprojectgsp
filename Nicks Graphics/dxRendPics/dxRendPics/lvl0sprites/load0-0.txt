@@ -1,0 +1,6 @@
+./lvl0sprites/lvl0-0.jpg#L 6500 1000
+./lvl0sprites/blaze.jpg#b 155 181
+./lvl0sprites/shack1.png#_ 293 214
+./lvl0sprites/big-shack.png#- 486 353
+./lvl0sprites/lightpole.png#^ 44 172
+./lvl0sprites/firehid.png#f 67 142
