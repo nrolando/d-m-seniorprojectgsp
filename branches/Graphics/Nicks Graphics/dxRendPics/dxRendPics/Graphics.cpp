@@ -82,8 +82,8 @@ void Graphics::_shutdown()
 
 void Graphics::BeginRender()
 {
-	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
 	pd3dDevice->BeginScene();
+	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
 }
 
 void Graphics::EndRender()
