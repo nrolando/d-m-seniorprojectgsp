@@ -37,6 +37,9 @@ bool Graphics::initD3D(HWND &hwnd)
 	d3dpp.BackBufferHeight = SCREEN_HEIGHT;
 	d3dpp.BackBufferWidth  = SCREEN_WIDTH;
 	d3dpp.hDeviceWindow    = hwnd;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+
 	//create direct3D device
     if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hwnd,
                                       D3DCREATE_SOFTWARE_VERTEXPROCESSING,
@@ -44,8 +47,10 @@ bool Graphics::initD3D(HWND &hwnd)
     {
         return false;
     }
-	//create Camera
+	//create and set Camera
 	createCamera(1.0f, 5000.0f);
+	moveCamera(D3DXVECTOR3(0.0f, 0.0f, -500.0f));
+	pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 //*********** Set the default render states**************
 	pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
@@ -82,8 +87,8 @@ void Graphics::_shutdown()
 
 void Graphics::BeginRender()
 {
-	pd3dDevice->BeginScene();
 	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
+	pd3dDevice->BeginScene();
 }
 
 void Graphics::EndRender()
@@ -112,17 +117,17 @@ bool Graphics::loadLvlFromFile()
 	}
 	i = 0; //reset i
 
-/********************
-it is safer to use sprintf_s in this case so that i can specify the
-size of the array so it doesn't try to store it in safe memory
-/********************/
+//----------------------
+//it is safer to use sprintf_s in this case so that i can specify the
+//size of the array so it doesn't try to store it in safe memory
+//----------------------
 	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvl%isprites/load%i-%i.txt", lvl, lvl, sublvl);
 	fin.open(fname);
 
 	if(!lvlSprites.empty())
 		lvlSprites.erase(lvlSprites.begin(), lvlSprites.end());
 
-	//set the sampler state for stage 0 (the only one ill be using)
+	//set sampler states, seems to work fine with or without
 	pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     pd3dDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
 
@@ -143,11 +148,11 @@ size of the array so it doesn't try to store it in safe memory
 		fin >> tempSprite.width;
 		fin >> tempSprite.height;
 		fin.ignore();
-		
-		lvlSprites.push_back(tempSprite);
 
 		//load texture from file
-		D3DXCreateTextureFromFile( pd3dDevice, lvlSprites[i].filename, &(lvlSprites[i].g_pTexture) );
+		D3DXCreateTextureFromFile	( pd3dDevice, tempSprite.filename, 
+									&(tempSprite.g_pTexture) );
+		lvlSprites.push_back(tempSprite);
 		i++;
 	}
 	i = 0;
@@ -181,20 +186,21 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 
 HRESULT Graphics::SetupLvlVB()
 {
-	HRESULT hr;
+	HRESULT hr;	
 	ifstream fin;
 	char fname[MAXCHARSIZE];
 	unsigned int i = 0;
 	int lvl = prog/3;
 	int sublvl = prog%3;
-	CUSTOMVERTEX *gVert;
+	CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];
+	
 
 	sprintf_s(fname, MAXCHARSIZE, "./lvl%isprites/render%i-%i.txt", lvl, lvl, sublvl);
 	fin.open(fname);
 
 	fin >> spritesRend;
 	fin.ignore();
-	gVert = new CUSTOMVERTEX[spritesRend*4];
+
 	if(px != NULL)
 		delete [] px;
 	if(py != NULL)
@@ -237,11 +243,42 @@ HRESULT Graphics::SetupLvlVB()
 		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f);
 		gVert[j*4+3].z = 0.0f;
 		gVert[j*4+3].tu = gVert[j*4+3].tv = 1.0f;
-		
+
+		////set up the vertices	TEST CODE {
+		//gVert[0].x = -1.0f;
+		//gVert[0].y = 1.0f;
+		//gVert[0].z = gVert[0].tu = gVert[j*4].tv = 0.0f;
+
+		//gVert[1].x = 1.0f;
+		//gVert[1].y = 1.0f;
+		//gVert[1].z = 0.0f;
+		//gVert[1].tu = 1.0f;
+		//gVert[1].tv = 0.0f;
+
+		//gVert[2].x = -1.0f;
+		//gVert[2].y = -1.0f;
+		//gVert[2].z = gVert[2].tu = 0.0f;
+		//gVert[2].tv = 1.0f;
+
+		//gVert[3].x = 1.0f;
+		//gVert[3].y = -1.0f;
+		//gVert[3].z = 0.0f;
+		//gVert[3].tu = gVert[3].tv = 1.0f;
+		//END TEST CODE		}
 		i = 0;
 	}
 	fin.close();
-	
+
+	//set up the vertices TEST CODE {
+	//CUSTOMVERTEX gVert[] =
+	//{
+	//	{-1.0f, 1.0f, 0.0f,  0.0f,0.0f },
+	//	{ 1.0f, 1.0f, 0.0f,  1.0f,0.0f },
+	//	{-1.0f,-1.0f, 0.0f,  0.0f,1.0f },
+	//	{ 1.0f,-1.0f, 0.0f,  1.0f,1.0f },
+	//};
+	//END TEST CODE		}
+
 	//create the vertex buffer
 	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
 	//fill the vertex buffer
@@ -261,14 +298,14 @@ void Graphics::drawLvlVB()
 {
 	D3DXMATRIX matTrans, matWorld;
 
-	//set camera
-	moveCamera(D3DXVECTOR3(0.0f, 0.0f, 5000.0f));
-	pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	// Set the vertex stream
+	// Set the vertex stream	TEST CODE
+	//D3DXMatrixIdentity(&matWorld);
+	//pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//pd3dDevice->SetTexture(0, lvlSprites[0].g_pTexture);
 	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-
+	//Draw the trianglestrips that make up the sprite
+	//pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  0, 2 );
 
 	for(int i = 0; i < spritesRend; i++)
 	{
@@ -282,8 +319,10 @@ void Graphics::drawLvlVB()
 		for(unsigned int j = 0; j < lvlSprites.size(); j++)
 		{
 			if(lvlSprites[j].s == c_spr[i])
+			{
 				pd3dDevice->SetTexture(0, lvlSprites[j].g_pTexture);
-			break;
+				break;
+			}
 		}
 		//Draw the trianglestrips that make up the sprite
 		pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  i*4, 2 );
@@ -306,12 +345,18 @@ void Graphics::moveCamera(D3DXVECTOR3 vec)
 	cameraPosition = vec;
 }
 
+void Graphics::translateCamera(D3DXVECTOR3 vec)
+{
+	cameraPosition += vec;
+}
+
 /*************************************************************************
 * pointCamera
 * points the camera a location specified by the passed vector
 *************************************************************************/
 void Graphics::pointAndSetCamera(D3DXVECTOR3 vec)
 {
+	vec.x = cameraPosition.x;
 	cameraLook = vec;
 
 	D3DXMatrixLookAtLH(&matView, &cameraPosition,		//Camera Position

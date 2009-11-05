@@ -9,13 +9,15 @@
 #include <fstream>
 using namespace std;
 
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
+//couldn't render textures using the D3DFVF_DIFFUSE flag.
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
 #define DIRECTINPUT_VERSION		0x0800
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
-#define MAXCHARSIZE				50
+#define MAXCHARSIZE			50
+#define MAXSPRITESPERSUBLVL		50
 
-// the sprite container.. c_O
+// the sprite container
 struct Sprite
 {
 	char filename[MAXCHARSIZE];
@@ -63,6 +65,8 @@ private:
 	float *px;				//position for each sprite to be rendered
 	float *py;
 	char *c_spr;
+	////debug member
+	LPDIRECT3DTEXTURE9 g_pTexture;
 //*********************************}
 
 	//camera members
@@ -95,6 +99,7 @@ public:
 	//camera functions
 	void createCamera(float, float);
 	void moveCamera(D3DXVECTOR3);
+	void translateCamera(D3DXVECTOR3);
 	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt
 };
 
