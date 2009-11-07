@@ -1,11 +1,10 @@
 /* 
-possible bugs:	in Graphics.loadlvlfromfile();
-				might need to release the vb buffer before creating a new one
+possible bugs: is it just me, or is the game really really laggy
 */
-#include "Graphics.h"
+#include "Game.h"
 
 //GLOBALS
-Graphics *g;
+Game *game;
 HWND wndHandle;					// global window handle
 
 bool initWindow(HINSTANCE hInstance);
@@ -13,7 +12,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-	g = new Graphics();
+	game = new Game();
 
 	// call our function to init and create our window
 	if (!initWindow(hInstance))
@@ -21,16 +20,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		MessageBox(NULL, "Unable to create window", "ERROR", MB_OK);
 		return 1;
 	}
-	if(!g->initD3D(wndHandle))
+	if(!game->initGame(wndHandle))
 	{
 		MessageBox(NULL, "Unable to initialize Direct3D", "ERROR", MB_OK);
 		return 1;
 	}
 
 	//get player's progress from load file or new game (0)
-	g->setProg(0);
+	game->setProg(0);
 	//load that level
-	if(!g->loadLvlFromFile())
+	if(!game->loadLvl())
 	{
 		MessageBox(NULL, "Unable to load lvl", "ERROR", MB_OK);
 		return 1;
@@ -48,12 +47,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
         }
 		else
 		{
-			g->BeginRender();
-			g->drawLvlVB();
-			g->EndRender();
+			game->beginRender();
+			game->drawLvlVB();
+			game->endRender();
 		}
 	}
-	g->_shutdown();
+	game->_shutdown();
 	return 0;
 }
 
@@ -97,6 +96,8 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	D3DXVECTOR3 camPos;
+	camPos = game->getCamPos();
 
 	switch (message)
 	{
@@ -110,20 +111,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			break;
 		case 'A':
-			g->translateCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			g->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'S':
-			g->translateCamera(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
-			g->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'D':
-			g->translateCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			g->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'W':
-			g->translateCamera(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
-			g->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		};
 		break;

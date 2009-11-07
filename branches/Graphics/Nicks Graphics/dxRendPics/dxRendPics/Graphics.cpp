@@ -7,7 +7,6 @@ Graphics::Graphics()
 	g_pVB = NULL;
 	px = py = NULL;
 	c_spr = NULL;
-	prog = 0;
 }
 
 Graphics::~Graphics()
@@ -47,12 +46,8 @@ bool Graphics::initD3D(HWND &hwnd)
     {
         return false;
     }
-	//create and set Camera
-	createCamera(1.0f, 5000.0f);
-	moveCamera(D3DXVECTOR3(0.0f, 0.0f, -500.0f));
-	pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-//*********** Set the default render states**************
+	//*********** Set the default render states**************
 	pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
     pd3dDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
 	//set alpha state
@@ -62,6 +57,10 @@ bool Graphics::initD3D(HWND &hwnd)
 	pd3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
 	pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
+	//create and set Camera
+	createCamera(1.0f, 5000.0f);
+	moveCamera(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
+	pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	return true;
 }
@@ -98,7 +97,7 @@ void Graphics::EndRender()
 	pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
-bool Graphics::loadLvlFromFile()
+bool Graphics::loadLvlFromFile(int prog)
 {
 	int i = 0;
 	int j = 0; //index variables
@@ -157,7 +156,7 @@ bool Graphics::loadLvlFromFile()
 	}
 	i = 0;
 	fin.close();
-	if(FAILED(SetupLvlVB()))
+	if(FAILED(SetupLvlVB(prog)))
 		return false;
 	else
 		return true;
@@ -184,7 +183,7 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 	return buffer;
 }
 
-HRESULT Graphics::SetupLvlVB()
+HRESULT Graphics::SetupLvlVB(int prog)
 {
 	HRESULT hr;	
 	ifstream fin;
@@ -224,60 +223,29 @@ HRESULT Graphics::SetupLvlVB()
 				break;
 		}
 		//set up the vertices
-		gVert[j*4].x = 0.0f - (float(lvlSprites[i].width)/2.0f);
-		gVert[j*4].y = float(lvlSprites[i].height)/2.0f;
+		gVert[j*4].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4].y = float(lvlSprites[i].height)/2.0f/2.0f;
 		gVert[j*4].z = gVert[j*4].tu = gVert[j*4].tv = 0.0f;
 
-		gVert[j*4+1].x = float(lvlSprites[i].width)/2.0f;
-		gVert[j*4+1].y = float(lvlSprites[i].height)/2.0f;
+		gVert[j*4+1].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+1].y = (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+1].z = 0.0f;
 		gVert[j*4+1].tu = 1.0f;
 		gVert[j*4+1].tv = 0.0f;
 
-		gVert[j*4+2].x = 0.0f - (float(lvlSprites[i].width)/2.0f);
-		gVert[j*4+2].y = 0.0f - (float(lvlSprites[i].height)/2.0f);
+		gVert[j*4+2].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+2].y = 0.0f - (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+2].z = gVert[j*4+2].tu = 0.0f;
 		gVert[j*4+2].tv = 1.0f;
 
-		gVert[j*4+3].x = float(lvlSprites[i].width)/2.0f;
-		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f);
+		gVert[j*4+3].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+3].z = 0.0f;
 		gVert[j*4+3].tu = gVert[j*4+3].tv = 1.0f;
 
-		////set up the vertices	TEST CODE {
-		//gVert[0].x = -1.0f;
-		//gVert[0].y = 1.0f;
-		//gVert[0].z = gVert[0].tu = gVert[j*4].tv = 0.0f;
-
-		//gVert[1].x = 1.0f;
-		//gVert[1].y = 1.0f;
-		//gVert[1].z = 0.0f;
-		//gVert[1].tu = 1.0f;
-		//gVert[1].tv = 0.0f;
-
-		//gVert[2].x = -1.0f;
-		//gVert[2].y = -1.0f;
-		//gVert[2].z = gVert[2].tu = 0.0f;
-		//gVert[2].tv = 1.0f;
-
-		//gVert[3].x = 1.0f;
-		//gVert[3].y = -1.0f;
-		//gVert[3].z = 0.0f;
-		//gVert[3].tu = gVert[3].tv = 1.0f;
-		//END TEST CODE		}
 		i = 0;
 	}
 	fin.close();
-
-	//set up the vertices TEST CODE {
-	//CUSTOMVERTEX gVert[] =
-	//{
-	//	{-1.0f, 1.0f, 0.0f,  0.0f,0.0f },
-	//	{ 1.0f, 1.0f, 0.0f,  1.0f,0.0f },
-	//	{-1.0f,-1.0f, 0.0f,  0.0f,1.0f },
-	//	{ 1.0f,-1.0f, 0.0f,  1.0f,1.0f },
-	//};
-	//END TEST CODE		}
 
 	//create the vertex buffer
 	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
@@ -298,14 +266,9 @@ void Graphics::drawLvlVB()
 {
 	D3DXMATRIX matTrans, matWorld;
 
-	// Set the vertex stream	TEST CODE
-	//D3DXMatrixIdentity(&matWorld);
-	//pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	//pd3dDevice->SetTexture(0, lvlSprites[0].g_pTexture);
+	// Set the vertex stream
 	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-	//Draw the trianglestrips that make up the sprite
-	//pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  0, 2 );
 
 	for(int i = 0; i < spritesRend; i++)
 	{
@@ -329,7 +292,7 @@ void Graphics::drawLvlVB()
 	}
 }
 
-//		CAMERA	*****************************************************
+//	CAMERA	*****************************************************
 void Graphics::createCamera(float nearClip, float farClip)
 {
 	//Here we specify the field of view, aspect ration and near and far clipping planes.
@@ -356,7 +319,6 @@ void Graphics::translateCamera(D3DXVECTOR3 vec)
 *************************************************************************/
 void Graphics::pointAndSetCamera(D3DXVECTOR3 vec)
 {
-	vec.x = cameraPosition.x;
 	cameraLook = vec;
 
 	D3DXMatrixLookAtLH(&matView, &cameraPosition,		//Camera Position

@@ -10,10 +10,10 @@
 using namespace std;
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
 #define DIRECTINPUT_VERSION		0x0800
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
 #define MAXCHARSIZE			50
 #define MAXSPRITESPERSUBLVL		50
 
@@ -22,8 +22,11 @@ struct Sprite
 {
 	char filename[MAXCHARSIZE];
 	char s;							//char to represent sprite
-	FLOAT width, height;			//size
+//size of the image file. there should be a way to just pull image info
+//but idk how...
+	FLOAT width, height;
 	LPDIRECT3DTEXTURE9 g_pTexture;	// texture info
+	FILE *file;
 };
 
 // A structure for our custom vertex type
@@ -46,10 +49,6 @@ based on level and sublevel, the level loader function will read from that speci
 class Graphics
 {
 private:
-	/*  this is player's progress. used to loadlvl, save game, etc.
-		this will probably be a member of Game, not Graphics	*/
-	int prog;
-
 	//direct 3d
 	LPDIRECT3D9             pD3D;
 	LPDIRECT3DDEVICE9       pd3dDevice;
@@ -78,9 +77,6 @@ public:
 	Graphics();
 	~Graphics();
 
-	//part of Game class
-	void setProg(int p)		{ prog = p; }
-
 	bool initD3D(HWND&);
 	void _shutdown();
 
@@ -92,15 +88,17 @@ public:
 		*loads the player's current level
 		*return value based on success of creating vertex buffer
 		*will be used at start of main and in update()	*/
-	bool loadLvlFromFile();
-	HRESULT SetupLvlVB();		//vertex buffer for level
+	bool loadLvlFromFile(int);
+	HRESULT SetupLvlVB(int);		//vertex buffer for level
 	void drawLvlVB();
 
 	//camera functions
 	void createCamera(float, float);
 	void moveCamera(D3DXVECTOR3);
 	void translateCamera(D3DXVECTOR3);
-	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt
+	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt	
+
+	D3DXVECTOR3 getCameraPos()		{ return cameraPosition; }
 };
 
 #endif
