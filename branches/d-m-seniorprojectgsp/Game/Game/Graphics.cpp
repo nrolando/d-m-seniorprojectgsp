@@ -223,23 +223,23 @@ HRESULT Graphics::SetupLvlVB(int prog)
 				break;
 		}
 		//set up the vertices
-		gVert[j*4].x = 0.0f - (float(lvlSprites[i].width)/2.0f);
-		gVert[j*4].y = float(lvlSprites[i].height)/2.0f;
+		gVert[j*4].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4].y = float(lvlSprites[i].height)/2.0f/2.0f;
 		gVert[j*4].z = gVert[j*4].tu = gVert[j*4].tv = 0.0f;
 
-		gVert[j*4+1].x = float(lvlSprites[i].width)/2.0f;
-		gVert[j*4+1].y = float(lvlSprites[i].height)/2.0f;
+		gVert[j*4+1].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+1].y = (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+1].z = 0.0f;
 		gVert[j*4+1].tu = 1.0f;
 		gVert[j*4+1].tv = 0.0f;
 
-		gVert[j*4+2].x = 0.0f - (float(lvlSprites[i].width)/2.0f);
-		gVert[j*4+2].y = 0.0f - (float(lvlSprites[i].height)/2.0f);
+		gVert[j*4+2].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+2].y = 0.0f - (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+2].z = gVert[j*4+2].tu = 0.0f;
 		gVert[j*4+2].tv = 1.0f;
 
-		gVert[j*4+3].x = float(lvlSprites[i].width)/2.0f;
-		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f);
+		gVert[j*4+3].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
+		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f)/2.0f;
 		gVert[j*4+3].z = 0.0f;
 		gVert[j*4+3].tu = gVert[j*4+3].tv = 1.0f;
 
@@ -265,9 +265,6 @@ HRESULT Graphics::SetupLvlVB(int prog)
 void Graphics::drawLvlVB()
 {
 	D3DXMATRIX matTrans, matWorld;
-
-	//test code
-	px[3]++;
 
 	// Set the vertex stream
 	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
@@ -322,7 +319,6 @@ void Graphics::translateCamera(D3DXVECTOR3 vec)
 *************************************************************************/
 void Graphics::pointAndSetCamera(D3DXVECTOR3 vec)
 {
-	vec.x = cameraPosition.x;
 	cameraLook = vec;
 
 	D3DXMatrixLookAtLH(&matView, &cameraPosition,		//Camera Position

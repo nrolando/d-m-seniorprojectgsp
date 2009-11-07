@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Graphics.h"
+#include <ctime>
 
 class Game
 {
@@ -33,6 +34,8 @@ public:
 	void moveCam(D3DXVECTOR3 vec)		{ graphics->moveCamera(vec); }
 	void transCam(D3DXVECTOR3 vec)		{ graphics->translateCamera(vec); }
 	void pointAndSetCam(D3DXVECTOR3 vec){ graphics->pointAndSetCamera(vec); }
+
+	D3DXVECTOR3 getCamPos()				{ return graphics->getCameraPos(); }
 };
 
 #endif

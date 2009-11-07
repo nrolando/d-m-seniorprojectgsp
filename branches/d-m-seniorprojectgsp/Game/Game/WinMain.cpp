@@ -3,6 +3,9 @@ possible bugs:
 */
 #include "Game.h"
 
+#define FPS			60
+#define FPSdelay	(1000/FPS)
+
 //GLOBALS
 Game *game;
 HWND wndHandle;					// global window handle
@@ -12,6 +15,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
+	clock_t then = clock();
+	clock_t now;
 	game = new Game();
 
 	// call our function to init and create our window
@@ -47,9 +52,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
         }
 		else
 		{
+			now = clock();
+			//game->update(now - then);		//para: elapsed time
+			then = now;
 			game->beginRender();
 			game->drawLvlVB();
 			game->endRender();
+			// pause to force frames per second
+			while(clock() < now + FPSdelay)
+				Sleep(1);
 		}
 	}
 	game->_shutdown();
@@ -96,6 +107,8 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	D3DXVECTOR3 camPos;
+	camPos = game->getCamPos();
 
 	switch (message)
 	{
@@ -107,23 +120,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case 'Q':	//****MUST BE CAPITAL OR IT WON'T READ IT...*****
 			PostQuitMessage(0);
-			break;/*
+			break;
 		case 'A':
-			game->translateCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			game->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'S':
-			game->translateCamera(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
-			game->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'D':
-			game->translateCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			game->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			game->transCam(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
 			break;
 		case 'W':
-			game->translateCamera(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
-			game->pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-			break;*/
+			game->transCam(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			break;
 		};
 		break;
 	};

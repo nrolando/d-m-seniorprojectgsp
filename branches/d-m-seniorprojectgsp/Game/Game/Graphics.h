@@ -94,6 +94,8 @@ public:
 	void moveCamera(D3DXVECTOR3);
 	void translateCamera(D3DXVECTOR3);
 	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt	
+
+	D3DXVECTOR3 getCameraPos()		{ return cameraPosition; }
 };
 
 #endif
