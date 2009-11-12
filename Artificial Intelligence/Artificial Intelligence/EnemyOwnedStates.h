@@ -1,7 +1,9 @@
 #include "State.h"
 
+class Enemy;
+
 //Enemy Patrol State
-class Patrol : public State
+class Patrol : public State<Enemy>
 {
 private:
 	Patrol() {}
@@ -19,7 +21,7 @@ public:
 };
 
 //Enemy Chase State
-class Chase : public State
+class Chase : public State<Enemy>
 {
 private:
 	Chase() {}
@@ -37,7 +39,7 @@ public:
 };
 
 //Enemy Attack State
-class Attack : public State
+class Attack : public State<Enemy>
 {
 private:
 	Attack() {}
@@ -55,7 +57,7 @@ public:
 };
 
 //Enemy RunAway State
-class RunAway : public State
+class RunAway : public State<Enemy>
 {
 private:
 	RunAway() {}

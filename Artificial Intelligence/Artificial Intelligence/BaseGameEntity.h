@@ -1,8 +1,8 @@
 #ifndef BASEGAMEENTITY_H
 #define	BASEGAMEENTITY_H
 
-#include "common.h"
 #include "Status.h"
+#include "Vector.h"
 
 class BaseGameEntity
 {
