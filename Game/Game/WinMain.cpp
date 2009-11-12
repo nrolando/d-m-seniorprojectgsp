@@ -52,10 +52,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
         }
 		else
 		{
-			now = clock();
 			//game->update(now - then);		//para: elapsed time
-			then = now;
+			//then = now;
 			game->beginRender();
+			now = clock();
+			game->display_time((now-then), 20);
+			then = now;	//moved here for display_time()
 			game->drawLvlVB();
 			game->endRender();
 			// pause to force frames per second
@@ -64,6 +66,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		}
 	}
 	game->_shutdown();
+	delete game;
 	return 0;
 }
 
@@ -123,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 'A':
 			game->transCam(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x-100.0f, 0.0f, 0.0f));
 			break;
 		case 'S':
 			game->transCam(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
@@ -131,7 +134,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 'D':
 			game->transCam(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->pointAndSetCam(D3DXVECTOR3(camPos.x+100.0f, 0.0f, 0.0f));
 			break;
 		case 'W':
 			game->transCam(D3DXVECTOR3(0.0f, 0.0f, 100.0f));

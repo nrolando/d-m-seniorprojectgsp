@@ -1,22 +1,17 @@
 #include "Graphics.h"
+//#include <vector>
 
 Graphics::Graphics()
 {
 	pD3D = NULL;
 	pd3dDevice = NULL;
 	g_pVB = NULL;
-	px = py = NULL;
-	c_spr = NULL;
+	m_font = NULL;
 }
 
 Graphics::~Graphics()
 {
-	if(px != NULL)
-		delete [] px;
-	if(py != NULL)
-		delete [] py;
-	if(c_spr != NULL)
-		delete [] c_spr;
+	
 }
 
 bool Graphics::initD3D(HWND &hwnd)
@@ -57,6 +52,19 @@ bool Graphics::initD3D(HWND &hwnd)
 	pd3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
 	pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
+	D3DXCreateFont( pd3dDevice,
+					20,				//SIZE
+					0, 
+					FW_BOLD,		//weight
+					0, 
+					FALSE,			//Italic
+					DEFAULT_CHARSET, 
+					OUT_DEFAULT_PRECIS, 
+					DEFAULT_QUALITY, 
+					DEFAULT_PITCH | FF_DONTCARE, 
+					TEXT("Arial"), 
+					&m_font );
+
 	//create and set Camera
 	createCamera(1.0f, 5000.0f);
 	moveCamera(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
@@ -82,6 +90,11 @@ void Graphics::_shutdown()
 		g_pVB->Release();
 		g_pVB = NULL;
 	}
+	if(m_font != NULL)
+	{
+		m_font->Release();
+		m_font = NULL;
+	}
 }
 
 void Graphics::BeginRender()
@@ -99,22 +112,31 @@ void Graphics::EndRender()
 
 bool Graphics::loadLvlFromFile(int prog)
 {
-	int i = 0;
+	register unsigned int i = 0;
 	int j = 0; //index variables
-	ifstream fin;
+	ifstream fin, finput;
 	char fname[MAXCHARSIZE];
-	char check;		//checks for input deliminator
+	char check;		//checks for input deliminator and sprite match
 	int lvl = prog/3;
 	int sublvl = prog%3;
+	SpriteRend tempSR;
 	Sprite tempSprite;
-	//initialize to null
+	
+//clear the vectors
+	if(!spriteCont.empty())
+		spriteCont.clear();
+	if(!lvlSprites.empty())
+		lvlSprites.clear();
+
+//initialize
 	while(i < MAXCHARSIZE)
 	{
 		tempSprite.filename[i] = '\0';
 		fname[i] = '\0';
-		i++;
+		++i;
 	}
 	i = 0; //reset i
+	
 
 //----------------------
 //it is safer to use sprintf_s in this case so that i can specify the
@@ -122,9 +144,8 @@ bool Graphics::loadLvlFromFile(int prog)
 //----------------------
 	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvl%isprites/load%i-%i.txt", lvl, lvl, sublvl);
 	fin.open(fname);
-
-	if(!lvlSprites.empty())
-		lvlSprites.erase(lvlSprites.begin(), lvlSprites.end());
+	if(!fin.is_open())
+		return false;
 
 	//set sampler states, seems to work fine with or without
 	pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
@@ -138,7 +159,7 @@ bool Graphics::loadLvlFromFile(int prog)
 		{
 			tempSprite.filename[j] = check;
 			fin.get(check);
-			j++;
+			++j;
 		}
 		tempSprite.filename[j] = '\0';	//null ends the c-string
 		j = 0;	//reset j
@@ -151,11 +172,40 @@ bool Graphics::loadLvlFromFile(int prog)
 		//load texture from file
 		D3DXCreateTextureFromFile	( pd3dDevice, tempSprite.filename, 
 									&(tempSprite.g_pTexture) );
-		lvlSprites.push_back(tempSprite);
-		i++;
+		spriteCont.push_back(tempSprite);
+		++i;
 	}
 	i = 0;
 	fin.close();
+
+//*****apply position and textures to our sprites*****
+	//reset fname
+	while(i < MAXCHARSIZE)
+	{
+		fname[i] = '\0';
+		++i;
+	}
+	i = 0;
+	sprintf_s(fname, MAXCHARSIZE, "./lvl%isprites/render%i-%i.txt", lvl, lvl, sublvl);
+	finput.open(fname);
+	if(!finput.is_open())
+		return false;
+
+	while(!finput.eof())
+	{
+		finput >> check;
+		finput >> tempSR.x;
+		finput >> tempSR.y;
+
+		for(i; i < spriteCont.size(); ++i)
+		{
+			if(spriteCont[i].s == check)
+				tempSR.index = i;
+		}
+		i = 0;
+		lvlSprites.push_back(tempSR);
+	}
+
 	if(FAILED(SetupLvlVB(prog)))
 		return false;
 	else
@@ -186,66 +236,31 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 HRESULT Graphics::SetupLvlVB(int prog)
 {
 	HRESULT hr;	
-	ifstream fin;
-	char fname[MAXCHARSIZE];
-	unsigned int i = 0;
-	int lvl = prog/3;
-	int sublvl = prog%3;
 	CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];
-	
 
-	sprintf_s(fname, MAXCHARSIZE, "./lvl%isprites/render%i-%i.txt", lvl, lvl, sublvl);
-	fin.open(fname);
-
-	fin >> spritesRend;
-	fin.ignore();
-
-	if(px != NULL)
-		delete [] px;
-	if(py != NULL)
-		delete [] py;
-	if(c_spr != NULL)
-		delete [] c_spr;
-	px = new float[spritesRend];
-	py = new float[spritesRend];
-	c_spr = new char[spritesRend];
-
-	for(int j = 0; j < spritesRend; j++)
+	for(unsigned int j = 0; j < spriteCont.size(); j++)
 	{
-		fin >> c_spr[j];
-		//px/py will be used later in drawlvlVB for translation
-		fin >> px[j];
-		fin >> py[j];
-
-		for(i = 0; i < lvlSprites.size(); i++)
-		{
-			if(lvlSprites[i].s == c_spr[j])
-				break;
-		}
 		//set up the vertices
-		gVert[j*4].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
-		gVert[j*4].y = float(lvlSprites[i].height)/2.0f/2.0f;
+		gVert[j*4].x = 0.0f - (float(spriteCont[j].width)/2.0f)/2.0f;
+		gVert[j*4].y = float(spriteCont[j].height)/2.0f/2.0f;
 		gVert[j*4].z = gVert[j*4].tu = gVert[j*4].tv = 0.0f;
 
-		gVert[j*4+1].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
-		gVert[j*4+1].y = (float(lvlSprites[i].height)/2.0f)/2.0f;
+		gVert[j*4+1].x = (float(spriteCont[j].width)/2.0f)/2.0f;
+		gVert[j*4+1].y = (float(spriteCont[j].height)/2.0f)/2.0f;
 		gVert[j*4+1].z = 0.0f;
 		gVert[j*4+1].tu = 1.0f;
 		gVert[j*4+1].tv = 0.0f;
 
-		gVert[j*4+2].x = 0.0f - (float(lvlSprites[i].width)/2.0f)/2.0f;
-		gVert[j*4+2].y = 0.0f - (float(lvlSprites[i].height)/2.0f)/2.0f;
+		gVert[j*4+2].x = 0.0f - (float(spriteCont[j].width)/2.0f)/2.0f;
+		gVert[j*4+2].y = 0.0f - (float(spriteCont[j].height)/2.0f)/2.0f;
 		gVert[j*4+2].z = gVert[j*4+2].tu = 0.0f;
 		gVert[j*4+2].tv = 1.0f;
 
-		gVert[j*4+3].x = (float(lvlSprites[i].width)/2.0f)/2.0f;
-		gVert[j*4+3].y = 0 - (float(lvlSprites[i].height)/2.0f)/2.0f;
+		gVert[j*4+3].x = (float(spriteCont[j].width)/2.0f)/2.0f;
+		gVert[j*4+3].y = 0 - (float(spriteCont[j].height)/2.0f)/2.0f;
 		gVert[j*4+3].z = 0.0f;
 		gVert[j*4+3].tu = gVert[j*4+3].tv = 1.0f;
-
-		i = 0;
 	}
-	fin.close();
 
 	//create the vertex buffer
 	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
@@ -266,30 +281,44 @@ void Graphics::drawLvlVB()
 {
 	D3DXMATRIX matTrans, matWorld;
 
+	moveCamera(cameraPosition);
+	pointAndSetCamera(cameraLook);
+
 	// Set the vertex stream
 	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
 
-	for(int i = 0; i < spritesRend; i++)
+	for(unsigned int i = 0; i < lvlSprites.size(); i++)
 	{
 		//set the transform matrices
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixIdentity(&matTrans);
-		D3DXMatrixTranslation(&matTrans, px[i], py[i], 0.0f);
+		D3DXMatrixTranslation(&matTrans, lvlSprites[i].x, lvlSprites[i].y, 0.0f);
 		D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
 		pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 		//apply texture
-		for(unsigned int j = 0; j < lvlSprites.size(); j++)
-		{
-			if(lvlSprites[j].s == c_spr[i])
-			{
-				pd3dDevice->SetTexture(0, lvlSprites[j].g_pTexture);
-				break;
-			}
-		}
+		pd3dDevice->SetTexture(0, spriteCont[lvlSprites[i].index].g_pTexture);
 		//Draw the trianglestrips that make up the sprite
-		pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  i*4, 2 );
+		pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  lvlSprites[i].index*4, 2 );
 	}
+}
+
+//display text to the screen
+void Graphics::displayTime(clock_t _time, int y)	//elapsed time
+{
+	RECT rct;
+	char display[MAXCHARSIZE];
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 180, 0, 0);
+
+	rct.left = 20;
+	rct.right = rct.left + 250;
+	rct.top = y;
+	rct.bottom = rct.top + 50;
+
+	sprintf(display, "elapsed time: %i  CPS: %i", _time, CLOCKS_PER_SEC);
+
+	m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 
 //	CAMERA	*****************************************************

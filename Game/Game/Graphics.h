@@ -6,7 +6,9 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include "Sprite.h"
 #include <fstream>
+#include <ctime>
 using namespace std;
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
@@ -14,17 +16,7 @@ using namespace std;
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
-#define MAXCHARSIZE			50
 #define MAXSPRITESPERSUBLVL		50
-
-// the sprite container
-struct Sprite
-{
-	char filename[MAXCHARSIZE];
-	char s;							//char to represent sprite
-	FLOAT width, height;			//size
-	LPDIRECT3DTEXTURE9 g_pTexture;	// texture info
-};
 
 // A structure for our custom vertex type
 struct CUSTOMVERTEX
@@ -46,6 +38,7 @@ based on level and sublevel, the level loader function will read from that speci
 class Graphics
 {
 private:
+	//clock_t then, now;
 	//direct 3d
 	LPDIRECT3D9             pD3D;
 	LPDIRECT3DDEVICE9       pd3dDevice;
@@ -53,17 +46,13 @@ private:
 	// vertex buffer
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
-//LEVEL SPRITE STUFF***************{
-	//sprite/textures for the levels
-	vector<Sprite> lvlSprites;
-	//number of sprites to be rendered in the lvl. needed for drawLvlVB()
-	int spritesRend;
-	float *px;				//position for each sprite to be rendered
-	float *py;
-	char *c_spr;
-	////debug member
-	LPDIRECT3DTEXTURE9 g_pTexture;
+//SPRITE STUFF***************{
+	vector<Sprite> spriteCont;
+	vector<SpriteRend> lvlSprites;
 //*********************************}
+
+	//direct text
+	ID3DXFont *m_font;
 
 	//camera members
 	D3DXMATRIX matView;					// the view matrix
@@ -88,6 +77,8 @@ public:
 	bool loadLvlFromFile(int);
 	HRESULT SetupLvlVB(int);		//vertex buffer for level
 	void drawLvlVB();
+
+	void displayTime(clock_t, int);
 
 	//camera functions
 	void createCamera(float, float);
