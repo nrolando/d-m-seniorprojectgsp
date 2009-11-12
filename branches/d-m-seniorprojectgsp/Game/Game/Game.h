@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "Graphics.h"
-#include <ctime>
 
 class Game
 {
@@ -28,6 +27,7 @@ public:
 	void drawLvlVB()		{ graphics->drawLvlVB(); }
 	//load level
 	bool loadLvl();
+	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
 
 	//camera
 	void createCam(float n, float f)	{ graphics->createCamera(n, f); }

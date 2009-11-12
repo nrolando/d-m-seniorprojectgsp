@@ -8,6 +8,7 @@ Game::Game()
 
 Game::~Game()
 {
+	delete graphics;
 }
 
 bool Game::initGame(HWND& hwnd)
@@ -27,4 +28,3 @@ bool Game::loadLvl()
 
 	return true;
 }
-
