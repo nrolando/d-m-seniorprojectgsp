@@ -5,6 +5,7 @@
 
 
 //-------------------------methods for Patrol-------------------------------//
+//template<class entity_type>
 Patrol* Patrol::Instance()
 {
   static Patrol instance;
@@ -12,11 +13,13 @@ Patrol* Patrol::Instance()
   return &instance;
 }
 
+//template<entity_type>
 void Patrol::Enter(Enemy *enemy)
 {
 	printf("Patrolling the area...\n");
 }
 
+//template<entity_type>
 void Patrol::Execute(Enemy *enemy)
 {
 	if(enemy->getStatus() == OutOfRange)
@@ -28,6 +31,7 @@ void Patrol::Execute(Enemy *enemy)
 	}
 }
 
+//template<entity_type>
 void Patrol::Exit(Enemy *enemy)
 {
 	printf("Leaving Patrol State\n");

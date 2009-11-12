@@ -5,7 +5,7 @@
 
 Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 status(InRange),
-			         CurrentState(Patrol::Instance())
+					 CurrentState(Patrol::Instance())
 {}
 
 void Enemy::UpdateState()
@@ -13,7 +13,7 @@ void Enemy::UpdateState()
 	CurrentState->Execute(this);
 }
 
-void Enemy::ChangeState(State* pNewState)
+void Enemy::ChangeState(State<Enemy>* pNewState)
 {
 	CurrentState->Exit(this);
 	CurrentState = pNewState;
