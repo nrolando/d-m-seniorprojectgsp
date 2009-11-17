@@ -38,7 +38,9 @@ enum status_type
   InRange,
   InFace,
   EnemyDead,
-  WeakerThanEnemy
+  WeakerThanEnemy,
+  LessThanFiftyHealth,
+  LessThanTwentyFiveHealth
 };
 
 #endif

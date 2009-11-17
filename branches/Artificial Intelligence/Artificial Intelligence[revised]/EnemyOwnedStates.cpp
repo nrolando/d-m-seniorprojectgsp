@@ -3,6 +3,34 @@
 #include "Status.h"
 #include "Enemy.h"
 
+//-------------------------methods for Idle-------------------------------//
+Idle* Idle::Instance()
+{
+  static Idle instance;
+
+  return &instance;
+}
+
+void Idle::Enter(Enemy *enemy)
+{
+	printf("Idling the area...\n");
+}
+
+void Idle::Execute(Enemy* enemy)
+{
+	printf("Idling...\n");
+
+	if(enemy->getStatus() == InFace)
+	{
+		printf("Being threatened...changing state");
+		enemy->ChangeState(RunAway::Instance());
+	}
+}
+
+void Idle::Exit(Enemy *enemy)
+{
+	printf("Leaving Idle State\n");
+}
 
 //-------------------------methods for Patrol-------------------------------//
 //template<class entity_type>
@@ -23,7 +51,10 @@ void Patrol::Enter(Enemy *enemy)
 void Patrol::Execute(Enemy *enemy)
 {
 	if(enemy->getStatus() == OutOfRange)
+	{
+		printf("Enemy outside of Range");
 		enemy->ChangeState(Chase::Instance());
+	}
 	if(enemy->getStatus() == InRange)
 	{
 		printf("InRange to Attack!\n");
