@@ -165,12 +165,10 @@ bool Graphics::loadLvlFromFile(int prog)
 		j = 0;	//reset j
 
 		fin >> tempSprite.s;
-		fin >> tempSprite.width;
-		fin >> tempSprite.height;
 		fin.ignore();
 
 		//load texture from file
-		D3DXCreateTextureFromFile	( pd3dDevice, tempSprite.filename, 
+		D3DXCreateTextureFromFile	( pd3dDevice, tempSprite.filename,
 									&(tempSprite.g_pTexture) );
 		spriteCont.push_back(tempSprite);
 		++i;
@@ -191,20 +189,42 @@ bool Graphics::loadLvlFromFile(int prog)
 	if(!finput.is_open())
 		return false;
 
+/*	READ IN .TXT ASCII TILES AND POSITION		*/
 	while(!finput.eof())
 	{
 		finput >> check;
-		finput >> tempSR.x;
-		finput >> tempSR.y;
 
-		for(i; i < spriteCont.size(); ++i)
+		if(check == '#')
 		{
-			if(spriteCont[i].s == check)
-				tempSR.index = i;
+			++j;
+			i = 0;
 		}
-		i = 0;
-		lvlSprites.push_back(tempSR);
+		else
+		{
+			if(check == '.')
+			{
+				tempSR.ptr = NULL;
+			}
+			else
+			{
+				for(unsigned int k = 0; k < spriteCont.size(); ++k)
+				{
+					if(spriteCont[k].s == check)
+						tempSR.ptr = &spriteCont[k];
+				}
+			}
+
+			//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
+			tempSR.x = -1475.0f + i * 50.0f;
+			tempSR.y = 475.0f - j * 50.0f;
+
+			lvlSprites.push_back(tempSR);
+			++i;
+		}
 	}
+	i = j = 0;
+	
+	finput.close();
 
 	if(FAILED(SetupLvlVB(prog)))
 		return false;
@@ -236,31 +256,19 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 HRESULT Graphics::SetupLvlVB(int prog)
 {
 	HRESULT hr;	
-	CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];
-
-	for(unsigned int j = 0; j < spriteCont.size(); j++)
-	{
-		//set up the vertices
-		gVert[j*4].x = 0.0f - (float(spriteCont[j].width)/2.0f)/2.0f;
-		gVert[j*4].y = float(spriteCont[j].height)/2.0f/2.0f;
-		gVert[j*4].z = gVert[j*4].tu = gVert[j*4].tv = 0.0f;
-
-		gVert[j*4+1].x = (float(spriteCont[j].width)/2.0f)/2.0f;
-		gVert[j*4+1].y = (float(spriteCont[j].height)/2.0f)/2.0f;
-		gVert[j*4+1].z = 0.0f;
-		gVert[j*4+1].tu = 1.0f;
-		gVert[j*4+1].tv = 0.0f;
-
-		gVert[j*4+2].x = 0.0f - (float(spriteCont[j].width)/2.0f)/2.0f;
-		gVert[j*4+2].y = 0.0f - (float(spriteCont[j].height)/2.0f)/2.0f;
-		gVert[j*4+2].z = gVert[j*4+2].tu = 0.0f;
-		gVert[j*4+2].tv = 1.0f;
-
-		gVert[j*4+3].x = (float(spriteCont[j].width)/2.0f)/2.0f;
-		gVert[j*4+3].y = 0 - (float(spriteCont[j].height)/2.0f)/2.0f;
-		gVert[j*4+3].z = 0.0f;
-		gVert[j*4+3].tu = gVert[j*4+3].tv = 1.0f;
-	}
+	//CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];	//old way
+	CUSTOMVERTEX gVert[] =
+	{	//3000x1000
+		{-1500.0f, 500.0f, 1.0f,	0.0f, 0.0f},
+		{ 1500.0f, 500.0f, 1.0f,	1.0f, 0.0f},
+		{-1500.0f, -500.0f, 1.0f,	0.0f, 1.0f},
+		{ 1500.0f, -500.0f, 1.0f,	1.0f, 1.0f},
+		//50x50
+		{-25.0f, 25.0f, 0.0f,	0.0f, 0.0f},
+		{25.0f, 25.0f, 0.0f,	1.0f, 0.0f},
+		{-25.0f, -25.0f, 0.0f,	0.0f, 1.0f},
+		{25.0f, -25.0f, 0.0f,	1.0f, 1.0f}
+	};
 
 	//create the vertex buffer
 	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
@@ -279,6 +287,7 @@ HRESULT Graphics::SetupLvlVB(int prog)
 
 void Graphics::drawLvlVB()
 {
+	int count = 0;
 	D3DXMATRIX matTrans, matWorld;
 
 	moveCamera(cameraPosition);
@@ -288,19 +297,33 @@ void Graphics::drawLvlVB()
 	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
 
+	//draw the level background
+	D3DXMatrixIdentity(&matWorld);
+	pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	pd3dDevice->SetTexture(0, spriteCont[0].g_pTexture);
+	pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	
+	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)
 	{
-		//set the transform matrices
-		D3DXMatrixIdentity(&matWorld);
-		D3DXMatrixIdentity(&matTrans);
-		D3DXMatrixTranslation(&matTrans, lvlSprites[i].x, lvlSprites[i].y, 0.0f);
-		D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
-		pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-		//apply texture
-		pd3dDevice->SetTexture(0, spriteCont[lvlSprites[i].index].g_pTexture);
-		//Draw the trianglestrips that make up the sprite
-		pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP,  lvlSprites[i].index*4, 2 );
+		if(lvlSprites[i].ptr != NULL)
+		{
+			//set the transform matrices
+			D3DXMatrixIdentity(&matWorld);
+			D3DXMatrixIdentity(&matTrans);
+			D3DXMatrixTranslation(&matTrans,lvlSprites[i].x,
+											lvlSprites[i].y,
+											(0.0f));
+			D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
+			pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+			//apply texture
+			pd3dDevice->SetTexture(0, lvlSprites[i].ptr->g_pTexture);
+			//Draw the trianglestrips that make up the sprite
+			pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 4, 2 );
+			count++;
+		}
 	}
+	displayTime(clock_t(count), 40);
 }
 
 //display text to the screen

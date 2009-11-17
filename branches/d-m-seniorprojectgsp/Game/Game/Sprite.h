@@ -11,15 +11,15 @@ struct Sprite
 {
 	char filename[MAXCHARSIZE];
 	char s;							//char to represent sprite
-	FLOAT width, height;			//size
 	LPDIRECT3DTEXTURE9 g_pTexture;	// texture info
 };
 
 //individual sprites rendered to screen, used in drawlvlvb(). store this shit so it you dont have to cycle through the sprites
 struct SpriteRend
 {
-	float x, y;
-	int index;	//the index
+	float x;
+	float y;
+	Sprite *ptr;	//a pointer to a sprite
 };
 
 #endif
