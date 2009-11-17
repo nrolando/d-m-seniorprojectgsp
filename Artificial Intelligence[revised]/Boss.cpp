@@ -3,8 +3,7 @@
 #include "EnemyOwnedStates.h"
 #include "BossOwnedStates.h"
 
-Boss::Boss(int ID):Enemy(ID)
-				   //status(EnemyDead)
+Boss::Boss(int ID, std::string name):Enemy(ID,name)
 {}
 
 bool Boss::isAlive()
@@ -17,6 +16,7 @@ void Boss::UpdateStat(int stat, int val)
 	switch(stat)
 	{
 		case 0:
+			health += val;
 			break;
 		case 1:
 			special += val;

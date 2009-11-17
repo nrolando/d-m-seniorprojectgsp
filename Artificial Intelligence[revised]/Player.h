@@ -7,14 +7,15 @@ class Player : protected BaseGameEntity
 private:
 	//character attributes
 	int health,special,
-		pPower,kPower,sPower;
-	//character's speed 
+		pPower,kPower,sPower, lives;
+	//character's speed/movement 
 	Vector2D velocity;
 	bool alive;
 public:
-	bool actionPossible(char m);
+	bool actionPossible(Vector2D pos);
 	bool isAlive();
 	
+	/* Attribute Related functions */
 	int getHealth() {health;}
 	int getSpecialMeter() {special;}
 	int getkPower() {kPower;}

@@ -1,6 +1,25 @@
 #include "State.h"
 
 class Enemy;
+class Player;
+
+//Enemy Idle State
+class Idle : public State<Enemy>
+{
+private:
+	Idle() {}
+
+	//copy ctor and assignment should be private
+	Idle(const Idle&);
+	Idle& operator=(const Idle&);
+public:
+	virtual void Enter(Enemy* enemy);
+	virtual void Exit(Enemy* enemy);
+	virtual void Execute(Enemy* enemy);
+
+	//this is a singleton
+	static Idle* Instance();
+};
 
 //Enemy Patrol State
 class Patrol : public State<Enemy>
