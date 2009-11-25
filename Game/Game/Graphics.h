@@ -38,7 +38,6 @@ based on level and sublevel, the level loader function will read from that speci
 class Graphics
 {
 private:
-	//clock_t then, now;
 	//direct 3d
 	LPDIRECT3D9             pD3D;
 	LPDIRECT3DDEVICE9       pd3dDevice;
@@ -54,11 +53,10 @@ private:
 	//direct text
 	ID3DXFont *m_font;
 
-	//camera members
-	D3DXMATRIX matView;					// the view matrix
-	D3DXMATRIX matProj;					// the projection matrix
-	D3DXVECTOR3 cameraPosition;			// the position of the camera
-	D3DXVECTOR3 cameraLook;				// where the camera is pointing
+//the pixel rect that is grabbed from the level is based on this simulated
+//camera's position
+	D3DXVECTOR3 camPos;
+
 public:
 	Graphics();
 	~Graphics();
@@ -69,24 +67,24 @@ public:
 	void BeginRender();	//clears screen, begin scene
 	void EndRender();	//end scene and present
 
+	IDirect3DSurface9* getSurfaceFromBitmap(std::string, int&, int&);
+	IDirect3DSurface9* getBackBuffer(void);
+	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
+
 	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
 	/***LOADLVL***:	
 		*loads the player's current level
 		*return value based on success of creating vertex buffer
 		*will be used at start of main and in update()	*/
 	bool loadLvlFromFile(int);
-	HRESULT SetupLvlVB(int);		//vertex buffer for level
-	void drawLvlVB();
+	void drawLvl();			//draw lvl surfaces
 
 	void displayTime(clock_t, int);
 
 	//camera functions
-	void createCamera(float, float);
-	void moveCamera(D3DXVECTOR3);
-	void translateCamera(D3DXVECTOR3);
-	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt	
+	void moveCamera(D3DXVECTOR3);	
 
-	D3DXVECTOR3 getCameraPos()		{ return cameraPosition; }
+	D3DXVECTOR3 getCameraPos()		{ return camPos; }
 };
 
 #endif

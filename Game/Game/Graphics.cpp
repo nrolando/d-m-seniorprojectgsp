@@ -1,5 +1,4 @@
 #include "Graphics.h"
-//#include <vector>
 
 Graphics::Graphics()
 {
@@ -65,11 +64,6 @@ bool Graphics::initD3D(HWND &hwnd)
 					TEXT("Arial"), 
 					&m_font );
 
-	//create and set Camera
-	createCamera(1.0f, 5000.0f);
-	moveCamera(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
-	pointAndSetCamera(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
 	return true;
 }
 
@@ -110,10 +104,55 @@ void Graphics::EndRender()
 	pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
+//load sprite vector with the bitmap and set dimensions
+IDirect3DSurface9* Graphics::getSurfaceFromBitmap(std::string filename, int &w, int &h)
+{
+	HRESULT hResult;
+	IDirect3DSurface9* surface = NULL;
+	D3DXIMAGE_INFO imageInfo;
+
+	// Get the width and height info from this bitmap
+	hResult = D3DXGetImageInfoFromFile(filename.c_str(), &imageInfo);
+	if FAILED (hResult)
+		return NULL;
+//should always be a 50x50, but not using magic #'s
+	w = imageInfo.Width;
+	h = imageInfo.Height;
+
+	hResult = pd3dDevice->CreateOffscreenPlainSurface(imageInfo.Width, imageInfo.Height, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
+	if (FAILED(hResult))
+		return NULL;
+
+	hResult = D3DXLoadSurfaceFromFile(surface, NULL, NULL, filename.c_str(), NULL, D3DX_DEFAULT, 0, NULL);
+	if (FAILED(hResult))
+		return NULL;
+
+	return surface;
+}
+
+IDirect3DSurface9* Graphics::getBackBuffer(void)
+{
+	IDirect3DSurface9* backbuffer = NULL;
+
+	if (!pd3dDevice)
+		return NULL;
+
+	HRESULT hResult = pd3dDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &backbuffer);
+	if (FAILED(hResult))
+		return NULL;
+	else
+		return backbuffer;
+}
+
+void Graphics::blitToSurface(IDirect3DSurface9* srcSurface, const RECT *srcRect, const RECT *destRect)
+{
+	pd3dDevice->StretchRect(srcSurface, srcRect, getBackBuffer(), destRect, D3DTEXF_NONE);
+}
+
 bool Graphics::loadLvlFromFile(int prog)
 {
-	register unsigned int i = 0;
-	int j = 0; //index variables
+	register unsigned int i = 0; int j = 0; //index variables
+	int w = 0; int h = 0;
 	ifstream fin, finput;
 	char fname[MAXCHARSIZE];
 	char check;		//checks for input deliminator and sprite match
@@ -121,6 +160,9 @@ bool Graphics::loadLvlFromFile(int prog)
 	int sublvl = prog%3;
 	SpriteRend tempSR;
 	Sprite tempSprite;
+
+	//set camPos to start of level
+	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
 	
 //clear the vectors
 	if(!spriteCont.empty())
@@ -167,9 +209,10 @@ bool Graphics::loadLvlFromFile(int prog)
 		fin >> tempSprite.s;
 		fin.ignore();
 
-		//load texture from file
-		D3DXCreateTextureFromFile	( pd3dDevice, tempSprite.filename,
-									&(tempSprite.g_pTexture) );
+		//load image info from file (pull w&h even tho it should always be 50x50
+		tempSprite.spriteSurf = getSurfaceFromBitmap(tempSprite.filename, w, h);
+		tempSprite.width = w;
+		tempSprite.height = h;
 		spriteCont.push_back(tempSprite);
 		++i;
 	}
@@ -225,11 +268,7 @@ bool Graphics::loadLvlFromFile(int prog)
 	i = j = 0;
 	
 	finput.close();
-
-	if(FAILED(SetupLvlVB(prog)))
-		return false;
-	else
-		return true;
+	return true;
 }
 
 /****************************************/
@@ -253,78 +292,119 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 	return buffer;
 }
 
-HRESULT Graphics::SetupLvlVB(int prog)
+//HRESULT Graphics::SetupLvlVB(int prog)
+//{
+//	HRESULT hr;	
+//	//CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];	//old way
+//	CUSTOMVERTEX gVert[] =
+//	{	//3000x1000
+//		{-1500.0f, 500.0f, 1.0f,	0.0f, 0.0f},
+//		{ 1500.0f, 500.0f, 1.0f,	1.0f, 0.0f},
+//		{-1500.0f, -500.0f, 1.0f,	0.0f, 1.0f},
+//		{ 1500.0f, -500.0f, 1.0f,	1.0f, 1.0f},
+//		//50x50
+//		{-25.0f, 25.0f, 0.0f,	0.0f, 0.0f},
+//		{25.0f, 25.0f, 0.0f,	1.0f, 0.0f},
+//		{-25.0f, -25.0f, 0.0f,	0.0f, 1.0f},
+//		{25.0f, -25.0f, 0.0f,	1.0f, 1.0f}
+//	};
+//
+//	//create the vertex buffer
+//	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
+//	//fill the vertex buffer
+//	VOID* pVertices;
+//	hr = g_pVB->Lock(0, sizeof(gVert), (void**)&pVertices, 0);
+//	if(FAILED(hr))
+//		return E_FAIL;
+//	//copy the vertices into the buffer
+//	memcpy(pVertices, gVert, sizeof(gVert));
+//	//unlock vb
+//	g_pVB->Unlock();
+//
+//	return S_OK;
+//}
+
+void Graphics::drawLvl()
 {
-	HRESULT hr;	
-	//CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];	//old way
-	CUSTOMVERTEX gVert[] =
-	{	//3000x1000
-		{-1500.0f, 500.0f, 1.0f,	0.0f, 0.0f},
-		{ 1500.0f, 500.0f, 1.0f,	1.0f, 0.0f},
-		{-1500.0f, -500.0f, 1.0f,	0.0f, 1.0f},
-		{ 1500.0f, -500.0f, 1.0f,	1.0f, 1.0f},
-		//50x50
-		{-25.0f, 25.0f, 0.0f,	0.0f, 0.0f},
-		{25.0f, 25.0f, 0.0f,	1.0f, 0.0f},
-		{-25.0f, -25.0f, 0.0f,	0.0f, 1.0f},
-		{25.0f, -25.0f, 0.0f,	1.0f, 1.0f}
-	};
+	RECT dest, src;
 
-	//create the vertex buffer
-	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
-	//fill the vertex buffer
-	VOID* pVertices;
-	hr = g_pVB->Lock(0, sizeof(gVert), (void**)&pVertices, 0);
-	if(FAILED(hr))
-		return E_FAIL;
-	//copy the vertices into the buffer
-	memcpy(pVertices, gVert, sizeof(gVert));
-	//unlock vb
-	g_pVB->Unlock();
+	//draw lvl
+	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
+	src.right = src.left + SCREEN_WIDTH;
+	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
+	src.bottom = src.top + SCREEN_HEIGHT;
+	blitToSurface(spriteCont[0].spriteSurf, &src, NULL);
 
-	return S_OK;
-}
-
-void Graphics::drawLvlVB()
-{
-	int count = 0;
-	D3DXMATRIX matTrans, matWorld;
-
-	moveCamera(cameraPosition);
-	pointAndSetCamera(cameraLook);
-
-	// Set the vertex stream
-	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
-	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-
-	//draw the level background
-	D3DXMatrixIdentity(&matWorld);
-	pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	pd3dDevice->SetTexture(0, spriteCont[0].g_pTexture);
-	pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	
 	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)
 	{
 		if(lvlSprites[i].ptr != NULL)
 		{
-			//set the transform matrices
-			D3DXMatrixIdentity(&matWorld);
-			D3DXMatrixIdentity(&matTrans);
-			D3DXMatrixTranslation(&matTrans,lvlSprites[i].x,
-											lvlSprites[i].y,
-											(0.0f));
-			D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
-			pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-			//apply texture
-			pd3dDevice->SetTexture(0, lvlSprites[i].ptr->g_pTexture);
-			//Draw the trianglestrips that make up the sprite
-			pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 4, 2 );
-			count++;
+			if((lvlSprites[i].x - lvlSprites[i].ptr->width/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
+				(lvlSprites[i].x + lvlSprites[i].ptr->width/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
+			{
+				if((lvlSprites[i].y + lvlSprites[i].ptr->height/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+					(lvlSprites[i].y - lvlSprites[i].ptr->height/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
+				{
+					dest.left = LONG((lvlSprites[i].x - lvlSprites[i].ptr->width/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
+					if(dest.left < 0)
+						dest.left = 0;
+					dest.right = dest.left + lvlSprites[i].ptr->width;
+					if(dest.right > SCREEN_WIDTH)
+						dest.right = SCREEN_WIDTH;
+					dest.top = LONG((camPos.y + SCREEN_HEIGHT/2.0f) - (lvlSprites[i].y + lvlSprites[i].ptr->height/2.0f));
+					if(dest.top < 0)
+						dest.top = 0;
+					dest.bottom = dest.top + lvlSprites[i].ptr->height;
+					if(dest.bottom > SCREEN_HEIGHT)
+						dest.bottom = SCREEN_HEIGHT;
+					blitToSurface(lvlSprites[i].ptr->spriteSurf, NULL, &dest);
+				}
+			}
 		}
 	}
-	displayTime(clock_t(count), 40);
 }
+
+//void Graphics::drawLvlVB()
+//{
+//	int count = 0;
+//	D3DXMATRIX matTrans, matWorld;
+//
+//	/*moveCamera(cameraPosition);
+//	pointAndSetCamera(cameraLook);*/
+//
+//	// Set the vertex stream
+//	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
+//	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
+//
+//	//draw the level background
+//	D3DXMatrixIdentity(&matWorld);
+//	pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+//	pd3dDevice->SetTexture(0, spriteCont[0].g_pTexture);
+//	pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+//	
+//	//draw the tiles
+//	for(unsigned int i = 0; i < lvlSprites.size(); i++)
+//	{
+//		if(lvlSprites[i].ptr != NULL)
+//		{
+//			//set the transform matrices
+//			D3DXMatrixIdentity(&matWorld);
+//			D3DXMatrixIdentity(&matTrans);
+//			D3DXMatrixTranslation(&matTrans,lvlSprites[i].x,
+//											lvlSprites[i].y,
+//											(0.0f));
+//			D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
+//			pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+//			//apply texture
+//			pd3dDevice->SetTexture(0, lvlSprites[i].ptr->g_pTexture);
+//			//Draw the trianglestrips that make up the sprite
+//			pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 4, 2 );
+//			count++;
+//		}
+//	}
+//	displayTime(clock_t(count), 40);
+//}
 
 //display text to the screen
 void Graphics::displayTime(clock_t _time, int y)	//elapsed time
@@ -344,38 +424,20 @@ void Graphics::displayTime(clock_t _time, int y)	//elapsed time
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 
-//	CAMERA	*****************************************************
-void Graphics::createCamera(float nearClip, float farClip)
-{
-	//Here we specify the field of view, aspect ration and near and far clipping planes.
-    D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, SCREEN_WIDTH/SCREEN_HEIGHT, nearClip, farClip);
-    pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
-
-}
-
 /*************************************************************************
-* moveCamera	*/
+* move the simulated Camera!
+the pixel rect that is grabbed from the level is based on this simulated
+camera's position*/
 void Graphics::moveCamera(D3DXVECTOR3 vec)
 {
-	cameraPosition = vec;
-}
-
-void Graphics::translateCamera(D3DXVECTOR3 vec)
-{
-	cameraPosition += vec;
-}
-
-/*************************************************************************
-* pointCamera
-* points the camera a location specified by the passed vector
-*************************************************************************/
-void Graphics::pointAndSetCamera(D3DXVECTOR3 vec)
-{
-	cameraLook = vec;
-
-	D3DXMatrixLookAtLH(&matView, &cameraPosition,		//Camera Position
-                                 &cameraLook,			//Look At Position
-                                 &D3DXVECTOR3(0.0f, 1.0f, 0.0f));	//Up Direction
-
-	pd3dDevice->SetTransform(D3DTS_VIEW, &matView);
+	camPos += vec;
+	//dont allow camera to go off screen
+	if(camPos.x < (-1500.0f + SCREEN_WIDTH/2.0f))
+		camPos.x = (-1500.0f + SCREEN_WIDTH/2.0f);
+	else if(camPos.x > (1500.0f - SCREEN_WIDTH/2.0f))
+		camPos.x = (1500.0f - SCREEN_WIDTH/2.0f);
+	if(camPos.y > (500.0f - SCREEN_HEIGHT/2.0f))
+		camPos.y = (500.0f - SCREEN_HEIGHT/2.0f);
+	else if(camPos.y < (-500.0f + SCREEN_HEIGHT/2.0f))
+		camPos.y = (-500.0f + SCREEN_HEIGHT/2.0f);
 }
