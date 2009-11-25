@@ -53,10 +53,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		else
 		{
 			game->beginRender();
+			game->drawLvl();
 			now = clock();
 			game->display_time((now-then), 20);
 			then = now;	//moved here for display_time()
-			game->drawLvlVB();
 			game->endRender();
 			// pause to force frames per second
 			//while(clock() < now + FPSdelay)
@@ -108,8 +108,8 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	D3DXVECTOR3 camPos;
-	camPos = game->getCamPos();
+	//D3DXVECTOR3 camPos;
+	//camPos = game->getCamPos();
 
 	switch (message)
 	{
@@ -123,28 +123,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			break;
 		case 'A':
-			game->transCam(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x-100.0f, camPos.y, 0.0f));
+			game->moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
+			//game->pointAndSetCam(D3DXVECTOR3(camPos.x-100.0f, camPos.y, 0.0f));
 			break;
 		case 'S':
-			game->transCam(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y-100.0f, 0.0f));
+			game->moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
+			//game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y-100.0f, 0.0f));
 			break;
 		case 'D':
-			game->transCam(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x+100.0f, camPos.y, 0.0f));
+			game->moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+			//game->pointAndSetCam(D3DXVECTOR3(camPos.x+100.0f, camPos.y, 0.0f));
 			break;
 		case 'W':
-			game->transCam(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y+100.0f, 0.0f));
-			break;
-		case 'R':
-			game->transCam(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y, 0.0f));
-			break;
-		case 'E':
-			game->transCam(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y, 0.0f));
+			game->moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
+			//game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y+100.0f, 0.0f));
 			break;
 		};
 		break;
