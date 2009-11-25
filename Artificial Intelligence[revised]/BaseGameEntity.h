@@ -8,14 +8,15 @@
 class BaseGameEntity
 {
 private:
-	int entity_ID;
+	char entity_ID;
 protected:
 	Vector2D POS;
 	std::string name;
 	//void *img;
 public:
-	BaseGameEntity(int ID) {entity_ID = ID; 
-							name = GetNameOfEntity(ID).c_str();}
+	BaseGameEntity(char entity_type,Vector2D pos) {entity_ID = entity_type; 
+										 name = GetNameOfEntity(entity_type).c_str();
+										 POS = pos;}
 	
 	virtual ~BaseGameEntity(){}
 

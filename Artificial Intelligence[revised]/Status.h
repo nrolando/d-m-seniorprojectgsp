@@ -10,19 +10,19 @@ enum ID
 	SHREDDER
 };
 
-inline std::string GetNameOfEntity(int n)
+inline std::string GetNameOfEntity(char n)
 {
   switch(n)
   {
-  case JASON:
+  case 'e':
 
-    return "Jason";
+    return "SmallEnemy";
 
-  case MARCUS:
+  case 'E':
     
-    return "Marcus"; 
+    return "LargeEnemy"; 
 
-  case SHREDDER:
+  case 'B':
     
     return "Shredder";
 

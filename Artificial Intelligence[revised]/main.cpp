@@ -6,7 +6,12 @@
 
 int main()
 {
-	Enemy enemy(JASON,GetNameOfEntity(JASON));
+	char key = 'e';
+	Vector2D pos;
+	pos.x = 0;
+	pos.y = 0;
+
+	Enemy enemy(key,pos);
 	enemy.ChangeStatus(InFace);
 	while(1)
 	{

@@ -3,7 +3,7 @@
 #include "EnemyOwnedStates.h"
 #include "BossOwnedStates.h"
 
-Boss::Boss(int ID, std::string name):Enemy(ID,name)
+Boss::Boss(char entity_type, Vector2D pos):Enemy(entity_type,pos)
 {}
 
 bool Boss::isAlive()
