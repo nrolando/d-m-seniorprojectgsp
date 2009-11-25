@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dsound.lib d3d9.lib d3dx9.lib dxguid.lib dinput8.lib dxerr9.lib winmm.lib"
+				AdditionalDependencies="dsound.lib d3d9.lib d3dx9.lib dxguid.lib dinput8.lib DxErr.lib winmm.lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -163,7 +163,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Game.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Graphics.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spriteContainer.cpp"
 				>
 			</File>
 			<File
@@ -177,7 +185,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Game.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Graphics.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spriteContainer.h"
 				>
 			</File>
 		</Filter>
