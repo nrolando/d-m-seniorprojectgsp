@@ -12,6 +12,9 @@ private:
 	Vector2D velocity;
 	bool alive;
 public:
+	Player();
+	~Player();
+
 	bool actionPossible(Vector2D pos);
 	bool isAlive();
 	

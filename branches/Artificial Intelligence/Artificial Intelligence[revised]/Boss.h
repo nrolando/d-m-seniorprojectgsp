@@ -11,7 +11,7 @@ private:
 	int health,special,sPower;
 public:
 
-	Boss(int ID,std::string name);
+	Boss(char entity_type, Vector2D POS);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}

@@ -18,7 +18,7 @@ class Enemy : protected BaseGameEntity
 		Vector2D velocity;
 
 	public:
-		Enemy(int ID,std::string name);
+		Enemy(char entity_type,Vector2D POS);
 		~Enemy() {}
 
 		bool isAlive();

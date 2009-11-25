@@ -3,13 +3,13 @@
 #include "EnemyOwnedStates.h"
 #include "Enemy.h"
 
-Enemy::Enemy(int ID,std::string name):BaseGameEntity(ID),
+Enemy::Enemy(char entity_type,Vector2D pos):BaseGameEntity(entity_type,pos),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
 {}
 
-void increaseHealth(int h);
-
+void increaseHealth(int h)
+{}
 void Enemy::UpdateState()
 {
 	CurrentState->Execute(this);
