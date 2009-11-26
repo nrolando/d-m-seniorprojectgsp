@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	}
 
 	
-    //ZeroMemory( &msg, sizeof(msg) );
+    ZeroMemory( &msg, sizeof(msg) );
 	while(msg.message!=WM_QUIT)
     {
 		// check for messages
