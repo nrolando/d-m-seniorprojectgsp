@@ -1,6 +1,10 @@
 #ifndef SPRITECONTAINER_H
 #define SPRITECONTAINER_H
 
+#include <d3d9.h>
+
+#define MAXCHARSIZE			50
+
 class spriteContainer
 {
 private:
@@ -9,6 +13,10 @@ private:
 	spriteContainer();
 
 	//put other stuf here
+	char filename[MAXCHARSIZE];
+	char s;							//char to represent sprite
+	IDirect3DSurface9 *spriteSurf;
+	int width, height;
 
 public:
 	//singleton stuff

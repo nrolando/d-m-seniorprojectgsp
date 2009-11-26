@@ -15,6 +15,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
+	clock_t then = clock();
+	clock_t now;
 	game = new Game();
 	inMan = new inputManager();
 	MSG msg;
@@ -58,8 +60,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		else
 		{
 			game->beginRender();
-			game->drawLvlVB();
+			game->drawLvl();
+			now = clock();
+			game->display_time((now-then), 20);
+			then = now;	//moved here for display_time()
 			game->endRender();
+			// pause to force frames per second
+			//while(clock() < now + FPSdelay)
+			//	Sleep(1);
 		}
 	}
 	game->_shutdown();
@@ -106,9 +114,8 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	D3DXVECTOR3 camPos;
-	camPos = game->getCamPos();
-
+	/*	//this is added down below. this function must PostQuitMessage() when
+		//user closes program or else you will have problems
 
 	switch(message)
 	{
@@ -116,37 +123,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if(!inMan->isTimeUP())
 			inMan->setInput(wParam, clock());
 	}
-
-	/*switch (message)
+*/
+	switch (message)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
+
+		//mike's thang
+		if(!inMan->isTimeUP())
+			inMan->setInput(wParam, clock());
+		//end of mike's thang
+
 		switch(wParam)
 		{
 		case 'Q':	//****MUST BE CAPITAL OR IT WON'T READ IT...*****
 			PostQuitMessage(0);
 			break;
 		case 'A':
-			game->transCam(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
 			break;
 		case 'S':
-			game->transCam(D3DXVECTOR3(0.0f, 0.0f, -100.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
 			break;
 		case 'D':
-			game->transCam(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
 			break;
 		case 'W':
-			game->transCam(D3DXVECTOR3(0.0f, 0.0f, 100.0f));
-			game->pointAndSetCam(D3DXVECTOR3(camPos.x, 0.0f, 0.0f));
+			game->moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
 			break;
 		};
 		break;
-	};*/
+	};
 
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

@@ -1,12 +1,13 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include <d3d9.h>
 #include <d3dx9tex.h>
 #include <windows.h>
 #include <string>
 #include <vector>
+#include "Sprite.h"
 #include <fstream>
+#include <ctime>
 using namespace std;
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
@@ -14,20 +15,7 @@ using namespace std;
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
-#define MAXCHARSIZE			50
 #define MAXSPRITESPERSUBLVL		50
-
-// the sprite container
-struct Sprite
-{
-	char filename[MAXCHARSIZE];
-	char s;							//char to represent sprite
-//size of the image file. there should be a way to just pull image info
-//but idk how...
-	FLOAT width, height;
-	LPDIRECT3DTEXTURE9 g_pTexture;	// texture info
-	FILE *file;
-};
 
 // A structure for our custom vertex type
 struct CUSTOMVERTEX
@@ -56,23 +44,18 @@ private:
 	// vertex buffer
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
-//LEVEL SPRITE STUFF***************{
-	//sprite/textures for the levels
-	vector<Sprite> lvlSprites;
-	//number of sprites to be rendered in the lvl. needed for drawLvlVB()
-	int spritesRend;
-	float *px;				//position for each sprite to be rendered
-	float *py;
-	char *c_spr;
-	////debug member
-	LPDIRECT3DTEXTURE9 g_pTexture;
+//SPRITE STUFF***************{
+	vector<Sprite> spriteCont;
+	vector<SpriteRend> lvlSprites;
 //*********************************}
 
-	//camera members
-	D3DXMATRIX matView;					// the view matrix
-	D3DXMATRIX matProj;					// the projection matrix
-	D3DXVECTOR3 cameraPosition;			// the position of the camera
-	D3DXVECTOR3 cameraLook;				// where the camera is pointing
+	//direct text
+	ID3DXFont *m_font;
+
+//the pixel rect that is grabbed from the level is based on this simulated
+//camera's position
+	D3DXVECTOR3 camPos;
+
 public:
 	Graphics();
 	~Graphics();
@@ -83,22 +66,24 @@ public:
 	void BeginRender();	//clears screen, begin scene
 	void EndRender();	//end scene and present
 
+	IDirect3DSurface9* getSurfaceFromBitmap(std::string, int&, int&);
+	IDirect3DSurface9* getBackBuffer(void);
+	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
+
 	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
 	/***LOADLVL***:	
 		*loads the player's current level
 		*return value based on success of creating vertex buffer
 		*will be used at start of main and in update()	*/
 	bool loadLvlFromFile(int);
-	HRESULT SetupLvlVB(int);		//vertex buffer for level
-	void drawLvlVB();
+	void drawLvl();			//draw lvl surfaces
+
+	void displayTime(clock_t, int);
 
 	//camera functions
-	void createCamera(float, float);
-	void moveCamera(D3DXVECTOR3);
-	void translateCamera(D3DXVECTOR3);
-	void pointAndSetCamera(D3DXVECTOR3);	//para: pos, lookAt	
+	void moveCamera(D3DXVECTOR3);	
 
-	D3DXVECTOR3 getCameraPos()		{ return cameraPosition; }
+	D3DXVECTOR3 getCameraPos()		{ return camPos; }
 };
 
 #endif
