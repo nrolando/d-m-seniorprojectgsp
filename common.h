@@ -3,6 +3,9 @@
 
 #define MAXCHARSIZE			50
 
+#include <d3d9.h>
+#include <d3dx9tex.h>
+
 //use this for position stuff
 struct Vector2D
 {
@@ -20,12 +23,12 @@ struct Rectangle
 };
 
 //use this in the Sprite Container
-Struct SpriteSheet
+struct SpriteSheet
 {
 	char fileName[MAXCHARSIZE];
 	char id;
 	IDirect3DSurface9 *spriteSurf;
-}
+};
 
 
 #endif
