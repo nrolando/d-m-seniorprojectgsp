@@ -32,7 +32,7 @@ void EntityManager::loadFromFile(char *fileName)
 		{
 			inFile.get(enType);
 			inFile.get(enPOS.x);
-			ifFile.get(enPOS.y);
+			inFile.get(enPOS.y);
 		}
 	}
 

@@ -268,10 +268,6 @@
 				RelativePath=".\Status.h"
 				>
 			</File>
-			<File
-				RelativePath=".\Vector.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

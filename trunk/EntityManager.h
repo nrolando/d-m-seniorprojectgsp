@@ -7,7 +7,7 @@
 #define ENTITYMANAGER_H
 
 #include "BaseGameEntity.h"
-#include "Vector.h"
+#include "common.h"
 #include <vector>
 #include <fstream>
 #include <string>

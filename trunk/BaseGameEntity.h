@@ -2,7 +2,7 @@
 #define	BASEGAMEENTITY_H
 
 #include "Status.h"
-#include "Vector.h"
+#include "common.h"
 #include <string>
 
 class BaseGameEntity
