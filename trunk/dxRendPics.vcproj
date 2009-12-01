@@ -257,6 +257,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sprite.h"
+				>
+			</File>
+			<File
 				RelativePath=".\spriteContainer.h"
 				>
 			</File>

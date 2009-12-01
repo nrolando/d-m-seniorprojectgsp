@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include <d3d9.h>
 #include <d3dx9tex.h>
 #include <windows.h>
 #include <string>
