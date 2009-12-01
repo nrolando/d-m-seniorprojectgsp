@@ -30,9 +30,9 @@ void EntityManager::loadFromFile(char *fileName)
 	{
 		if(inFile.get() != '\n')
 		{
-			inFile.get(enType);
+			/*inFile.get(enType);
 			inFile.get(enPOS.x);
-			inFile.get(enPOS.y);
+			inFile.get(enPOS.y);*/
 		}
 	}
 
