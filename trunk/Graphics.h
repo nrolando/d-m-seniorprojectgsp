@@ -5,8 +5,7 @@
 #include <d3dx9tex.h>
 #include <windows.h>
 #include <string>
-#include <vector>
-#include "Sprite.h"
+#include "spriteContainer.h"
 #include <fstream>
 #include <ctime>
 using namespace std;
@@ -46,7 +45,6 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
 //SPRITE STUFF***************{
-	vector<Sprite> spriteCont;
 	vector<SpriteRend> lvlSprites;
 //*********************************}
 

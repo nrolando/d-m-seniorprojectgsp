@@ -3,7 +3,11 @@
 #include "EnemyOwnedStates.h"
 #include "BossOwnedStates.h"
 
-Boss::Boss(int ID, std::string name):Enemy(ID,name)
+Boss::Boss(int ID):Enemy(ID)
+{}
+
+//possible bug: idk if passing a char array will get the c-str that its supposed to
+Boss::Boss(int ID, char KEY, char *fname):Enemy(ID, KEY, fname)
 {}
 
 bool Boss::isAlive()

@@ -6,26 +6,23 @@
 #ifndef ENTITYMANAGER_H
 #define ENTITYMANAGER_H
 
-#include "BaseGameEntity.h"
-#include "common.h"
-#include <vector>
+#include "Boss.h"
+#include "Enemy.h"
+//#include "common.h"
 #include <fstream>
+#include <vector>
 #include <string>
 
 class EntityManager
 {
 private:
-	//singleton instance
-	static EntityManager* instance;
-	EntityManager();
-
 	std::vector<BaseGameEntity*> entityVector;
 
 public:
-	//singleton access function
-	static EntityManager* getInstance();
-
-	void loadFromFile(char* fileName);
+	EntityManager();
+	~EntityManager();
+	
+	bool loadFromFile(int);		//progress
 	void setImgPtrs();
 };
 

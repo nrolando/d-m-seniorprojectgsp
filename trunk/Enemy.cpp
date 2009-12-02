@@ -3,9 +3,15 @@
 #include "EnemyOwnedStates.h"
 #include "Enemy.h"
 
-Enemy::Enemy(int ID,std::string name):BaseGameEntity(ID),
+Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
+{}
+
+//possible bug: idk if passing a char array will get the c-str that its supposed to
+Enemy::Enemy(int ID, char KEY, char *fname):BaseGameEntity(ID, KEY, fname),
+									 status(InRange),
+									 CurrentState(Idle::Instance())
 {}
 
 void increaseHealth(int h);

@@ -5,17 +5,28 @@
 #include "common.h"
 #include <string>
 
+#define maxcharsize		50
+
 class BaseGameEntity
 {
 private:
 	int entity_ID;
+	char key;
 protected:
 	Vector2D POS;
-	std::string name;
+	std::string name;		//set by getnameofentity(ID);
+	char filename[maxcharsize];
 	//void *img;
 public:
 	BaseGameEntity(int ID) {entity_ID = ID; 
-							name = GetNameOfEntity(ID).c_str();}
+							name = GetNameOfEntity(ID);}
+	BaseGameEntity(int ID, char _key, char* fn)
+	{
+		entity_ID = ID;
+		name = GetNameOfEntity(ID);
+		key = _key;
+		strcpy(filename, fn);
+	}
 	
 	virtual ~BaseGameEntity(){}
 
