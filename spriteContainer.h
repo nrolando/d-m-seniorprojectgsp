@@ -2,6 +2,8 @@
 #define SPRITECONTAINER_H
 
 #include <d3d9.h>
+#include <vector>
+#include "common.h"
 
 #define MAXCHARSIZE			50
 
@@ -12,15 +14,20 @@ private:
 	static spriteContainer* instance;
 	spriteContainer();
 
-	//put other stuf here
-	char filename[MAXCHARSIZE];
-	char s;							//char to represent sprite
-	IDirect3DSurface9 *spriteSurf;
-	int width, height;
+	std::vector<Sprite> spriteCont;
 
 public:
 	//singleton stuff
 	static spriteContainer* getInstance();
+
+	//access the vector
+	//vector<Sprite> getSC()			{ return spriteCont; }
+	bool isEmpty()					{ return spriteCont.empty(); }
+	void clearVec()					{ spriteCont.clear(); }
+	void push(Sprite sprite)		{ spriteCont.push_back(sprite); }
+	size_t size()				{ return spriteCont.size(); }
+	Sprite getElem(int i)			{ return spriteCont[i]; }
+	
 };
 
 #endif

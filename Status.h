@@ -12,6 +12,7 @@ enum ID
 
 inline std::string GetNameOfEntity(int n)
 {
+	n %= 5;
   switch(n)
   {
   case JASON:

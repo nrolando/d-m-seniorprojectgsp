@@ -5,7 +5,7 @@
 #include "State.h"
 #include "Status.h"
 
-class Enemy : protected BaseGameEntity
+class Enemy : public BaseGameEntity
 {
 	private:
 		status_type status;
@@ -18,7 +18,8 @@ class Enemy : protected BaseGameEntity
 		Vector2D velocity;
 
 	public:
-		Enemy(int ID,std::string name);
+		Enemy(int ID);
+		Enemy(int ID, char KEY, char *fname);
 		~Enemy() {}
 
 		bool isAlive();

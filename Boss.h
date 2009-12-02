@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include <string>
 
+//changed from protected to public cuz of error c2243
 class Boss : public Enemy
 {
 private:
@@ -11,7 +12,8 @@ private:
 	int health,special,sPower;
 public:
 
-	Boss(int ID,std::string name);
+	Boss(int ID);
+	Boss(int ID, char KEY, char *fname);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}

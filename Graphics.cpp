@@ -165,8 +165,8 @@ bool Graphics::loadLvlFromFile(int prog)
 	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
 	
 //clear the vectors
-	if(!spriteCont.empty())
-		spriteCont.clear();
+	if(!spriteContainer::getInstance()->isEmpty())
+		spriteContainer::getInstance()->clearVec();
 	if(!lvlSprites.empty())
 		lvlSprites.clear();
 
@@ -213,7 +213,7 @@ bool Graphics::loadLvlFromFile(int prog)
 		tempSprite.spriteSurf = getSurfaceFromBitmap(tempSprite.filename, w, h);
 		tempSprite.width = w;
 		tempSprite.height = h;
-		spriteCont.push_back(tempSprite);
+		spriteContainer::getInstance()->push(tempSprite);
 		++i;
 	}
 	i = 0;
@@ -250,10 +250,10 @@ bool Graphics::loadLvlFromFile(int prog)
 			}
 			else
 			{
-				for(unsigned int k = 0; k < spriteCont.size(); ++k)
+				for(unsigned int k = 0; k < spriteContainer::getInstance()->size(); ++k)
 				{
-					if(spriteCont[k].s == check)
-						tempSR.ptr = &spriteCont[k];
+					if(spriteContainer::getInstance()->getElem(k).s == check)
+						tempSR.ptr = &spriteContainer::getInstance()->getElem(k);
 				}
 			}
 
@@ -292,38 +292,6 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 	return buffer;
 }
 
-//HRESULT Graphics::SetupLvlVB(int prog)
-//{
-//	HRESULT hr;	
-//	//CUSTOMVERTEX gVert[MAXSPRITESPERSUBLVL*4];	//old way
-//	CUSTOMVERTEX gVert[] =
-//	{	//3000x1000
-//		{-1500.0f, 500.0f, 1.0f,	0.0f, 0.0f},
-//		{ 1500.0f, 500.0f, 1.0f,	1.0f, 0.0f},
-//		{-1500.0f, -500.0f, 1.0f,	0.0f, 1.0f},
-//		{ 1500.0f, -500.0f, 1.0f,	1.0f, 1.0f},
-//		//50x50
-//		{-25.0f, 25.0f, 0.0f,	0.0f, 0.0f},
-//		{25.0f, 25.0f, 0.0f,	1.0f, 0.0f},
-//		{-25.0f, -25.0f, 0.0f,	0.0f, 1.0f},
-//		{25.0f, -25.0f, 0.0f,	1.0f, 1.0f}
-//	};
-//
-//	//create the vertex buffer
-//	g_pVB = createVertexBuffer(sizeof(gVert)*sizeof(CUSTOMVERTEX), D3DFVF_CUSTOMVERTEX);
-//	//fill the vertex buffer
-//	VOID* pVertices;
-//	hr = g_pVB->Lock(0, sizeof(gVert), (void**)&pVertices, 0);
-//	if(FAILED(hr))
-//		return E_FAIL;
-//	//copy the vertices into the buffer
-//	memcpy(pVertices, gVert, sizeof(gVert));
-//	//unlock vb
-//	g_pVB->Unlock();
-//
-//	return S_OK;
-//}
-
 void Graphics::drawLvl()
 {
 	RECT dest, src;
@@ -333,7 +301,7 @@ void Graphics::drawLvl()
 	src.right = src.left + SCREEN_WIDTH;
 	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
 	src.bottom = src.top + SCREEN_HEIGHT;
-	blitToSurface(spriteCont[0].spriteSurf, &src, NULL);
+	blitToSurface(spriteContainer::getInstance()->getElem(0).spriteSurf, &src, NULL);
 
 	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)
@@ -364,47 +332,6 @@ void Graphics::drawLvl()
 		}
 	}
 }
-
-//void Graphics::drawLvlVB()
-//{
-//	int count = 0;
-//	D3DXMATRIX matTrans, matWorld;
-//
-//	/*moveCamera(cameraPosition);
-//	pointAndSetCamera(cameraLook);*/
-//
-//	// Set the vertex stream
-//	pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
-//	pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-//
-//	//draw the level background
-//	D3DXMatrixIdentity(&matWorld);
-//	pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-//	pd3dDevice->SetTexture(0, spriteCont[0].g_pTexture);
-//	pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-//	
-//	//draw the tiles
-//	for(unsigned int i = 0; i < lvlSprites.size(); i++)
-//	{
-//		if(lvlSprites[i].ptr != NULL)
-//		{
-//			//set the transform matrices
-//			D3DXMatrixIdentity(&matWorld);
-//			D3DXMatrixIdentity(&matTrans);
-//			D3DXMatrixTranslation(&matTrans,lvlSprites[i].x,
-//											lvlSprites[i].y,
-//											(0.0f));
-//			D3DXMatrixMultiply(&matWorld, &matWorld, &matTrans);
-//			pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-//			//apply texture
-//			pd3dDevice->SetTexture(0, lvlSprites[i].ptr->g_pTexture);
-//			//Draw the trianglestrips that make up the sprite
-//			pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 4, 2 );
-//			count++;
-//		}
-//	}
-//	displayTime(clock_t(count), 40);
-//}
 
 //display text to the screen
 void Graphics::displayTime(clock_t _time, int y)	//elapsed time
