@@ -9,9 +9,10 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 {}
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Enemy::Enemy(int ID, char KEY, char *fname):BaseGameEntity(ID, KEY, fname),
-									 status(InRange),
-									 CurrentState(Idle::Instance())
+Enemy::Enemy(int ID, char KEY, Vector2D pos, Sprite *ptr)
+			:BaseGameEntity(ID, KEY, pos, ptr),
+							 status(InRange),
+							 CurrentState(Idle::Instance())
 {}
 
 void increaseHealth(int h);

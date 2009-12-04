@@ -1,3 +1,6 @@
+#ifndef BOSS_H
+#define BOSS_H
+
 #include "Status.h"
 #include "State.h"
 #include "Enemy.h"
@@ -13,7 +16,7 @@ private:
 public:
 
 	Boss(int ID);
-	Boss(int ID, char KEY, char *fname);
+	Boss(int ID, char KEY, Vector2D pos, Sprite *ptr);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}
@@ -27,3 +30,5 @@ public:
 	//virtual void setImg(/* *DirectXSurface */);
 	//virtual char getName();
 };
+
+#endif

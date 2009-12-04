@@ -25,8 +25,8 @@ public:
 	bool isEmpty()					{ return spriteCont.empty(); }
 	void clearVec()					{ spriteCont.clear(); }
 	void push(Sprite sprite)		{ spriteCont.push_back(sprite); }
-	size_t size()				{ return spriteCont.size(); }
-	Sprite getElem(int i)			{ return spriteCont[i]; }
+	size_t size()					{ return spriteCont.size(); }
+	Sprite* getElem(int i)			{ return &spriteCont[i]; }
 	
 };
 

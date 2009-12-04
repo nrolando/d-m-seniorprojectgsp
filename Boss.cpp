@@ -7,7 +7,8 @@ Boss::Boss(int ID):Enemy(ID)
 {}
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Boss::Boss(int ID, char KEY, char *fname):Enemy(ID, KEY, fname)
+Boss::Boss(int ID, char KEY, Vector2D pos, Sprite *ptr)
+			:Enemy(ID, KEY, pos, ptr)
 {}
 
 bool Boss::isAlive()
