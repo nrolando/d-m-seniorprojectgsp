@@ -59,11 +59,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		}
 		else
 		{
+			now = clock();
+			game->update((now-then));
 			game->beginRender();
 			game->drawLvl();
-			now = clock();
 			game->display_time((now-then), 20);
-			then = now;	//moved here for display_time()
+			then = now;
 			game->endRender();
 			// pause to force frames per second
 			//while(clock() < now + FPSdelay)

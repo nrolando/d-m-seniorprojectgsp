@@ -6,9 +6,10 @@
 #include <windows.h>
 #include <string>
 #include "spriteContainer.h"
+#include "Boss.h"
 #include <fstream>
 #include <ctime>
-using namespace std;
+#include <vector>
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
 #define DIRECTINPUT_VERSION		0x0800
@@ -45,7 +46,7 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
 //SPRITE STUFF***************{
-	vector<SpriteRend> lvlSprites;
+	std::vector<SpriteRend> lvlSprites;
 //*********************************}
 
 	//direct text
@@ -70,12 +71,10 @@ public:
 	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
 
 	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
-	/***LOADLVL***:	
-		*loads the player's current level
-		*return value based on success of creating vertex buffer
-		*will be used at start of main and in update()	*/
+
+//loads the player's current level//will be used at start of main and in update()
 	bool loadLvlFromFile(int);
-	void drawLvl();			//draw lvl surfaces
+	void drawLvl(std::vector<BaseGameEntity*>);			//draw lvl surfaces
 
 	void displayTime(clock_t, int);
 

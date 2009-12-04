@@ -19,7 +19,7 @@ class Enemy : public BaseGameEntity
 
 	public:
 		Enemy(int ID);
-		Enemy(int ID, char KEY, char *fname);
+		Enemy(int ID, char KEY, Vector2D pos, Sprite *ptr);
 		~Enemy() {}
 
 		bool isAlive();
