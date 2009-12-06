@@ -22,11 +22,11 @@ LARGE_INTEGER timeEnd;
 LARGE_INTEGER timerFreq;
 float         anim_rate;
 
-#define SPRITE_WIDTH 90	
-#define SPRITE_HEIGHT 110
-#define PNG_WIDTH 1190
+#define SPRITE_WIDTH 128	
+#define SPRITE_HEIGHT 128
+#define PNG_WIDTH 1952
 #define PNG_HEIGHT 488
-#define WAIT_TIME 500
+#define WAIT_TIME 60
 
 //definition of input flags
 #define INPUT_UP    0x0001
@@ -53,14 +53,15 @@ dxManager *dxMgr;
 IDirect3DSurface9* spriteSurface;
 
 #define MAX_SPRITES 1			// this is the number of sprites we want
-#define MAX_LOCX (640 - 90)		// don't want the fish to go off the screen
-#define MAX_LOCY (480 - 101)
+#define MAX_LOCX 640		// don't want the fish to go off the screen
+#define MAX_LOCY 480
 
 // this is the sprite structure
 struct {
 	RECT srcRect;				// holds the location of this sprite in the source bitmap
 
 	D3DXVECTOR3 pos;
+	D3DXVECTOR3 cPos;
 
 	// movement
 	float moveX;
@@ -245,7 +246,11 @@ bool initSprites(void)
 		return FALSE;
 
 	// Load a cavemen texture
-	D3DXCreateTextureFromFile(dxMgr->getpd3dDevice(),"gekido2.png",&gTexture);
+	D3DXCreateTextureFromFileEx(dxMgr->getpd3dDevice(),"gekido2.png",D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+		D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,0xFFFFFFFF,NULL,NULL,&gTexture);
+	/*D3DXCreateTextureFromFileEx (dxMgr->getpd3dDevice(), "gekido2.png", 0, 0, 1, 0, 
+        D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_DEFAULT, 
+		0xFFFFFFFF, &spriteStruct.srcRect, NULL, &gTexture);*/
 
 	//spriteSurface = dxMgr->getSurfaceFromBitmap("gekido2.png", PNG_WIDTH, PNG_HEIGHT);
 	//if (spriteSurface == NULL)
@@ -279,13 +284,18 @@ bool initSprites(void)
 	spriteStruct.numFrames = 7;
 
 	//	 set the move data
-	spriteStruct.moveX = 5.0;
-	spriteStruct.moveY = 5.0;
+	spriteStruct.moveX = 8.0;
+	spriteStruct.moveY = 8.0;
 
 	// set sprtie position
 	spriteStruct.pos.x = 0.0f;
 	spriteStruct.pos.y = 0.0f;
 	spriteStruct.pos.z = 0.0f;
+
+	//sprite center position
+	spriteStruct.cPos.x = 0.0f;
+	spriteStruct.cPos.y = 0.0f;
+	spriteStruct.cPos.z = 0.0f;
 
 	//// set the destination for this sprite
 	//destRect.left = int(spriteStruct.pos.x);
@@ -302,7 +312,7 @@ bool initSprites(void)
 void drawSprite(WPARAM wParam)
 {	
 	inputcheck();
-	gSprite->Draw(gTexture,&spriteStruct.srcRect,NULL,&spriteStruct.pos,0xFFFFFFFF);
+	gSprite->Draw(gTexture,&spriteStruct.srcRect,&spriteStruct.cPos,&spriteStruct.pos,0xFFFFFFFF);
 }
 
 void inputcheck()
@@ -400,7 +410,7 @@ void inputcheck()
 
 		// make the sprite animation through the frames
 		if (spriteStruct.curFrame < spriteStruct.numFrames-1)
-		{spriteStruct.curFrame = 2;}//spriteStruct.curFrame++;
+		spriteStruct.curFrame++;
 		else
 			spriteStruct.curFrame = 0;	
 	}	
@@ -408,8 +418,6 @@ void inputcheck()
 	// set the source rect to the correct frame position
 	spriteStruct.srcRect.left = long(spriteStruct.curFrame * SPRITE_WIDTH);
 	spriteStruct.srcRect.right = spriteStruct.srcRect.left + SPRITE_WIDTH;
-
-	//dxMgr->blitToSurface(spriteSurface, &spriteStruct.srcRect, &destRect);
 }
 
 void setinput()
