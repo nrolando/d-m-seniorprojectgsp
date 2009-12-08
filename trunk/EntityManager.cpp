@@ -91,4 +91,29 @@ bool EntityManager::update(clock_t _time)
 	}
 
 	return true;
+
+	//iterate through the vector list
+	/*std::vector<BaseGameEntity*>::size_type vsz = entityVector.size();
+	for(int i = 0; i < vsz; ++i)
+	{*/
+		/*if(player.hitbox collide with entityVector[i].hitbox)
+		{
+			switch(player.getstate())
+			{
+			case attack:
+				entityVector[i].takedmg(player.dealdmg());
+				entityVector[i].setStun();
+				break;
+			case stun:
+				if(entityVector[i].getstate() == attacking)
+					player.takedmg(entityVector[i].dealdmg());
+					player.setstun();
+				break;
+			default:
+				if(entityVector[i].getstate() == attacking)
+					player.takedmg(entityVector[i].dealdmg());
+					player.setstun();
+				break;
+			}
+		}*/
 }

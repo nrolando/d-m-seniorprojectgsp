@@ -14,6 +14,10 @@ using namespace std;
 class inputManager
 {
 private:
+	//singleton stuff
+	static inputManager* instance;
+	inputManager();
+
 	queue<char> inputBuffer;
 	char Carray[3];
 	clock_t curTime;
@@ -22,12 +26,12 @@ private:
 	bool timesUP;
 
 public:
-	inputManager();
-
+	//singleton acess
+	static inputManager* getInstance();
 	void setInput(WPARAM, clock_t);
 	char eval_ret();
 
-	bool isEmpty()		{return inputBuffer.empty();}
+	bool isEmpty();
 	bool isTimeUP()		{return timesUP;}
 };
 

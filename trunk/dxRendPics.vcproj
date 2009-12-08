@@ -195,6 +195,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inputManager2.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Player.cpp"
 				>
 			</File>
@@ -250,6 +254,10 @@
 			</File>
 			<File
 				RelativePath=".\inputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager2.h"
 				>
 			</File>
 			<File

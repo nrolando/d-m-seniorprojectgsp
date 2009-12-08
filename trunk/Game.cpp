@@ -1,10 +1,13 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(clock_t ct)
 {
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
 	progress = 0;
+
+	now = ct;
+	then = NULL;
 }
 
 Game::~Game()
@@ -23,14 +26,6 @@ void Game::_shutdown()
 	
 }
 
-bool Game::update(clock_t l_time)
-{
-	if(!EntMgr->update(l_time))
-		return false;
-
-	return true;
-}
-
 bool Game::loadLvl()
 {
 	if(!graphics->loadLvlFromFile(progress))
@@ -42,8 +37,12 @@ bool Game::loadLvl()
 	return true;
 }
 
-void Game::drawLvl()
+void Game::gameUpdate(clock_t ct)
 {
-	//creating and passing an instance of EntitiyManager to graphics->drawLvl()
-	graphics->drawLvl(EntMgr->getEntVec());
+	then = now;
+	now = ct;
+	beginRender();
+	drawLvl();
+	display_time((now-then),20);
+	endRender();
 }

@@ -3,11 +3,12 @@ possible bugs: is it just me, or is the game really really laggy
 */
 #include "Game.h"
 #include "inputManager.h"
+#include "inputManager2.h"
 #include <windows.h>
 
 //GLOBALS
 Game* game;
-inputManager* inMan;
+InputManager2* input;
 HWND wndHandle;					// global window handle
 
 bool initWindow(HINSTANCE hInstance);
@@ -17,8 +18,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 {
 	clock_t then = clock();
 	clock_t now;
-	game = new Game();
-	inMan = new inputManager();
+	game = new Game(clock());
+	input = new InputManager2(hInstance, wndHandle);
 	MSG msg;
 
 	// call our function to init and create our window
@@ -52,26 +53,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 			TranslateMessage( &msg );
             DispatchMessage( &msg );
         }
-		if(!inMan->isEmpty())
-		{
-			char output = inMan->eval_ret();
-				
-		}
 		else
 		{
-			now = clock();
-			game->update((now-then));
-			game->beginRender();
-			game->drawLvl();
-			game->display_time((now-then), 20);
-			then = now;
-			game->endRender();
+			
+			input->setInput();
+			char output = input->doInput();
+
+			if(output == 'u')
+				game->moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
+			if(output == 'd')
+				game->moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
+			if(output == 'l')
+				game->moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
+			if(output == 'r')
+				game->moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+			
+			game->gameUpdate(clock());
+			
+			//now = clock();
+			//game->display_time((now-then), 20);
+			//then = now;	//moved here for display_time()
 			// pause to force frames per second
 			//while(clock() < now + FPSdelay)
 			//	Sleep(1);
 		}
 	}
 	game->_shutdown();
+	delete game;
 	return 0;
 }
 
@@ -115,47 +123,12 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	/*	//this is added down below. this function must PostQuitMessage() when
-		//user closes program or else you will have problems
-
-	switch(message)
-	{
-	case WM_KEYDOWN:
-		if(!inMan->isTimeUP())
-			inMan->setInput(wParam, clock());
-	}
-*/
 	switch (message)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	case WM_KEYDOWN:
-
-		//mike's thang
-		if(!inMan->isTimeUP())
-			inMan->setInput(wParam, clock());
-		//end of mike's thang
-
-		switch(wParam)
-		{
-		case 'Q':	//****MUST BE CAPITAL OR IT WON'T READ IT...*****
-			PostQuitMessage(0);
-			break;
-		case 'A':
-			game->moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			break;
-		case 'S':
-			game->moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
-			break;
-		case 'D':
-			game->moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			break;
-		case 'W':
-			game->moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
-			break;
-		};
-		break;
+	
 	};
 
 	return DefWindowProc(hWnd, message, wParam, lParam);

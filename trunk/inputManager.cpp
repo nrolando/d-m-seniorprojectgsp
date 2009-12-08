@@ -1,5 +1,15 @@
 #include "inputManager.h"
 
+inputManager* inputManager::instance = 0;
+
+inputManager* inputManager::getInstance()
+{
+	if(instance == 0)
+		instance = new inputManager();
+	return
+		instance;
+}
+
 inputManager::inputManager()
 {
 	Carray[0] = 'u';
@@ -10,6 +20,14 @@ inputManager::inputManager()
 	timesUP = false;
 
 	curTime = prevTime = 0;
+}
+
+bool inputManager::isEmpty()
+{
+	if(inputBuffer.empty())
+		return true; 
+	else 
+		return false;
 }
 
 void inputManager::setInput(WPARAM wParam, clock_t time)
