@@ -4,7 +4,7 @@
 Player::Player(int ID):BaseGameEntity(ID)
 {}
 
-bool Player::actionPossible(Vector2D pos)
+bool Player::actionPossible(D3DXVECTOR3 pos)
 {
 	//Code to check if player new position 
 	//is greater than the player's walking area
@@ -26,6 +26,10 @@ void Player::UpdateStat(int stat, int val)
 			printf("incorrect stat!\n");
 			break;
 	}
+}
+
+void Player::UpdateState()
+{
 }
 
 bool Player::isAlive()

@@ -5,24 +5,23 @@
 
 #include <d3d9.h>
 #include <d3dx9tex.h>
+#include <d3dx9.h>
 #include <string>
 
 //a struct for the player's data
-struct eSpriInfo
+struct eSprInfo
 {
-	D3DXVECTOR3 Pos;
-	D3DXSPROTE* gSprite;
-	Rect drawRect;
-	Rect cBox;
-	Rect hitBox;
-	Rect threatBox;
+		D3DXVECTOR3 POS;
+		LPD3DXSPRITE gSprite;
+		RECT drawRect, cBox,
+			 threatBox, hitBox;
 };
 
 //this is the struct for th sprite container!!!
 struct spriteSheet
 {
-	string sheetName;
-	D3DXSPRITE gSprite;
+	std::string sheetName;
+	LPD3DXSPRITE gSprite;
 };
 
 // the sprite container
@@ -42,12 +41,6 @@ struct SpriteRend
 	Sprite *ptr;	//a pointer to a sprite
 };
 
-//use this for position stuff
-struct Vector2D
-{
-	float x;
-	float y;
-};
 
 //for the player states
 enum PlayerStates

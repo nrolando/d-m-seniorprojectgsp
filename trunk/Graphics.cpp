@@ -349,7 +349,7 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 	//draw the entities
 //**TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 //**copied from above for loop**will finish later	
-	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
+/*	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
 		//dont test, just draw
 				dest.left = LONG((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
@@ -367,7 +367,7 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 				blitToSurface(enemyEntSprites[i]->getSpritePtr()->spriteSurf,
 					  &enemyEntSprites[i]->getSrc(), &dest);
 
-/*
+
 //test if sprite is within viewport
 		if((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
 			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
@@ -390,8 +390,8 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 				blitToSurface(enemyEntSprites[i]->getSpritePtr()->spriteSurf,
 					  &enemyEntSprites[i]->getSrc(), &dest);
 			}
-		}	*/
-	}
+		}	
+	}*/
 }
 
 //display text to the screen

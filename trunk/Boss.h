@@ -11,12 +11,12 @@ class Boss : public Enemy
 {
 private:
 	//status_type status;
-	Vector2D velocity;
+	D3DXVECTOR3 velocity;
 	int health,special,sPower;
 public:
 
 	Boss(int ID);
-	Boss(int ID, char KEY, Vector2D pos, Sprite *ptr);
+	Boss(int ID, char KEY, D3DXVECTOR3 pos);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}

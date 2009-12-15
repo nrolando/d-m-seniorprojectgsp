@@ -24,7 +24,7 @@ bool EntityManager::loadFromFile(int prog)
 	char fname[maxcharsize];
 	//entity variables
 	char map_key = ' ';
-	Vector2D PoS;
+	D3DXVECTOR3 PoS;
 	Sprite *s_ptr;
 	int id = 0;
 
@@ -63,9 +63,9 @@ bool EntityManager::loadFromFile(int prog)
 		}
 		
 		if(map_key == 'b' || map_key == 'B')
-			entityVector.push_back(new Boss(id, map_key, PoS, s_ptr));
+			entityVector.push_back(new Boss(id, map_key, PoS));
 		else
-			entityVector.push_back(new Enemy(id, map_key, PoS, s_ptr));
+			entityVector.push_back(new Enemy(id, map_key, PoS));
 
 		id++;
 		inFile.get(map_key);
@@ -83,7 +83,7 @@ BaseGameEntity* EntityManager::getEntity(int i)
 bool EntityManager::update(clock_t _time)
 {
 //this is all for testing atm; donnie, this is where you take over
-	RECT rect;
+/*	RECT rect;
 
 	rect.left = 0;
 	rect.right = rect.left + 70;
@@ -122,4 +122,6 @@ bool EntityManager::update(clock_t _time)
 				break;
 			}
 		}*/
+
+	return true;
 }
