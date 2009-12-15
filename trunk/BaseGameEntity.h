@@ -14,7 +14,7 @@ private:
 	int entity_ID;
 	char key;
 //variables we talked about tues 12/1/09 to figure out m_src
-	int state, anim;
+	int anim;
 //----------------------------------------------------------
 protected:
 	D3DXVECTOR3 POS;
@@ -39,10 +39,6 @@ public:
 
 	//get methods
 	std::string getName()	{ return name; }
-
-	D3DXVECTOR3 getPos()		{ return POS; }
-
-
 	//set methods
 	int ID() {return entity_ID;}
 	
