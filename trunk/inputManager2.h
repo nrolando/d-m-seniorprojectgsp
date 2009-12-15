@@ -5,7 +5,7 @@
 #include <dinput.h>
 #include <time.h>
 
-#define DIRECTINPUT_VERSION 0x800
+//#define DIRECTINPUT_VERSION 0x800
 
 #define INPUT_UP	0x0001
 #define INPUT_DOWN  0x0002
@@ -42,7 +42,7 @@ public:
 	~InputManager2();
 
 	void setInput();
-	char doInput();
+	char getInput();
 
 };
 #endif

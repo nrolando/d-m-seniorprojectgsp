@@ -1,6 +1,8 @@
 #include "Player.h"
 #include <iostream>
 
+Player::Player(int ID):BaseGameEntity(ID)
+{}
 
 bool Player::actionPossible(Vector2D pos)
 {

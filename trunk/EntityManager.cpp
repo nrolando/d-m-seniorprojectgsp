@@ -12,6 +12,7 @@ EntityManager::~EntityManager()
 //file format is assumed as:
 //t 2 34 (type x y)
 
+//REDO THIS FOR THE SPRITE ASSIGNMENT//
 //creates the entity vector for the enemies for this level
 bool EntityManager::loadFromFile(int prog)
 {
@@ -72,6 +73,11 @@ bool EntityManager::loadFromFile(int prog)
 	inFile.close();
 
 	return true;
+}
+
+BaseGameEntity* EntityManager::getEntity(int i)
+{
+	return entityVector[i];
 }
 
 bool EntityManager::update(clock_t _time)

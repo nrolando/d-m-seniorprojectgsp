@@ -1,7 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "inputManager2.h"
 #include "Graphics.h"
+#include "Player.h"
 #include "EntityManager.h"
 #include <windows.h>
 
@@ -20,9 +22,17 @@ private:
 	clock_t then;
 	clock_t now;
 
+	//input Engine
+	InputManager2* inputMan;
 	//Graphics Engine
-	EntityManager *EntMgr;
-	Graphics *graphics;
+	Graphics* graphics;
+	//entities
+	EntityManager* EntMgr;
+	//player
+	Player* player;
+
+	//figures figures out what to do about collisions
+	void handleInteractions();
 
 	//graphics func  calls
 	void beginRender()		{ graphics->BeginRender();}
@@ -32,13 +42,13 @@ private:
 	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
 
 public:
-	Game(clock_t ct);
+	Game(clock_t ct, HINSTANCE hInstance, HWND wndHandle);
 	~Game();
 
 	bool initGame(HWND&);
 	void _shutdown();
 
-	bool update(clock_t);
+	void gameUpdate();
 
 	void setProg(int p)		{ progress = p; }
 	

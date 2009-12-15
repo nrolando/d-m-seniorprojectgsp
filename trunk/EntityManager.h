@@ -32,6 +32,11 @@ public:
 	void loadFromFile(char* fileName);
 	void setImgPtrs();
 
+	//return the size of the vector
+	//make this work
+	int size();
+
+	BaseGameEntity* getEntity(int i);
 	//update the entities
 	//void entiyUpdate(Player* player);
 };

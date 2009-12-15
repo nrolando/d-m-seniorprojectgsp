@@ -23,6 +23,11 @@ struct SpriteRend
 	Sprite *ptr;	//a pointer to a sprite
 };
 
+enum PlayerStates
+{
+	IDLE, WALK, ATTACK, SPECIAL, STUN,
+};
+
 //use this for position stuff
 struct Vector2D
 {

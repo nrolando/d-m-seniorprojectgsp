@@ -67,7 +67,7 @@ void InputManager2::setInput()
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
-char InputManager2::doInput()
+char InputManager2::getInput()
 {
 	//will only move once per press
 	if(downflag & INPUT_UP)
