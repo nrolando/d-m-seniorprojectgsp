@@ -34,8 +34,8 @@ bool Graphics::initD3D(HWND &hwnd)
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
 	//create direct3D device
-    if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hwnd,
-                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+    if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                       &d3dpp, &pd3dDevice ) ) )
     {
         return false;
@@ -46,12 +46,6 @@ bool Graphics::initD3D(HWND &hwnd)
 	//*********** Set the default render states**************
 	pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
     pd3dDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
-	//set alpha state
-	pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE);
-	pd3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pd3dDevice->SetRenderState(D3DRS_ALPHAREF, DWORD(8));
-	pd3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-	pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	D3DXCreateFont( pd3dDevice,
 					20,				//SIZE
@@ -106,51 +100,6 @@ void Graphics::EndRender()
 	pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
-//load sprite vector with the bitmap and set dimensions
-IDirect3DSurface9* Graphics::getSurfaceFromBitmap(std::string filename, int &w, int &h)
-{
-	HRESULT hResult;
-	IDirect3DSurface9* surface = NULL;
-	D3DXIMAGE_INFO imageInfo;
-
-	// Get the width and height info from this bitmap
-	hResult = D3DXGetImageInfoFromFile(filename.c_str(), &imageInfo);
-	if FAILED (hResult)
-		return NULL;
-//should always be a 50x50, but not using magic #'s
-	w = imageInfo.Width;
-	h = imageInfo.Height;
-
-	hResult = pd3dDevice->CreateOffscreenPlainSurface(imageInfo.Width, imageInfo.Height, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
-	if (FAILED(hResult))
-		return NULL;
-
-	hResult = D3DXLoadSurfaceFromFile(surface, NULL, NULL, filename.c_str(), NULL, D3DX_DEFAULT, 0, NULL);
-	if (FAILED(hResult))
-		return NULL;
-
-	return surface;
-}
-
-IDirect3DSurface9* Graphics::getBackBuffer(void)
-{
-	IDirect3DSurface9* backbuffer = NULL;
-
-	if (!pd3dDevice)
-		return NULL;
-
-	HRESULT hResult = pd3dDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-	if (FAILED(hResult))
-		return NULL;
-	else
-		return backbuffer;
-}
-
-void Graphics::blitToSurface(IDirect3DSurface9* srcSurface, const RECT *srcRect, const RECT *destRect)
-{
-	pd3dDevice->StretchRect(srcSurface, srcRect, getBackBuffer(), destRect, D3DTEXF_NONE);
-}
-
 bool Graphics::loadLvlFromFile(int prog)
 {
 	register unsigned int i = 0; int j = 0; int index = 0; //index variables
@@ -162,7 +111,7 @@ bool Graphics::loadLvlFromFile(int prog)
 	int sublvl = prog%3;
 	//variables for Sprites
 	SpriteRend tempSR;
-	Sprite tempSprite;
+	//Sprite tempSprite;
 
 	//test the test vector
 	int number = 0;
@@ -179,7 +128,7 @@ bool Graphics::loadLvlFromFile(int prog)
 //initialize
 	while(i < MAXCHARSIZE)
 	{
-		tempSprite.filename[i] = '\0';
+		spriteSurf.filename[i] = '\0';
 		fname[i] = '\0';
 		++i;
 	}
@@ -205,24 +154,33 @@ bool Graphics::loadLvlFromFile(int prog)
 	{
 		while(j < MAXCHARSIZE && check != '#')
 		{
-			tempSprite.filename[j] = check;
+			spriteSurf.filename[j] = check;
 			fin.get(check);
 			++j;
 		}
 		j = 0;
 
-		fin >> tempSprite.s;
+		fin >> spriteSurf.s;
 		fin.ignore();
 
 		//load image info from file (pull w&h even tho it should always be 50x50
+<<<<<<< .mine
+		//tempSprite.gSprite = getSurfaceFromBitmap(tempSprite.filename, w, h);
+		D3DXCreateTextureFromFileEx(pd3dDevice,spriteSurf.filename,D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+			D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,0xFFFFFFFF,NULL,NULL,&spriteSurf.gTexture);
+		//tempSprite.width = w;
+		//tempSprite.height = h;
+		spriteContainer::getInstance()->push(spriteSurf);
+=======
 		tempSprite.spriteSurf = getSurfaceFromBitmap(tempSprite.filename, w, h);
 		tempSprite.width = w;
 		tempSprite.height = h;
 //	spriteContainer::getInstance()->push(tempSprite);
+>>>>>>> .r63
 
 		while(j < MAXCHARSIZE)
 		{
-			tempSprite.filename[j] = '\0';
+			spriteSurf.filename[j] = '\0';
 			++j;
 		}
 		j = 0;
@@ -272,10 +230,14 @@ bool Graphics::loadLvlFromFile(int prog)
 				}
 			}
 
-			//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
-			tempSR.x = -1475.0f + i * 50.0f;
-			tempSR.y = 475.0f - j * 50.0f;
-			lvlSprites.push_back(tempSR);
+			if (tempSR.ptr)
+			{
+				//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
+				tempSR.ptr->pos.x = -1475.0f + i * 50.0f;
+				tempSR.ptr->pos.y = 475.0f - j * 50.0f;
+				tempSR.ptr->pos.z = 0.0f;
+				lvlSprites.push_back(tempSR);
+			}
 
 			++i;
 			++index;
@@ -287,27 +249,6 @@ bool Graphics::loadLvlFromFile(int prog)
 	return true;
 }
 
-/****************************************/
-//creates the vertex buffer for setupVB()
-/****************************************/
-LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
-{
-	HRESULT hr;
-	LPDIRECT3DVERTEXBUFFER9 buffer;
-
-    // Create the vertex buffer.
-    hr = pd3dDevice->CreateVertexBuffer( size,
-                                         0, 
-										 usage,
-                                         D3DPOOL_DEFAULT, 
-										 &buffer, 
-										 NULL );
-	if FAILED ( hr)
-        return NULL;
-    
-	return buffer;
-}
-
 void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 {
 	RECT dest, src;
@@ -317,8 +258,31 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 	src.right = src.left + SCREEN_WIDTH;
 	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
 	src.bottom = src.top + SCREEN_HEIGHT;
+<<<<<<< .mine
+=======
 //blitToSurface(spriteContainer::getInstance()->getElem(0)->spriteSurf, &src, NULL);
+>>>>>>> .r63
 
+	Sprite *tempSpr = spriteContainer::getInstance()->getElem(0);
+	tempSpr->pos = D3DXVECTOR3(0,0,0);
+
+	// Draw the backdrop scaled so it covers more of the screen
+	// There are two ways to use sprites, like this where we can build a matrix with
+	// rotation, scaling and transform and then set it or where we just use the Draw parameters
+	D3DXVECTOR3 pos=D3DXVECTOR3(0,0,1);
+
+	// Scale the texture 4 times in each dimension
+	D3DXVECTOR3 scaling(1.0f,1.0f,1.0f);
+
+	// out, scaling centre, scaling rotation, scaling, rotation centre, rotation, translation
+	D3DXMATRIX mat;
+	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
+
+	// Tell the sprite about the matrix
+	tempSpr->gSprite->SetTransform(&mat);
+	tempSpr->gSprite->Draw(tempSpr->gTexture,&src,NULL,NULL,0xFFFFFFFF);
+														  
+/*
 	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)
 	{
@@ -342,16 +306,21 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 					dest.bottom = dest.top + lvlSprites[i].ptr->height;
 					if(dest.bottom > SCREEN_HEIGHT)
 						dest.bottom = SCREEN_HEIGHT;
-					blitToSurface(lvlSprites[i].ptr->spriteSurf, NULL, &dest);
+					//blitToSurface(lvlSprites[i].ptr->gSprite, NULL, &dest);
+					lvlSprites[i].ptr->gSprite->Draw(lvlSprites[i].ptr->gTexture,
+													 &dest,
+													 NULL,
+													 &lvlSprites[i].ptr->pos,
+													 0xFFFFFFFF);
 				}
 			}
 		}
-	}
-
-	//draw the entities
+	}*/
+/*
+//draw the entities
 //**TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 //**copied from above for loop**will finish later	
-/*	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
+	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
 		//dont test, just draw
 				dest.left = LONG((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
@@ -366,10 +335,15 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 				dest.bottom = dest.top + enemyEntSprites[i]->getHeight();
 				if(dest.bottom > SCREEN_HEIGHT)
 					dest.bottom = SCREEN_HEIGHT;
-				blitToSurface(enemyEntSprites[i]->getSpritePtr()->spriteSurf,
+				blitToSurface(enemyEntSprites[i]->getSpritePtr()->gSprite,
 					  &enemyEntSprites[i]->getSrc(), &dest);
-
-
+				lvlSprites[i].ptr->gSprite->Draw(enemyEntSprites[i]->getSpritePtr()->gTexture,
+												 &dest,
+												 NULL,
+												 &enemyEntSprites[i]->getSpritePtr()->pos,
+												 0xFFFFFFFF);
+*/
+/*
 //test if sprite is within viewport
 		if((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
 			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
@@ -389,9 +363,9 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 				dest.bottom = dest.top + lvlSprites[i].ptr->height;
 				if(dest.bottom > SCREEN_HEIGHT)
 					dest.bottom = SCREEN_HEIGHT;
-				blitToSurface(enemyEntSprites[i]->getSpritePtr()->spriteSurf,
+				blitToSurface(enemyEntSprites[i]->getSpritePtr()->gSprite,
 					  &enemyEntSprites[i]->getSrc(), &dest);
-			}
+			} 
 		}	
 	}*/
 }

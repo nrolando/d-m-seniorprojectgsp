@@ -12,7 +12,7 @@
 #include <vector>
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
-#define DIRECTINPUT_VERSION		0x0800
+//#define DIRECTINPUT_VERSION		0x0800
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
@@ -65,12 +65,6 @@ public:
 
 	void BeginRender();	//clears screen, begin scene
 	void EndRender();	//end scene and present
-
-	IDirect3DSurface9* getSurfaceFromBitmap(std::string, int&, int&);
-	IDirect3DSurface9* getBackBuffer(void);
-	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
-
-	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
 
 //loads the player's current level//will be used at start of main and in update()
 	bool loadLvlFromFile(int);

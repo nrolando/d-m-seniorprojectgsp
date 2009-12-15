@@ -5,10 +5,11 @@
 Game::Game(clock_t ct, HINSTANCE hInstance, HWND wndHandle)
 {
 	int i = 1;
+	std::string name = "wtf";
 	inputMan = new InputManager2(hInstance,wndHandle);
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
-	player = new Player(i); // NEED TO add to the constructor
+	player = new Player(name); // NEED TO add to the constructor
 	progress = 0;
 
 	now = ct;

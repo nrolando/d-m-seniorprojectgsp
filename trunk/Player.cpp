@@ -1,8 +1,17 @@
 #include "Player.h"
 #include <iostream>
 
-Player::Player(int ID):BaseGameEntity(ID)
-{}
+Player::Player(std::string n):BaseGameEntity(n)
+{
+	health = 100;
+	special = 0;
+	pPower = 20;
+	kPower = 10;
+	sPower = 80;
+	lives = 3;
+	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	sprInfo.POS = vel;
+}
 
 bool Player::actionPossible(D3DXVECTOR3 pos)
 {
@@ -28,7 +37,60 @@ void Player::UpdateStat(int stat, int val)
 	}
 }
 
-void Player::UpdateState()
+void Player::DoAction(char input)
+{
+	switch(input)
+	{
+		case 'u':
+			vel.y -= 3.0f;
+			break;
+		case 'd':
+			vel.y += 3.0f;
+			break;
+		case 'l':
+			vel.x -= 3.0f;
+			break;
+		case 'r':
+			vel.x += 3.0f;
+			break;
+	}
+
+	switch(state)
+	{
+		case IDLE:
+			sprInfo.drawRect.top = IDLE * SPRITE_HEIGHT;
+			sprInfo.drawRect.left = IDLE;
+			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			break;
+		case WALK:
+			sprInfo.drawRect.top = WALK * SPRITE_HEIGHT;
+			sprInfo.drawRect.left = 0;
+			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			break;
+		case ATTACK:
+			sprInfo.drawRect.top = 2 * SPRITE_HEIGHT;
+			sprInfo.drawRect.left = 0;
+			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+
+			sprInfo.drawRect.top = 3 * SPRITE_HEIGHT;
+			sprInfo.drawRect.left = 0;
+			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+
+			break;
+		case SPECIAL:
+			
+			break;
+		case STUN:
+			
+			break;
+	}
+}
+
+void Player::UpdateState(clock_t time)
 {
 }
 

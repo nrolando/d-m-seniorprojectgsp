@@ -63,9 +63,9 @@ bool EntityManager::loadFromFile(int prog)
 		}
 		
 		if(map_key == 'b' || map_key == 'B')
-			entityVector.push_back(new Boss(id, map_key, PoS));
+			entityVector.push_back(new Boss(" ", PoS));
 		else
-			entityVector.push_back(new Enemy(id, map_key, PoS));
+			entityVector.push_back(new Enemy("clawsoldier", PoS));
 
 		id++;
 		inFile.get(map_key);

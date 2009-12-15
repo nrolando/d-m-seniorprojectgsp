@@ -3,21 +3,21 @@
 #include "EnemyOwnedStates.h"
 #include "Enemy.h"
 
-Enemy::Enemy(int ID):BaseGameEntity(ID),
+Enemy::Enemy(std::string name):BaseGameEntity(name),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
 {}
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos)
-			:BaseGameEntity(ID, KEY, pos),
+Enemy::Enemy(std::string name, D3DXVECTOR3 pos)
+			:BaseGameEntity(name, pos),
 			 status(InRange),
 			 CurrentState(Idle::Instance())
 {}
 
 void increaseHealth(int h);
 
-void Enemy::UpdateState()
+void Enemy::UpdateState(clock_t time)
 {
 	CurrentState->Execute(this);
 }

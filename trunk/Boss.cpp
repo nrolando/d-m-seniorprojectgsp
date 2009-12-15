@@ -3,12 +3,11 @@
 #include "EnemyOwnedStates.h"
 #include "BossOwnedStates.h"
 
-Boss::Boss(int ID):Enemy(ID)
+Boss::Boss(std::string name):Enemy(name)
 {}
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Boss::Boss(int ID, char KEY, D3DXVECTOR3 pos)
-			:Enemy(ID, KEY, pos)
+Boss::Boss(std::string name, D3DXVECTOR3 pos) :Enemy(name, pos)
 {}
 
 bool Boss::isAlive()

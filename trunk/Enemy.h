@@ -18,15 +18,15 @@ class Enemy : public BaseGameEntity
 		D3DXVECTOR3 velocity;
 
 	public:
-		Enemy(int ID);
-		Enemy(int ID, char KEY, D3DXVECTOR3 pos);
+		Enemy(std::string);
+		Enemy(std::string, D3DXVECTOR3 pos);
 		~Enemy() {}
 
 		bool isAlive();
 
 		/* Updates for HP/MP and States*/
 		virtual void UpdateStat(int stat, int val);
-		virtual void UpdateState();
+		virtual void UpdateState(clock_t);
 
 		/*   Attribute related functions   */
 		int setHealth(int hp) {health = hp;}

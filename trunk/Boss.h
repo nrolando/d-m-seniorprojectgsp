@@ -15,8 +15,8 @@ private:
 	int health,special,sPower;
 public:
 
-	Boss(int ID);
-	Boss(int ID, char KEY, D3DXVECTOR3 pos);
+	Boss(std::string);
+	Boss(std::string, D3DXVECTOR3 pos);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}
