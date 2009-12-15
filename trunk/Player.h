@@ -2,6 +2,14 @@
 #define PLAYER_H
 #include "BaseGameEntity.h"
 
+//these are for animation and stun length
+#define STUNTIME		500
+#define ANIMATIONGAP	30
+#define MAXSTUNFRAME	5
+#define MAXIDLEFRAME	5
+#define MAXWALKFRAME	5
+
+
 class Player : protected BaseGameEntity
 {
 private:
@@ -9,6 +17,14 @@ private:
 	int health,special,
 		pPower,kPower,sPower, lives;
 	eSprInfo *sprInfo;
+
+	//clock vars for animations & stun timers
+//!!!!!!!!init these to 0!!!!!!!!!!!!!!!!!!!!!!!!
+	clock_t now, stunStart, aniFStart;
+
+	//enum for the player's state
+	//init to idle
+	int currState;
 
 	//character's speed/movement 
 	D3DXVECTOR3 POS;

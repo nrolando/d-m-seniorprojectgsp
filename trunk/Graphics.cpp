@@ -139,7 +139,7 @@ void Graphics::RenderLvl()
 	}
 }
 
-void Graphics::RenderSprites(eSprInfo* spriteInfo)
+void Graphics::drawSprites(eSprInfo* spriteInfo)
 {
 
 	// Draw the backdrop scaled so it covers more of the screen

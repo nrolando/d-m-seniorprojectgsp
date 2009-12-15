@@ -47,7 +47,7 @@ public:
 
 	bool initGame(HWND&);
 	bool loadSprites()			{ return graphics->LoadSprite();}
-	void drawSprites();         { graphics->RenderSprites();} 
+ 
 	void setSheetPtr();
 	
 	void _shutdown();

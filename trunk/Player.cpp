@@ -39,59 +39,124 @@ void Player::UpdateStat(int stat, int val)
 
 void Player::DoAction(char input)
 {
-	switch(input)
-	{
-		case 'u':
-			vel.y -= 3.0f;
-			break;
-		case 'd':
-			vel.y += 3.0f;
-			break;
-		case 'l':
-			vel.x -= 3.0f;
-			break;
-		case 'r':
-			vel.x += 3.0f;
-			break;
-	}
-
+	//set a value for vel in constructor
 	switch(state)
 	{
-		case IDLE:
-			sprInfo->drawRect.top = IDLE * SPRITE_HEIGHT;
-			sprInfo->drawRect.left = IDLE;
-			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
-			break;
-		case WALK:
-			sprInfo->drawRect.top = WALK * SPRITE_HEIGHT;
-			sprInfo->drawRect.left = 0;
-			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
-			break;
-		case ATTACK:
-			sprInfo->drawRect.top = 2 * SPRITE_HEIGHT;
-			sprInfo->drawRect.left = 0;
-			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
-
-			sprInfo->drawRect.top = 3 * SPRITE_HEIGHT;
-			sprInfo->drawRect.left = 0;
-			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
-
-			break;
-		case SPECIAL:
-			
-			break;
-		case STUN:
-			
-			break;
+	case STUN:
+		//don't do anything!
+		break;
+	case IDLE:
+		//move to left, change to walking
+		if(input == 'L')
+		{
+			POS.x -= vel.x;
+			if(state == IDLE)
+			state = WALK;
+			sprInfo->framenumber = 0;
+		}
+		//move to right, change to walking
+		else if(input == 'R')
+		{
+			POS.x += vel.x;
+			state = WALK;
+			sprInfo->framenumber = 0;
+		}
+		//if no button pressed go to IDLE
+		else if(input == 'I')
+			state = IDLE;
+		break;
+	case WALK:
+		if(input == 'L')
+			POS.x -= vel.x;
+		//move to right, change to walking
+		else if(input == 'R')
+			POS.x += vel.x;
+		//if no button pressed go to IDLE
+		else if(input == 'I')
+			state = IDLE;
+		break;
+	//ADD CASES FOR ATTACKs
 	}
 }
 
 void Player::UpdateState(clock_t time)
 {
+	now = time;
+
+	switch(state)
+	{
+	case STUN:
+		//if has been long enough
+		if(now - stunStart >= STUNTIME)
+		{
+			//switch to first fram of idle state
+			state = IDLE;
+			sprInfo->framenumber = 0;
+			aniFStart = now;
+			//make sure state enum value matches up with location on sprite sheet!
+			//set the rect to the correct area of the sprite sheet
+			sprInfo->drawRect.top = IDLE * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = sprInfo->framenumber * SPRITE_WIDTH;
+			sprInfo->drawRect.right = sprInfo->drawRect.left + SPRITE_WIDTH;//sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
+		}
+		//if still stunned and time to switch frame of animation
+		else if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of the animation
+			if(sprInfo->framenumber == MAXSTUNFRAME)
+				sprInfo->framenumber = 0;
+			//advance 1 frame
+			else
+				sprInfo->framenumber++;
+			aniFStart = now;
+			//make sure state enum value matches up with location on sprite sheet!
+			//set the rect to the correct area of the sprite sheet
+			sprInfo->drawRect.top = STUN * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = sprInfo->framenumber * SPRITE_WIDTH;
+			sprInfo->drawRect.right = sprInfo->drawRect.left + SPRITE_WIDTH;//sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
+		}
+		break;
+	case IDLE:
+		//if time to switch frame of animation
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of animation
+			if(sprInfo->framenumber == MAXIDLEFRAME)
+				sprInfo->framenumber = 0;
+			//advance 1 frame
+			else
+				sprInfo->framenumber++;
+			aniFStart = now;
+			//make sure state enum value matches up with location on sprite sheet!
+			//set the rect to the correct area of the sprite sheet
+			sprInfo->drawRect.top = IDLE * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = sprInfo->framenumber * SPRITE_WIDTH;
+			sprInfo->drawRect.right = sprInfo->drawRect.left + SPRITE_WIDTH;//sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
+		}
+		break;
+	case WALK:
+		//if time to switch frame of animation
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of animation
+			if(sprInfo->framenumber == MAXWALKFRAME)
+				sprInfo->framenumber = 0;
+			//advance 1 frame
+			else
+				sprInfo->framenumber++;
+			aniFStart = now;
+			//make sure state enum value matches up with location on sprite sheet!
+			//set the rect to the correct area of the sprite sheet
+			sprInfo->drawRect.top = WALK * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = sprInfo->framenumber * SPRITE_WIDTH;
+			sprInfo->drawRect.right = sprInfo->drawRect.left + SPRITE_WIDTH;//sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
+		}
+		break;
+	}
 }
 
 
