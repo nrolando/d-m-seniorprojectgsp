@@ -33,6 +33,7 @@ private:
 
 	//figures figures out what to do about collisions
 	void handleInteractions();
+	bool actionPossible(char input)   {return player->actionPossible(input);}
 
 	//graphics func  calls
 	void BeginRender()			{ graphics->BeginRender();}

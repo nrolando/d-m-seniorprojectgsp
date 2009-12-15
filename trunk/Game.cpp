@@ -55,22 +55,22 @@ void Game::gameUpdate()
 
 	//THIS IS TEMPORARY INPUT HANDLING
 	if(input == 'u')
-		moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
+		moveCamera(D3DXVECTOR3(0.0f, 3.0f, 0.0f));
 	if(input == 'd')
-		moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
+		moveCamera(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
 	if(input == 'l')
-		moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
+		moveCamera(D3DXVECTOR3(-3.0f, 0.0f, 0.0f));
 	if(input == 'r')
-		moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+		moveCamera(D3DXVECTOR3(3.0f, 0.0f, 0.0f));
 
-	//include collision.cpp file for this
-	//if(actionPossible(input))
-	//{
-	//	//need to make these functions
-	//	Player->doThis(input);
-	//	//write this
-	//	handleInteractions();
-	//}
+	/*include collision.cpp file for this*/
+	if(actionPossible(input))
+	{
+		//need to make these functions
+		player->DoAction(input);
+		//write this
+		//handleInteractions();
+	}
 
 	//Player->update(clock());
 

@@ -32,7 +32,7 @@ private:
 	bool alive;
 public:
 	Player(std::string);
-	bool actionPossible(D3DXVECTOR3);
+	bool actionPossible(char);
 	bool isAlive();
 	
 	/* Attribute Related functions */

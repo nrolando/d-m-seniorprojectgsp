@@ -9,16 +9,16 @@ Player::Player(std::string n):BaseGameEntity(n)
 	kPower = 10;
 	sPower = 80;
 	lives = 3;
-	vel = D3DXVECTOR3(0.0f,50.0f,0.0f);
+	vel = D3DXVECTOR3(3.0f,3.0f,0.0f);
 	state = IDLE;
 	sprInfo = new eSprInfo();
 
 	/*sprInfo Initialization*/
 	sprInfo->framenumber = 0;
-	sprInfo->POS = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	sprInfo->POS = D3DXVECTOR3(50.0f,300.0f,0.0f);
 }
 
-bool Player::actionPossible(D3DXVECTOR3 pos)
+bool Player::actionPossible(char input)
 {
 	//Code to check if player new position 
 	//is greater than the player's walking area
@@ -44,7 +44,23 @@ void Player::UpdateStat(int stat, int val)
 
 void Player::DoAction(char input)
 {
-	//set a value for vel in constructor
+	if(input == 'l')
+	{
+		sprInfo->POS.x -= vel.x;
+		//if(state == IDLE)
+		//state = WALK;
+		//sprInfo->framenumber = 0;
+	}
+
+	if(input == 'r')
+	{
+		sprInfo->POS.x += vel.x;
+		//if(state == IDLE)
+		//state = WALK;
+		//sprInfo->framenumber = 0;
+	}
+
+	/*//set a value for vel in constructor
 	switch(state)
 	{
 	case STUN:
@@ -52,7 +68,7 @@ void Player::DoAction(char input)
 		break;
 	case IDLE:
 		//move to left, change to walking
-		if(input == 'L')
+		if(input == 'l')
 		{
 			POS.x -= vel.x;
 			if(state == IDLE)
@@ -60,28 +76,28 @@ void Player::DoAction(char input)
 			sprInfo->framenumber = 0;
 		}
 		//move to right, change to walking
-		else if(input == 'R')
+		else if(input == 'r')
 		{
 			POS.x += vel.x;
 			state = WALK;
 			sprInfo->framenumber = 0;
 		}
 		//if no button pressed go to IDLE
-		else if(input == 'I')
+		else if(input == 'i')
 			state = IDLE;
 		break;
 	case WALK:
-		if(input == 'L')
+		if(input == 'l')
 			POS.x -= vel.x;
 		//move to right, change to walking
-		else if(input == 'R')
+		else if(input == 'r')
 			POS.x += vel.x;
 		//if no button pressed go to IDLE
-		else if(input == 'I')
+		else if(input == 'i')
 			state = IDLE;
 		break;
 	//ADD CASES FOR ATTACKs
-	}
+	}*/
 }
 
 void Player::UpdateState(clock_t time)

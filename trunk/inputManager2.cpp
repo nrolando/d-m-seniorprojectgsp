@@ -91,5 +91,5 @@ char InputManager2::getInput()
 		return 'r';
 	}
 	else
-		return 'f';
+		return 'i';
 }

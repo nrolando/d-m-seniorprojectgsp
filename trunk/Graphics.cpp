@@ -149,19 +149,19 @@ void Graphics::drawSprites(eSprInfo* spriteInfo)
 	// Draw the backdrop scaled so it covers more of the screen
 	// There are two ways to use sprites, like this where we can build a matrix with
 	// rotation, scaling and transform and then set it or where we just use the Draw parameters
-	D3DXVECTOR3 pos=D3DXVECTOR3(0,0,0);
+	//D3DXVECTOR3 pos=D3DXVECTOR3(0,0,0);
 
 	// Scale the texture 4 times in each dimension
 	D3DXVECTOR3 scaling(1.0f,1.0f,1.0f);
 
 	// out, scaling centre, scaling rotation, scaling, rotation centre, rotation, translation
 	D3DXMATRIX mat;
-	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
+	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,NULL);
 
 	// Tell the sprite about the matrix
 	D3DXMatrixIdentity(&mat);
 	spriteInfo->spriteSheet->gSprite->SetTransform(&mat);
-	spriteInfo->spriteSheet->gSprite->Draw(spriteInfo->spriteSheet->gTexture,&spriteInfo->drawRect,NULL,NULL,0xFFFFFFFF);
+	spriteInfo->spriteSheet->gSprite->Draw(spriteInfo->spriteSheet->gTexture,&spriteInfo->drawRect,NULL,&spriteInfo->POS,0xFFFFFFFF);
 
 	// Finished drawing. By reusing the same sprite object D3D can maximise batching of the draws
 	spriteInfo->spriteSheet->gSprite->End();
