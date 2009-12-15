@@ -12,7 +12,7 @@ class BaseGameEntity
 {
 private:
 //variables we talked about tues 12/1/09 to figure out m_src
-	int anim;
+
 //----------------------------------------------------------
 protected:
 	D3DXVECTOR3 POS;

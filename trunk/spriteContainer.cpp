@@ -33,24 +33,26 @@ bool spriteContainer::loadSpriteSheet()
 	while(!inFile.eof())
 	{
 		//get the name of spritesheet from txt file
-		inFile.getline(tempCString2, MAXCHARSIZE, '#');
+		inFile.getline(tempCString2, MAXCHARSIZE, '\n');
 		//create directory path for the spritesheet
 		sprintf_s(tempCString1, MAXCHARSIZE, "./lvlsprites/%s",
 			tempCString2);
 
 		tempSheet.sheetName += tempCString2;
 		
-		
-		D3DXCreateSprite(pd3dDevice,&tempSheet.gSprite);
-		D3DXCreateTextureFromFileEx(pd3dDevice,tempCString1,
-									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
-									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
-									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
-									0xFFFFFFFF,NULL,NULL,&tempSheet.gTexture);
+		if(tempSheet.sheetName != " ")
+		{
+			D3DXCreateSprite(pd3dDevice,&tempSheet.gSprite);
+			D3DXCreateTextureFromFileEx(pd3dDevice,tempCString1,
+										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+										0xFFFFFFFF,NULL,NULL,&tempSheet.gTexture);
 
-		spriteCont.push_back(tempSheet);
+			spriteCont.push_back(tempSheet);
+		}
+		tempSheet.sheetName = "";
 	}
-
 	inFile.close();
 	return true;
 }

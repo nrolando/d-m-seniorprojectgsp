@@ -9,8 +9,13 @@ Player::Player(std::string n):BaseGameEntity(n)
 	kPower = 10;
 	sPower = 80;
 	lives = 3;
-	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	vel = D3DXVECTOR3(0.0f,50.0f,0.0f);
 	state = IDLE;
+	sprInfo = new eSprInfo();
+
+	/*sprInfo Initialization*/
+	sprInfo->framenumber = 0;
+	sprInfo->POS = D3DXVECTOR3(0.0f,0.0f,0.0f);
 }
 
 bool Player::actionPossible(D3DXVECTOR3 pos)
@@ -162,15 +167,12 @@ void Player::UpdateState(clock_t time)
 
 void Player::setSheetPtr(spriteSheet *tempInfo)
 {
-	sprInfo->spriteSheet->gSprite = tempInfo->gSprite;
-	sprInfo->spriteSheet->gTexture = tempInfo->gTexture;
+	sprInfo->spriteSheet = tempInfo;
 
 	sprInfo->drawRect.top = 0;
 	sprInfo->drawRect.left = 0;
-	sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+	sprInfo->drawRect.right = (sprInfo->framenumber * sprInfo->drawRect.left) + SPRITE_WIDTH;
 	sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
-
-	sprInfo->POS = vel;
 }
 
 bool Player::isAlive()

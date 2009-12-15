@@ -76,7 +76,10 @@ void Game::gameUpdate()
 
 	//EntMgr->update(clock());
 
+	BeginRender();
 	RenderLvl();
+	DrawSprites();
+	EndRender();
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!need to write these functions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

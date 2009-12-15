@@ -35,7 +35,9 @@ private:
 	void handleInteractions();
 
 	//graphics func  calls
-	void RenderLvl()			{ graphics->RenderLvl(); }
+	void BeginRender()			{ graphics->BeginRender();}
+	void EndRender()			{ graphics->EndRender();}
+	void RenderLvl()			{ graphics->RenderLvl();}
 	void DrawSprites()			{ graphics->drawSprites(player->getDrawInfo());}
 	
 
@@ -47,7 +49,7 @@ public:
 
 	bool initGame(HWND&);
 	bool loadSprites()			{ return graphics->LoadSprite();}
- 
+
 	void setSheetPtr();
 	
 	void _shutdown();

@@ -92,55 +92,34 @@ void Graphics::_shutdown()
 	}
 }
 
-void Graphics::RenderLvl()
-{	
+void Graphics::BeginRender()
+{
 	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
-	
-	// Begin the scene
-	HRESULT hr=pd3dDevice->BeginScene();
-	if (SUCCEEDED(hr))
-	{
-		RECT src;
-
-		//draw lvl
-		src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
-		src.right = src.left + SCREEN_WIDTH;
-		src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
-		src.bottom = src.top + SCREEN_HEIGHT;
-
-		spriteSheet *temp = spriteContainer::getInstance()->getSheetPTR("lvl1-1.jpg");
-
-		// Draw with alpha blending - needed for our transparent sprites
-		temp->gSprite->Begin(D3DXSPRITE_ALPHABLEND);
-
-		// Draw the backdrop scaled so it covers more of the screen
-		// There are two ways to use sprites, like this where we can build a matrix with
-		// rotation, scaling and transform and then set it or where we just use the Draw parameters
-		D3DXVECTOR3 pos=D3DXVECTOR3(0,0,1);
-
-		// Scale the texture 4 times in each dimension
-		D3DXVECTOR3 scaling(1.0f,1.0f,1.0f);
-
-		// out, scaling centre, scaling rotation, scaling, rotation centre, rotation, translation
-		D3DXMATRIX mat;
-		D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
-
-		// Tell the sprite about the matrix
-		temp->gSprite->SetTransform(&mat);
-		temp->gSprite->Draw(temp->gTexture,&src,NULL,NULL,0xFFFFFFFF);
-
-		// Finished drawing. By reusing the same sprite object D3D can maximise batching of the draws
-		temp->gSprite->End();
-
-
-		// Finished rendering
-		pd3dDevice->EndScene();
-		pd3dDevice->Present(NULL,NULL,NULL,NULL);
-	}
+	pd3dDevice->BeginScene();
 }
 
-void Graphics::drawSprites(eSprInfo* spriteInfo)
+void Graphics::EndRender()
 {
+	// Finished rendering
+	pd3dDevice->EndScene();
+	pd3dDevice->Present(NULL,NULL,NULL,NULL);
+}
+
+void Graphics::RenderLvl()
+{	
+	// Begin the scene
+	RECT src;
+
+	//draw lvl
+	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
+	src.right = src.left + SCREEN_WIDTH;
+	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
+	src.bottom = src.top + SCREEN_HEIGHT;
+
+	spriteSheet *temp = spriteContainer::getInstance()->getSheetPTR("lvl1-1.jpg");
+
+	// Draw with alpha blending - needed for our transparent sprites
+	temp->gSprite->Begin(D3DXSPRITE_ALPHABLEND);
 
 	// Draw the backdrop scaled so it covers more of the screen
 	// There are two ways to use sprites, like this where we can build a matrix with
@@ -155,96 +134,38 @@ void Graphics::drawSprites(eSprInfo* spriteInfo)
 	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
 
 	// Tell the sprite about the matrix
+	temp->gSprite->SetTransform(&mat);
+	temp->gSprite->Draw(temp->gTexture,&src,NULL,NULL,0xFFFFFFFF);
+
+	// Finished drawing. By reusing the same sprite object D3D can maximise batching of the draws
+	temp->gSprite->End();	
+}
+
+void Graphics::drawSprites(eSprInfo* spriteInfo)
+{
+	// Draw with alpha blending - needed for our transparent sprites
+	spriteInfo->spriteSheet->gSprite->Begin(D3DXSPRITE_ALPHABLEND);
+
+	// Draw the backdrop scaled so it covers more of the screen
+	// There are two ways to use sprites, like this where we can build a matrix with
+	// rotation, scaling and transform and then set it or where we just use the Draw parameters
+	D3DXVECTOR3 pos=D3DXVECTOR3(0,0,0);
+
+	// Scale the texture 4 times in each dimension
+	D3DXVECTOR3 scaling(1.0f,1.0f,1.0f);
+
+	// out, scaling centre, scaling rotation, scaling, rotation centre, rotation, translation
+	D3DXMATRIX mat;
+	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
+
+	// Tell the sprite about the matrix
+	D3DXMatrixIdentity(&mat);
 	spriteInfo->spriteSheet->gSprite->SetTransform(&mat);
 	spriteInfo->spriteSheet->gSprite->Draw(spriteInfo->spriteSheet->gTexture,&spriteInfo->drawRect,NULL,NULL,0xFFFFFFFF);
+
+	// Finished drawing. By reusing the same sprite object D3D can maximise batching of the draws
+	spriteInfo->spriteSheet->gSprite->End();
 }												  
-/*
-	//draw the tiles
-	for(unsigned int i = 0; i < lvlSprites.size(); i++)
-	{
-		if(lvlSprites[i].ptr != NULL)
-		{
-			if((lvlSprites[i].x - lvlSprites[i].ptr->width/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
-				(lvlSprites[i].x + lvlSprites[i].ptr->width/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
-			{
-				if((lvlSprites[i].y + lvlSprites[i].ptr->height/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-					(lvlSprites[i].y - lvlSprites[i].ptr->height/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
-				{
-					dest.left = LONG((lvlSprites[i].x - lvlSprites[i].ptr->width/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-					if(dest.left < 0)
-						dest.left = 0;
-					dest.right = dest.left + lvlSprites[i].ptr->width;
-					if(dest.right > SCREEN_WIDTH)
-						dest.right = SCREEN_WIDTH;
-					dest.top = LONG((camPos.y + SCREEN_HEIGHT/2.0f) - (lvlSprites[i].y + lvlSprites[i].ptr->height/2.0f));
-					if(dest.top < 0)
-						dest.top = 0;
-					dest.bottom = dest.top + lvlSprites[i].ptr->height;
-					if(dest.bottom > SCREEN_HEIGHT)
-						dest.bottom = SCREEN_HEIGHT;
-					//blitToSurface(lvlSprites[i].ptr->gSprite, NULL, &dest);
-					lvlSprites[i].ptr->gSprite->Draw(lvlSprites[i].ptr->gTexture,
-													 &dest,
-													 NULL,
-													 &lvlSprites[i].ptr->pos,
-													 0xFFFFFFFF);
-				}
-			}
-		}
-	}*/
-/*
-//draw the entities
-//**TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
-//**copied from above for loop**will finish later	
-	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
-	{
-		//dont test, just draw
-				dest.left = LONG((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-				if(dest.left < 0)
-					dest.left = 0;
-				dest.right = dest.left + enemyEntSprites[i]->getWidth();
-				if(dest.right > SCREEN_WIDTH)
-					dest.right = SCREEN_WIDTH;
-				dest.top = LONG((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
-				if(dest.top < 0)
-					dest.top = 0;
-				dest.bottom = dest.top + enemyEntSprites[i]->getHeight();
-				if(dest.bottom > SCREEN_HEIGHT)
-					dest.bottom = SCREEN_HEIGHT;
-				blitToSurface(enemyEntSprites[i]->getSpritePtr()->gSprite,
-					  &enemyEntSprites[i]->getSrc(), &dest);
-				lvlSprites[i].ptr->gSprite->Draw(enemyEntSprites[i]->getSpritePtr()->gTexture,
-												 &dest,
-												 NULL,
-												 &enemyEntSprites[i]->getSpritePtr()->pos,
-												 0xFFFFFFFF);
-*/
-/*
-//test if sprite is within viewport
-		if((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
-			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
-		{
-			if((enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-				(enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
-			{
-				dest.left = LONG((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-				if(dest.left < 0)
-					dest.left = 0;
-				dest.right = dest.left + enemyEntSprites[i]->getWidth();
-				if(dest.right > SCREEN_WIDTH)
-					dest.right = SCREEN_WIDTH;
-				dest.top = LONG((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
-				if(dest.top < 0)
-					dest.top = 0;
-				dest.bottom = dest.top + lvlSprites[i].ptr->height;
-				if(dest.bottom > SCREEN_HEIGHT)
-					dest.bottom = SCREEN_HEIGHT;
-				blitToSurface(enemyEntSprites[i]->getSpritePtr()->gSprite,
-					  &enemyEntSprites[i]->getSrc(), &dest);
-			} 
-		}	
-	}
-}*/
 
 void Graphics::nextArea()
 {

@@ -70,6 +70,8 @@ public:
 
 //loads the player's current level//will be used at start of main and in update()
 	//bool loadLvlFromFile(int);
+	void BeginRender();
+	void EndRender();
 	void drawSprites(eSprInfo*);	//draw lvl sprites
 	void nextArea();
 
