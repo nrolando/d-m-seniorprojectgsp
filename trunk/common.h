@@ -8,15 +8,6 @@
 #include <d3dx9.h>
 #include <string>
 
-//a struct for the player's data
-struct eSprInfo
-{
-		D3DXVECTOR3 POS;
-		spriteSheet *spriteSheet;
-		RECT drawRect, cBox,
-			 threatBox, hitBox;
-};
-
 //this is the struct for th sprite container!!!
 //D3DXCreateSprite(dxMgr->getpd3dDevice(),&gSprite);
 //Load a cavemen texture
@@ -27,6 +18,15 @@ struct spriteSheet
 	std::string sheetName;
 	LPD3DXSPRITE gSprite;
 	LPDIRECT3DTEXTURE9 gTexture;
+};
+
+//a struct for the player's data
+struct eSprInfo
+{
+		D3DXVECTOR3 POS;
+		spriteSheet *spriteSheet;
+		RECT drawRect, cBox,
+			 threatBox, hitBox;
 };
 
 // the sprite container

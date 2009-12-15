@@ -40,6 +40,8 @@ bool Graphics::initD3D(HWND &hwnd)
     {
         return false;
     }
+	
+	spriteContainer::getInstance()->setDevice(pd3dDevice);
 
 	//*********** Set the default render states**************
 	pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
@@ -216,7 +218,7 @@ bool Graphics::loadLvlFromFile(int prog)
 		tempSprite.spriteSurf = getSurfaceFromBitmap(tempSprite.filename, w, h);
 		tempSprite.width = w;
 		tempSprite.height = h;
-		spriteContainer::getInstance()->push(tempSprite);
+//	spriteContainer::getInstance()->push(tempSprite);
 
 		while(j < MAXCHARSIZE)
 		{
@@ -265,8 +267,8 @@ bool Graphics::loadLvlFromFile(int prog)
 			{
 				for(unsigned int k = 0; k < spriteContainer::getInstance()->size(); ++k)
 				{
-					if(spriteContainer::getInstance()->getElem(k)->s == check)
-						tempSR.ptr = spriteContainer::getInstance()->getElem(k);
+//				if(spriteContainer::getInstance()->getElem(k)->s == check)
+//					tempSR.ptr = spriteContainer::getInstance()->getElem(k);
 				}
 			}
 
@@ -315,7 +317,7 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 	src.right = src.left + SCREEN_WIDTH;
 	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
 	src.bottom = src.top + SCREEN_HEIGHT;
-	blitToSurface(spriteContainer::getInstance()->getElem(0)->spriteSurf, &src, NULL);
+//blitToSurface(spriteContainer::getInstance()->getElem(0)->spriteSurf, &src, NULL);
 
 	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)

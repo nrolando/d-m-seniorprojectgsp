@@ -58,8 +58,8 @@ bool EntityManager::loadFromFile(int prog)
 
 		for(i = 0; i < spriteContainer::getInstance()->size(); i++)
 		{
-			if(map_key == spriteContainer::getInstance()->getElem(i)->s)
-				s_ptr = spriteContainer::getInstance()->getElem(i);
+//		if(map_key == spriteContainer::getInstance()->getElem(i)->s)
+//			s_ptr = spriteContainer::getInstance()->getElem(i);
 		}
 		
 		if(map_key == 'b' || map_key == 'B')
