@@ -35,9 +35,9 @@ private:
 	void handleInteractions();
 
 	//graphics func  calls
-	void beginRender()		{ graphics->BeginRender();}
-	void endRender()		{ graphics->EndRender(); }
-	void drawLvl()			{ graphics->drawLvl(EntMgr->getEntVec()); }
+	void RenderLvl()			{ graphics->RenderLvl(); }
+	void DrawSprites()			{ graphics->drawSprites(player->getDrawInfo());}
+	
 
 	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
 
@@ -46,21 +46,21 @@ public:
 	~Game();
 
 	bool initGame(HWND&);
-	void _shutdown();
-
-	void gameUpdate();
-
-	void setProg(int p)		{ progress = p; }
+	bool loadSprites()			{ return graphics->LoadSprite();}
+	void drawSprites();         { graphics->RenderSprites();} 
+	void setSheetPtr();
 	
+	void _shutdown();
+	void gameUpdate();
+	void setProg(int p)		{ progress = p; }
+	void gameUpdate(clock_t ct);
 	//load level
 	bool loadLvl();
-
 	//camera
 	void moveCamera(D3DXVECTOR3 vec)		{ graphics->moveCamera(vec); }
-
 	D3DXVECTOR3 getCamPos()				{ return graphics->getCameraPos(); }
 
-	void gameUpdate(clock_t ct);
+	
 };
 
 #endif

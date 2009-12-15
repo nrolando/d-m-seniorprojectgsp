@@ -46,7 +46,7 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
 //SPRITE STUFF***************{
-	std::vector<SpriteRend> lvlSprites;
+//	std::vector<SpriteRend> lvlSprites;
 //*********************************}
 
 	//direct text
@@ -56,6 +56,8 @@ private:
 //camera's position
 	D3DXVECTOR3 camPos;
 
+	int stage,area;
+
 public:
 	Graphics();
 	~Graphics();
@@ -63,12 +65,13 @@ public:
 	bool initD3D(HWND&);
 	void _shutdown();
 
-	void BeginRender();	//clears screen, begin scene
-	void EndRender();	//end scene and present
+	void RenderLvl();
+	bool LoadSprite() { return spriteContainer::getInstance()->loadSpriteSheet();}
 
 //loads the player's current level//will be used at start of main and in update()
-	bool loadLvlFromFile(int);
-	void drawLvl(std::vector<BaseGameEntity*>);			//draw lvl surfaces
+	//bool loadLvlFromFile(int);
+	void RenderSprites(eSprInfo*);	//draw lvl sprites
+	void nextArea();
 
 	void displayTime(clock_t, int);
 

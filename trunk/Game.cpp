@@ -5,11 +5,10 @@
 Game::Game(clock_t ct, HINSTANCE hInstance, HWND wndHandle)
 {
 	int i = 1;
-	std::string name = "wtf";
 	inputMan = new InputManager2(hInstance,wndHandle);
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
-	player = new Player(name); // NEED TO add to the constructor
+	player = new Player("player.png"); // NEED TO add to the constructor
 	progress = 0;
 
 	now = ct;
@@ -34,11 +33,11 @@ void Game::_shutdown()
 
 bool Game::loadLvl()
 {
-	if(!graphics->loadLvlFromFile(progress))
+	/*if(!graphics->loadLvlFromFile(progress))
 		return false;
 
 	if(!EntMgr->loadFromFile(progress))
-		return false;
+		return false;*/
 
 	return true;
 }
@@ -77,8 +76,8 @@ void Game::gameUpdate()
 
 	//EntMgr->update(clock());
 
-	beginRender();
-	drawLvl();
+	RenderLvl();
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!need to write these functions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -89,7 +88,12 @@ void Game::gameUpdate()
 			EntMgr->getEnt(i).getSRect()); 
 	}*/
 	display_time((now-then),20);
-	endRender();
+}
+
+
+void Game::setSheetPtr()
+{
+	player->setSheetPtr(spriteContainer::getInstance()->getSheetPTR(player->getName()));
 }
 
 

@@ -6,6 +6,8 @@ Graphics::Graphics()
 	pd3dDevice = NULL;
 	g_pVB = NULL;
 	m_font = NULL;
+	stage = 1;
+	area = 1;
 }
 
 Graphics::~Graphics()
@@ -60,6 +62,9 @@ bool Graphics::initD3D(HWND &hwnd)
 					TEXT("Arial"), 
 					&m_font );
 
+	//set camPos to start of level. lvl dimensions are always 3000x1000
+	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
+
 	return true;
 }
 
@@ -87,184 +92,55 @@ void Graphics::_shutdown()
 	}
 }
 
-void Graphics::BeginRender()
-{
+void Graphics::RenderLvl()
+{	
 	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
-	pd3dDevice->BeginScene();
+	
+	// Begin the scene
+	HRESULT hr=pd3dDevice->BeginScene();
+	if (SUCCEEDED(hr))
+	{
+		RECT src;
+
+		//draw lvl
+		src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
+		src.right = src.left + SCREEN_WIDTH;
+		src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
+		src.bottom = src.top + SCREEN_HEIGHT;
+
+		spriteSheet *temp = spriteContainer::getInstance()->getSheetPTR("lvl1-1.jpg");
+
+		// Draw with alpha blending - needed for our transparent sprites
+		temp->gSprite->Begin(D3DXSPRITE_ALPHABLEND);
+
+		// Draw the backdrop scaled so it covers more of the screen
+		// There are two ways to use sprites, like this where we can build a matrix with
+		// rotation, scaling and transform and then set it or where we just use the Draw parameters
+		D3DXVECTOR3 pos=D3DXVECTOR3(0,0,1);
+
+		// Scale the texture 4 times in each dimension
+		D3DXVECTOR3 scaling(1.0f,1.0f,1.0f);
+
+		// out, scaling centre, scaling rotation, scaling, rotation centre, rotation, translation
+		D3DXMATRIX mat;
+		D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
+
+		// Tell the sprite about the matrix
+		temp->gSprite->SetTransform(&mat);
+		temp->gSprite->Draw(temp->gTexture,&src,NULL,NULL,0xFFFFFFFF);
+
+		// Finished drawing. By reusing the same sprite object D3D can maximise batching of the draws
+		temp->gSprite->End();
+
+
+		// Finished rendering
+		pd3dDevice->EndScene();
+		pd3dDevice->Present(NULL,NULL,NULL,NULL);
+	}
 }
 
-void Graphics::EndRender()
+void Graphics::RenderSprites(eSprInfo* spriteInfo)
 {
-	pd3dDevice->EndScene();
-	// Present the backbuffer contents to the display
-	pd3dDevice->Present( NULL, NULL, NULL, NULL );
-}
-
-bool Graphics::loadLvlFromFile(int prog)
-{
-	register unsigned int i = 0; int j = 0; int index = 0; //index variables
-	int w = 0; int h = 0;
-	std::ifstream fin, finput;
-	char fname[MAXCHARSIZE];
-	char check;		//checks for input deliminator and sprite match
-	int lvl = prog/3;
-	int sublvl = prog%3;
-	//variables for Sprites
-	SpriteRend tempSR;
-	//Sprite tempSprite;
-
-	//test the test vector
-	int number = 0;
-
-	//set camPos to start of level. lvl dimensions are always 3000x1000
-	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
-	
-//clear the vectors
-	if(!spriteContainer::getInstance()->isEmpty())
-		spriteContainer::getInstance()->clearVec();
-	if(!lvlSprites.empty())
-		lvlSprites.clear();
-
-//initialize
-	while(i < MAXCHARSIZE)
-	{
-		spriteSurf.filename[i] = '\0';
-		fname[i] = '\0';
-		++i;
-	}
-	i = 0; //reset i
-	
-
-//----------------------
-//it is safer to use sprintf_s in this case so that i can specify the
-//size of the array so it doesn't try to store it in safe memory
-//----------------------
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvl%isprites/load%i-%i.txt", lvl, lvl, sublvl);
-	fin.open(fname);
-	if(!fin.is_open())
-		return false;
-
-	//set sampler states, seems to work fine with or without
-	pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-    pd3dDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-
-	//load texture file name into c-string
-		fin.get(check);
-	while(!fin.eof())
-	{
-		while(j < MAXCHARSIZE && check != '#')
-		{
-			spriteSurf.filename[j] = check;
-			fin.get(check);
-			++j;
-		}
-		j = 0;
-
-		fin >> spriteSurf.s;
-		fin.ignore();
-
-		//load image info from file (pull w&h even tho it should always be 50x50
-<<<<<<< .mine
-		//tempSprite.gSprite = getSurfaceFromBitmap(tempSprite.filename, w, h);
-		D3DXCreateTextureFromFileEx(pd3dDevice,spriteSurf.filename,D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
-			D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,0xFFFFFFFF,NULL,NULL,&spriteSurf.gTexture);
-		//tempSprite.width = w;
-		//tempSprite.height = h;
-		spriteContainer::getInstance()->push(spriteSurf);
-=======
-		tempSprite.spriteSurf = getSurfaceFromBitmap(tempSprite.filename, w, h);
-		tempSprite.width = w;
-		tempSprite.height = h;
-//	spriteContainer::getInstance()->push(tempSprite);
->>>>>>> .r63
-
-		while(j < MAXCHARSIZE)
-		{
-			spriteSurf.filename[j] = '\0';
-			++j;
-		}
-		j = 0;
-
-		++i;
-		//load texture file name into c-string
-		fin.get(check);
-	}
-	i = 0;
-	fin.close();
-
-//*****apply position and textures to our sprites*****
-	//reset fname
-	while(i < MAXCHARSIZE)
-	{
-		fname[i] = '\0';
-		++i;
-	}
-	i = 0;
-	sprintf_s(fname, MAXCHARSIZE, "./lvl%isprites/render%i-%i.txt", lvl, lvl, sublvl);
-	finput.open(fname);
-	if(!finput.is_open())
-		return false;
-
-/*	READ IN .TXT ASCII TILES AND POSITION		*/
-	while(!finput.eof())
-	{
-		finput >> check;
-
-		if(check == '#')
-		{
-			++j;
-			i = 0;
-		}
-		else
-		{
-			if(check == '.')
-			{
-				tempSR.ptr = NULL;
-			}
-			else
-			{
-				for(unsigned int k = 0; k < spriteContainer::getInstance()->size(); ++k)
-				{
-//				if(spriteContainer::getInstance()->getElem(k)->s == check)
-//					tempSR.ptr = spriteContainer::getInstance()->getElem(k);
-				}
-			}
-
-			if (tempSR.ptr)
-			{
-				//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
-				tempSR.ptr->pos.x = -1475.0f + i * 50.0f;
-				tempSR.ptr->pos.y = 475.0f - j * 50.0f;
-				tempSR.ptr->pos.z = 0.0f;
-				lvlSprites.push_back(tempSR);
-			}
-
-			++i;
-			++index;
-		}
-	}
-	i = j = 0;
-	
-	finput.close();
-	return true;
-}
-
-void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
-{
-	RECT dest, src;
-
-	//draw lvl
-	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
-	src.right = src.left + SCREEN_WIDTH;
-	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
-	src.bottom = src.top + SCREEN_HEIGHT;
-<<<<<<< .mine
-=======
-//blitToSurface(spriteContainer::getInstance()->getElem(0)->spriteSurf, &src, NULL);
->>>>>>> .r63
-
-	Sprite *tempSpr = spriteContainer::getInstance()->getElem(0);
-	tempSpr->pos = D3DXVECTOR3(0,0,0);
 
 	// Draw the backdrop scaled so it covers more of the screen
 	// There are two ways to use sprites, like this where we can build a matrix with
@@ -279,9 +155,9 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 	D3DXMatrixTransformation(&mat,NULL,NULL,&scaling,NULL,0,&pos);
 
 	// Tell the sprite about the matrix
-	tempSpr->gSprite->SetTransform(&mat);
-	tempSpr->gSprite->Draw(tempSpr->gTexture,&src,NULL,NULL,0xFFFFFFFF);
-														  
+	spriteInfo->spriteSheet->gSprite->SetTransform(&mat);
+	spriteInfo->spriteSheet->gSprite->Draw(spriteInfo->spriteSheet->gTexture,&spriteInfo->drawRect,NULL,NULL,0xFFFFFFFF);
+}												  
 /*
 	//draw the tiles
 	for(unsigned int i = 0; i < lvlSprites.size(); i++)
@@ -367,7 +243,22 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites)
 					  &enemyEntSprites[i]->getSrc(), &dest);
 			} 
 		}	
-	}*/
+	}
+}*/
+
+void Graphics::nextArea()
+{
+	area += 1;
+	if(area > 3)
+	{
+		++stage;
+		area = 1;
+	}
+	if(stage > 4)
+	{
+		stage = 1;
+		area = 1;
+	}
 }
 
 //display text to the screen

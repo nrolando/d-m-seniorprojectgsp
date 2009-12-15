@@ -25,7 +25,7 @@ bool EntityManager::loadFromFile(int prog)
 	//entity variables
 	char map_key = ' ';
 	D3DXVECTOR3 PoS;
-	Sprite *s_ptr;
+	//Sprite *s_ptr;
 	int id = 0;
 
 	while(i < maxcharsize)	//set all fname = \0

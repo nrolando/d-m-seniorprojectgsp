@@ -30,12 +30,7 @@ public:
 	virtual ~BaseGameEntity(){}
 
 	virtual void UpdateStat(int stat, int val) = 0;
-	virtual void UpdateState(clock_t) = 0;
-
-	//get methods
-	std::string getName()	{ return name; }
-	
-
+	virtual void UpdateState(clock_t) = 0;	
 
 };
 

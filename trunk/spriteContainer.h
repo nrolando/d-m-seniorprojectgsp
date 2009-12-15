@@ -34,7 +34,7 @@ public:
 	size_t size()					{ return spriteCont.size(); }
 	//Sprite* getElem(int i)			{ return &spriteCont[i]; }
 	
-	void loadSpriteSheet();
+	bool loadSpriteSheet();
 
 	//returns a ptr to the struct with the corresponding name
 	spriteSheet* getSheetPTR(std::string sheetName);

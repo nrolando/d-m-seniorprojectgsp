@@ -10,7 +10,7 @@ Player::Player(std::string n):BaseGameEntity(n)
 	sPower = 80;
 	lives = 3;
 	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
-	sprInfo.POS = vel;
+	state = IDLE;
 }
 
 bool Player::actionPossible(D3DXVECTOR3 pos)
@@ -58,27 +58,27 @@ void Player::DoAction(char input)
 	switch(state)
 	{
 		case IDLE:
-			sprInfo.drawRect.top = IDLE * SPRITE_HEIGHT;
-			sprInfo.drawRect.left = IDLE;
-			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
-			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			sprInfo->drawRect.top = IDLE * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = IDLE;
+			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
 			break;
 		case WALK:
-			sprInfo.drawRect.top = WALK * SPRITE_HEIGHT;
-			sprInfo.drawRect.left = 0;
-			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
-			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			sprInfo->drawRect.top = WALK * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = 0;
+			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
 			break;
 		case ATTACK:
-			sprInfo.drawRect.top = 2 * SPRITE_HEIGHT;
-			sprInfo.drawRect.left = 0;
-			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
-			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			sprInfo->drawRect.top = 2 * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = 0;
+			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
 
-			sprInfo.drawRect.top = 3 * SPRITE_HEIGHT;
-			sprInfo.drawRect.left = 0;
-			sprInfo.drawRect.right = sprInfo.framenumber * (sprInfo.drawRect.left + SPRITE_WIDTH);
-			sprInfo.drawRect.bottom = sprInfo.drawRect.top + SPRITE_HEIGHT;
+			sprInfo->drawRect.top = 3 * SPRITE_HEIGHT;
+			sprInfo->drawRect.left = 0;
+			sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+			sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
 
 			break;
 		case SPECIAL:
@@ -92,6 +92,20 @@ void Player::DoAction(char input)
 
 void Player::UpdateState(clock_t time)
 {
+}
+
+
+void Player::setSheetPtr(spriteSheet *tempInfo)
+{
+	sprInfo->spriteSheet->gSprite = tempInfo->gSprite;
+	sprInfo->spriteSheet->gTexture = tempInfo->gTexture;
+
+	sprInfo->drawRect.top = 0;
+	sprInfo->drawRect.left = 0;
+	sprInfo->drawRect.right = sprInfo->framenumber * (sprInfo->drawRect.left + SPRITE_WIDTH);
+	sprInfo->drawRect.bottom = sprInfo->drawRect.top + SPRITE_HEIGHT;
+
+	sprInfo->POS = vel;
 }
 
 bool Player::isAlive()
