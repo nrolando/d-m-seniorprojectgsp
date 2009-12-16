@@ -1,13 +1,13 @@
 /* 
-possible bugs:
+possible bugs: is it just me, or is the game really really laggy
 */
 #include "Game.h"
+#include <windows.h>
 
-#define FPS			60
-#define FPSdelay	(1000/FPS)
+#define FPSdelay	16		//doesn't allow the game to go faster than 62 frames a second
 
 //GLOBALS
-Game *game;
+Game* game;
 HWND wndHandle;					// global window handle
 
 bool initWindow(HINSTANCE hInstance);
@@ -17,7 +17,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 {
 	clock_t then = clock();
 	clock_t now;
-	game = new Game();
+	game = new Game(hInstance, wndHandle);
+	MSG msg;
 
 	// call our function to init and create our window
 	if (!initWindow(hInstance))
@@ -40,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		return 1;
 	}
 
-	MSG msg;
+	
     ZeroMemory( &msg, sizeof(msg) );
 	while(msg.message!=WM_QUIT)
     {
@@ -52,15 +53,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
         }
 		else
 		{
-			game->beginRender();
-			game->drawLvl();
 			now = clock();
-			game->display_time((now-then), 20);
-			then = now;	//moved here for display_time()
-			game->endRender();
-			// pause to force frames per second
-			//while(clock() < now + FPSdelay)
-			//	Sleep(1);
+			if(!game->update((now-then)))
+				return 1;
+			then = now;
+			//pause to force our frames per second
+			while(clock() < now + FPSdelay)
+				Sleep(1);
 		}
 	}
 	game->_shutdown();
@@ -108,9 +107,6 @@ bool initWindow(HINSTANCE hInstance)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//D3DXVECTOR3 camPos;
-	//camPos = game->getCamPos();
-
 	switch (message)
 	{
 	case WM_DESTROY:
@@ -119,27 +115,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch(wParam)
 		{
-		case 'Q':	//****MUST BE CAPITAL OR IT WON'T READ IT...*****
+		case 'Q':
 			PostQuitMessage(0);
 			break;
-		case 'A':
-			game->moveCamera(D3DXVECTOR3(-100.0f, 0.0f, 0.0f));
-			//game->pointAndSetCam(D3DXVECTOR3(camPos.x-100.0f, camPos.y, 0.0f));
-			break;
-		case 'S':
-			game->moveCamera(D3DXVECTOR3(0.0f, -100.0f, 0.0f));
-			//game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y-100.0f, 0.0f));
-			break;
-		case 'D':
-			game->moveCamera(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-			//game->pointAndSetCam(D3DXVECTOR3(camPos.x+100.0f, camPos.y, 0.0f));
-			break;
-		case 'W':
-			game->moveCamera(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
-			//game->pointAndSetCam(D3DXVECTOR3(camPos.x, camPos.y+100.0f, 0.0f));
-			break;
 		};
-		break;
+	
 	};
 
 	return DefWindowProc(hWnd, message, wParam, lParam);

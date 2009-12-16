@@ -5,11 +5,11 @@
 #include <d3dx9tex.h>
 #include <windows.h>
 #include <string>
-#include <vector>
-#include "Sprite.h"
+#include "spriteContainer.h"
+#include "Boss.h"
 #include <fstream>
 #include <ctime>
-using namespace std;
+#include <vector>
 
 //couldn't render textures using the D3DFVF_DIFFUSE flag.
 #define DIRECTINPUT_VERSION		0x0800
@@ -46,8 +46,8 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 g_pVB; 
 
 //SPRITE STUFF***************{
-	vector<Sprite> spriteCont;
-	vector<SpriteRend> lvlSprites;
+	LPD3DXSPRITE	        gSprite;
+	std::vector<SpriteRend> lvlSprites;
 //*********************************}
 
 	//direct text
@@ -67,17 +67,17 @@ public:
 	void BeginRender();	//clears screen, begin scene
 	void EndRender();	//end scene and present
 
-	IDirect3DSurface9* getSurfaceFromBitmap(std::string, int&, int&);
+	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*);
+	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*, int&, int&);
 	IDirect3DSurface9* getBackBuffer(void);
 	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
 
 	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
-	/***LOADLVL***:	
-		*loads the player's current level
-		*return value based on success of creating vertex buffer
-		*will be used at start of main and in update()	*/
+
+//loads the player's current level//will be used at start of main and in update()
 	bool loadLvlFromFile(int);
-	void drawLvl();			//draw lvl surfaces
+	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo*);			//draw lvl surfaces
+	bool loadPlayerSS();
 
 	void displayTime(clock_t, int);
 
