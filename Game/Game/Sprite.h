@@ -11,8 +11,7 @@ struct Sprite
 {
 	char filename[MAXCHARSIZE];
 	char s;							//char to represent sprite
-	IDirect3DSurface9 *spriteSurf;
-	int width, height;
+	LPDIRECT3DTEXTURE9 g_pTexture;	// texture info
 };
 
 //individual sprites rendered to screen, used in drawlvlvb(). store this shit so it you dont have to cycle through the sprites
