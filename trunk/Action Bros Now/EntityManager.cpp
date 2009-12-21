@@ -23,50 +23,38 @@ bool EntityManager::loadFromFile(int prog)
 	char fname[maxcharsize];
 	//ENTITY VARIABLES THAT WILL BE PASSES TO THE CONSTRUCTOR
 	char map_key = ' ';
-	Vector2D PoS;
-	Sprite *s_ptr;
+	D3DXVECTOR3 PoS;
+	spriteSheet *ss_ptr;
 	int id = 0;
 	int w; int h;
 
-	while(i < maxcharsize)	//set all fname = \0
-	{
-		fname[i] = NULL;
-		++i;
-	}
-	i = 0;
-
-	sprintf_s(fname, (size_t)maxcharsize, "./lvl%isprites/mobs%i-%i.txt", lvl, lvl, sublvl);
+	sprintf_s(fname, (size_t)maxcharsize, "./enemySprites/mobs%i-%i.txt", lvl, sublvl);
 
 	inFile.open(fname);
 	if(!inFile.is_open())
 		return false;
 
-	while(i < maxcharsize)	//reset fname back to NULL
-	{
-		fname[i] = NULL;
-		++i;
-	}
-	i = 0;
 	//start reading from the mobs.txt files||get key, position, frame dimension
 	inFile.get(map_key);
 	while(!inFile.eof())
 	{
 		inFile >> PoS.x;
 		inFile >> PoS.y;
+		PoS.z = 0.0f;		//z will be modified later
 		inFile >> w;
 		inFile >> h;
 		inFile.ignore();
 
-		for(i = 0; i < spriteContainer::getInstance()->size(); i++)
+		for(i = 0; i < spriteContainer::getInstance()->EC_size(); i++)
 		{
-			if(map_key == spriteContainer::getInstance()->getElem(i)->s)
-				s_ptr = spriteContainer::getInstance()->getElem(i);
+			if(map_key == spriteContainer::getInstance()->EC_getElem(i)->key)
+				ss_ptr = spriteContainer::getInstance()->EC_getElem(i);
 		}
 		
 		if(map_key == 'b' || map_key == 'B')
-			entityVector.push_back(new Boss(id, map_key, PoS, s_ptr, w, h));
+			entityVector.push_back(new Boss(id, map_key, PoS, ss_ptr, w, h));
 		else
-			entityVector.push_back(new Enemy(id, map_key, PoS, s_ptr, w, h));
+			entityVector.push_back(new Enemy(id, map_key, PoS, ss_ptr, w, h));
 
 		id++;
 		inFile.get(map_key);
@@ -79,8 +67,7 @@ bool EntityManager::loadFromFile(int prog)
 bool EntityManager::update(clock_t _time)
 {
 //this is all for testing atm; donnie, this is where you take over
-
-	for(int i = 0; i < entityVector.size(); i++)
+	for(unsigned int i = 0; i < entityVector.size(); i++)
 	{
 		entityVector[i]->UpdateState(_time);
 	}

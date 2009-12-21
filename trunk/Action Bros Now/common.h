@@ -6,36 +6,22 @@
 #include <d3d9.h>
 #include <d3dx9tex.h>
 
-// the sprite container
-struct Sprite
-{
-	char filename[MAXCHARSIZE];
-	char s;							//char to represent sprite
-	//IDirect3DSurface9 *spriteSurf;
-	LPDIRECT3DTEXTURE9 Texture;
-	int width, height;
-};
-
-//individual sprites rendered to screen, used in drawlvlvb(). store this shit so it you dont have to cycle through the sprites
-struct SpriteRend
-{
-	D3DXVECTOR3 pos;
-	Sprite *ptr;	//a pointer to a sprite
-};
-
-//use this for position stuff
-struct Vector2D
-{
-	float x;
-	float y;
-};
-
 struct spriteSheet
 {
+	char key;
 	char sheetName[MAXCHARSIZE];
 	LPDIRECT3DTEXTURE9 gTexture;
 };
 
+struct Tile
+{
+	D3DXVECTOR3 pos;
+	static const int w = 50;
+	static const int h = 50;
+	RECT src;
+	char key;
+	spriteSheet *ptr;	//a pointer to a sprite
+};
 
 //a struct for the player's data
 struct eSprInfo

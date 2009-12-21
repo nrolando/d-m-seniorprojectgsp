@@ -11,8 +11,7 @@ Player::Player():BaseGameEntity("Hero name here")
 	lives = 3;
 	vel = D3DXVECTOR3(3.0f,3.0f,0.0f);
 	state = IDLE;
-	sprInfo = new eSprInfo();
-	width = height = 128;
+	sprInfo.width = sprInfo.height = 128;
 
 	/*sprInfo Initialization*/
 //initializing shouldn't be here. should be initialized elsewhere so that multiple players can be made
@@ -30,15 +29,13 @@ Player::Player(std::string n):BaseGameEntity(n)
 	vel = D3DXVECTOR3(3.0f,3.0f,0.0f);
 	state = IDLE;
 	now = stunStart = aniFStart = 0;
-	sprInfo = new eSprInfo();
-	width = height = 128;
 
 	/*sprInfo Initialization*/
 //initializing for player sprites shouldn't be done here. check Player::initSprInfo()
 	//sprInfo->POS = D3DXVECTOR3(50.0f,300.0f,0.0f);
 	
 }
-
+/*
 void Player::initSprInfo(int w, int h, D3DXVECTOR3 pos)
 {
 	sprInfo->ss_ptr = spriteContainer::getInstance()->SS_getElem(0);
@@ -47,7 +44,7 @@ void Player::initSprInfo(int w, int h, D3DXVECTOR3 pos)
 	sprInfo->POS = pos;
 
 }
-
+*/
 bool Player::actionPossible(char input)
 {
 	//Code to check if player new position 
@@ -76,7 +73,7 @@ void Player::DoAction(char input)
 {
 	if(input == 'l')
 	{
-		sprInfo->POS.x -= vel.x;
+		vel.x = -1.0f;
 		if(state == IDLE)
 		{
 			anim = 0;
@@ -85,7 +82,7 @@ void Player::DoAction(char input)
 	}
 	else if(input == 'r')
 	{
-		sprInfo->POS.x += vel.x;
+		vel.x = 1.0f;
 		if(state == IDLE)
 		{
 			anim = 0;
@@ -95,6 +92,7 @@ void Player::DoAction(char input)
 	else
 	{
 		state = IDLE;
+		vel.x = vel.y = vel.z = 0.0f;
 	}
 
 	/*//set a value for vel in constructor
@@ -153,20 +151,14 @@ void Player::UpdateState(clock_t time)
 			aniFStart = now;
 			//make sure state enum value matches up with location on sprite sheet!
 			//set the rect to the correct area of the sprite sheet
-			sprInfo->drawRect.top = state * sprInfo->height;
-			sprInfo->drawRect.left = anim * sprInfo->width;
-			sprInfo->drawRect.right = sprInfo->drawRect.left + sprInfo->width;//anim * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + sprInfo->height;
+			this->calcDrawRECT();
 		}
 		//if still stunned and time to switch frame of animation
 		else if(now - aniFStart >= ANIMATIONGAP)
 		{
 			//make sure state enum value matches up with location on sprite sheet!
 			//set the rect to the correct area of the sprite sheet
-			sprInfo->drawRect.top = state * sprInfo->height;
-			sprInfo->drawRect.left = anim * sprInfo->width;
-			sprInfo->drawRect.right = sprInfo->drawRect.left + sprInfo->width;//anim * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + sprInfo->height;
+			this->calcDrawRECT();
 
 			//loop to the beginning of the animation
 			if(anim == MAXSTUNFRAME)
@@ -183,10 +175,7 @@ void Player::UpdateState(clock_t time)
 		{
 			//make sure state enum value matches up with location on sprite sheet!
 			//set the rect to the correct area of the sprite sheet
-			sprInfo->drawRect.top = state * sprInfo->height;
-			sprInfo->drawRect.left = anim * sprInfo->width;
-			sprInfo->drawRect.right = sprInfo->drawRect.left + sprInfo->width;//anim * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + sprInfo->height;
+			this->calcDrawRECT();
 
 			//loop to the beginning of animation
 			if(anim == MAXIDLEFRAME)
@@ -203,10 +192,7 @@ void Player::UpdateState(clock_t time)
 		{
 			//make sure state enum value matches up with location on sprite sheet!
 			//set the rect to the correct area of the sprite sheet
-			sprInfo->drawRect.top = WALK * sprInfo->height;
-			sprInfo->drawRect.left = anim * sprInfo->width;
-			sprInfo->drawRect.right = sprInfo->drawRect.left + sprInfo->width;//anim * (sprInfo->drawRect.left + SPRITE_WIDTH);
-			sprInfo->drawRect.bottom = sprInfo->drawRect.top + sprInfo->height;
+			this->calcDrawRECT();
 
 			//loop to the beginning of animation
 			if(anim == MAXWALKFRAME)
@@ -218,9 +204,10 @@ void Player::UpdateState(clock_t time)
 		}
 		break;
 	}
+	this->move();
 }
 
-
+/*
 void Player::setSheetPtr(spriteSheet *tempInfo)
 {
 	sprInfo->ss_ptr = tempInfo;
@@ -230,7 +217,7 @@ void Player::setSheetPtr(spriteSheet *tempInfo)
 	sprInfo->drawRect.right = (anim * sprInfo->drawRect.left) + sprInfo->width;
 	sprInfo->drawRect.bottom = sprInfo->drawRect.top + sprInfo->height;
 }
-
+*/
 bool Player::isAlive()
 {
 	if(health > 0 && health <= 200)

@@ -32,8 +32,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		return 1;
 	}
 
-	//get player's progress from load file or new game (0)
-	game->setProg(0);
 	//load that level
 	if(!game->loadLvl())
 	{

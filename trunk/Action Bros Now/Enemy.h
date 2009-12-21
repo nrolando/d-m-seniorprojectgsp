@@ -15,11 +15,10 @@ class Enemy : public BaseGameEntity
 		/* Attributes */
 		bool alive;
 		int health,power,stat,val;
-		Vector2D velocity;
 
 	public:
 		Enemy(int ID);
-		Enemy(int ID, char KEY, Vector2D pos, Sprite *ptr, int w, int h);
+		Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr, int w, int h);
 		~Enemy() {}
 
 		bool isAlive();
@@ -34,9 +33,6 @@ class Enemy : public BaseGameEntity
 
 		int setPower(int p) {power = p;}
 		int getPower() {return power;}
-
-		Vector2D setVelocity(Vector2D v) {velocity = v;}
-		Vector2D getVelocity() {return velocity;}
 
 		/* Enemy State Updates */
 		void ChangeState(State<Enemy>* pNewState);

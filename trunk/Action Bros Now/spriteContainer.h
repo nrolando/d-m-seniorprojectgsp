@@ -14,28 +14,26 @@ private:
 	static spriteContainer* instance;
 	spriteContainer();
 
-	std::vector<Sprite> spriteCont;
-	std::vector<spriteSheet> ss;
+	std::vector<spriteSheet> spriteCont;
+	std::vector<spriteSheet> entityCont;
 
 public:
 	//singleton stuff
 	static spriteContainer* getInstance();
 
-	//access the vector
-	//vector<Sprite> getSC()			{ return spriteCont; }
+	//access the lvl sprite vector
 	bool isEmpty()					{ return spriteCont.empty(); }
 	void clearVec()					{ spriteCont.clear(); }
-	void push(Sprite sprite)		{ spriteCont.push_back(sprite); }
+	void push(spriteSheet ss)		{ spriteCont.push_back(ss); }
 	size_t size()					{ return spriteCont.size(); }
-	Sprite* getElem(int i)			{ return &spriteCont[i]; }
+	spriteSheet* getElem(int i)		{ return &spriteCont[i]; }
 
-	//access the spriteSheet
-	bool SS_isEmpty()					{ return ss.empty(); }
-	void SS_clearVec()					{ ss.clear(); }
-	void SS_push(spriteSheet SS)		{ ss.push_back(SS); }
-	size_t SS_size()					{ return ss.size(); }
-	spriteSheet* SS_getElem(int i)		{ return &ss[i]; }
-	
+	//access the entity container (EC)
+	bool EC_isEmpty()					{ return entityCont.empty(); }
+	void EC_clearVec()					{ entityCont.clear(); }
+	void EC_push(spriteSheet SS)		{ entityCont.push_back(SS); }
+	size_t EC_size()					{ return entityCont.size(); }
+	spriteSheet* EC_getElem(int i)		{ return &entityCont[i]; }
 };
 
 #endif

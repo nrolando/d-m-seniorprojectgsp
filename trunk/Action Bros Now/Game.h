@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "inputManager.h"
 #include "inputManager2.h"
+#include "Level.h"
 #include <windows.h>
 
 //12-2
@@ -15,15 +16,14 @@
 class Game
 {
 private:
-	//players recorded progress
-	int progress;
-
 	//input Engine
 	InputManager2* inputMan;
 
 	//Entities
 	Player* player;
 	EntityManager *EntMgr;
+
+	Level *level;
 
 	//Graphics Engine
 	Graphics *graphics;
@@ -50,13 +50,11 @@ public:
 //the game update. its passed the elapsed time since the last time it was called from the main game loop
 	bool update(clock_t);
 
-	void setProg(int p)		{ progress = p; }
-	
 	//load level
 	bool loadLvl();
 
 	//camera
-	void moveCamera(D3DXVECTOR3 vec)		{ graphics->moveCamera(vec); }
+	void moveCamera(D3DXVECTOR3 vec)	{ graphics->moveCamera(vec); }
 
 	D3DXVECTOR3 getCamPos()				{ return graphics->getCameraPos(); }
 };

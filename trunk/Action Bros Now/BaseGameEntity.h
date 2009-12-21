@@ -8,6 +8,13 @@
 #include <ctime>
 
 #define maxcharsize		50
+
+//all sprite sheets will have same frame width/height? if so, take out of eSprInfo and just use this
+//right now, the player is instatiated with these values and the enemy reads its dimensions from file
+//this is not being used
+#define FRAME_WIDTH		128
+#define FRAME_HEIGHT	128
+
 #define ANIMATIONGAP	150
 
 class BaseGameEntity
@@ -17,20 +24,17 @@ private:
 	char key;
 //----------------------------------------------------------
 protected:
-	Vector2D POS;
-	std::string name;		//set by getnameofentity(ID);
+	//sprites info: pos, RECTs, image w/h, ss ptr,
+	eSprInfo sprInfo;
+	//set by getnameofentity(ID);
+	std::string name;
+	//entity velocity
 	D3DXVECTOR3 vel;
 
 //animations varibales
 	clock_t now, stunStart, aniFStart;
-	//variables we talked about tues 12/1/09 to figure out m_src
-	int width, height;	//width and height of frames
-	RECT m_src;	//source of sprite surface, determined by state/animation, w/h
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
-
-//THIS IS ONLY FOR ENTITIES, Player HAS ITS OWN POINTER
-	Sprite *m_ptr;
 public:
 	BaseGameEntity(int ID)
 	{
@@ -39,17 +43,17 @@ public:
 		state = anim = 0;
 	}
 	//the constructor for enemies and bosses
-	BaseGameEntity(int ID, char _key, Vector2D pos, Sprite *ptr, int w, int h)
+	BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *ptr, int w, int h)
 	{
 		entity_ID = ID;
 		name = GetNameOfEntity(ID);
 		key = _key;
-		POS = pos;
-		m_ptr = ptr;
+		sprInfo.POS = pos;
+		sprInfo.ss_ptr = ptr;
+		sprInfo.width = w;
+		sprInfo.height = h;
 		state = anim = 0;
-		width = w;
-		height = h;
-		vel.x = -5.0f;
+		vel.x = -1.0f;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		now = stunStart = aniFStart = 0;
@@ -57,36 +61,48 @@ public:
 	//the constructor for the player
 	BaseGameEntity(std::string n)
 	{
+		//player position will be initiated in game:initGame
 		name = n;
-		POS.x = -1200.0f;
-		POS.y = 0.0f;
 		state = anim = 0;
-		vel.x = 5.0f;
-		vel.y = 5.0f;
+		vel.x = 0.0f;
+		vel.y = 0.0f;
 		vel.z = 0.0f;
+		sprInfo.width = FRAME_WIDTH;
+		sprInfo.height = FRAME_HEIGHT;
 		now = stunStart = aniFStart = 0;
 	}
 	
 	virtual ~BaseGameEntity(){}
 
-	void calcRECT() { state = anim = 0; width = 89; height = 70; }
+	void calcDrawRECT()
+	{
+		sprInfo.drawRect.left = anim * sprInfo.width;
+		sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
+		sprInfo.drawRect.top = state * sprInfo.height;
+		sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+	}
 
 	virtual void UpdateStat(int stat, int val) = 0;
 	virtual void UpdateState(clock_t) = 0;
 	//virtual void setImg(/* *DirectXSurface */);
-	void move()					{ POS.x += vel.x; POS.y += vel.y; }
+
+	//move player according to velocity
+	void move()					{ sprInfo.POS += vel; }
 
 	//get methods
-	std::string getName()	{ return name; }
-	Sprite* getSpritePtr()	{ return m_ptr; }
-	RECT getSrc()			{ return m_src; }
-	Vector2D getPos()		{ return POS; }
-	int getWidth()			{ return width; }
-	int getHeight()			{ return height; }
+	std::string		getName()		{ return name; }
+	spriteSheet*	getSSPtr()		{ return sprInfo.ss_ptr; }
+	RECT			getSrc()		{ return sprInfo.drawRect; }
+	D3DXVECTOR3		getPos()		{ return sprInfo.POS; }
+	int				getWidth()		{ return sprInfo.width; }
+	int				getHeight()		{ return sprInfo.height; }
+	eSprInfo		getDrawInfo()	{ return sprInfo; }
 
 	//set methods
-	void setSrc(RECT rect)	{ m_src = rect; }
-	void setSpritePtr(Sprite *ptr)	{ m_ptr = ptr; }
+	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
+	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
+	void setSrc(RECT rect)			{ sprInfo.drawRect = rect; }
+	void setSSPtr(spriteSheet *p)   { sprInfo.ss_ptr = p; }
 
 	int ID() {return entity_ID;}
 	

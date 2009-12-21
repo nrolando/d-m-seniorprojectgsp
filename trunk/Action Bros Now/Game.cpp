@@ -8,7 +8,6 @@ Game::Game()
 	EntMgr = new EntityManager();
 	player = new Player("Hero!");
 	//inputMan = new InputManager2(hInstance,wndHandle);
-	progress = 0;
 }
 
 //this
@@ -17,14 +16,16 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
 	player = new Player("Hero!");
+	level = new Level();
 	inputMan = new InputManager2(HI, hWnd);
-	progress = 0;
 }
 
 Game::~Game()
 {
 	delete graphics;
 	delete EntMgr;
+	delete level;
+	delete player;
 }
 
 bool Game::initGame(HWND& hwnd)
@@ -33,11 +34,19 @@ bool Game::initGame(HWND& hwnd)
 	if(!graphics->initD3D(hwnd))
 		return false;
 
-	if(!graphics->loadPlayerSS())
+	//set the player's starting level
+	level->setProg(0);
+
+//FILL THE Entity CONTAINER - players sprites are the first one loaded into the container (see player
+//initialization down below) the sprite container will be loaded in loadlvl()
+	if(!graphics->loadEntityCont())
+		return false;
+//called first here, then called by load level every new level
+	if(!graphics->loadSpriteCont(level->getProg()))
 		return false;
 
-//initialize the players sprite information
-	player->initSprInfo(128, 128, D3DXVECTOR3(50.0f,300.0f,0.0f));
+//initialize the players sprite pointer
+	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
 	return true;
 }
@@ -49,11 +58,29 @@ void Game::_shutdown()
 
 bool Game::loadLvl()
 {
-	if(!graphics->loadLvlFromFile(progress))
+	static int lastLvl = 0;
+
+//only call if its a new level, not sublevel. and dont call it first time around :)
+	if(lastLvl != (level->getProg()/3))
+	{
+	//reload the sprite container for the tiles and enemies for the next level
+		if(!graphics->loadSpriteCont(level->getProg()))
+			return false;
+		lastLvl = (level->getProg()/3);
+	}
+
+	//set the camera to the level's starting position (parameter should be gotten from Level? constant for now)
+	graphics->setCamPos(D3DXVECTOR3(-1180.0f, 0.0f, 0.0f));
+
+//load the tiles for the next level
+	if(!level->loadTiles())
+		return false;
+//load the enemies
+	if(!EntMgr->loadFromFile(level->getProg()))
 		return false;
 
-	if(!EntMgr->loadFromFile(progress))
-		return false;
+	//set players data for the next level (parameter should be gotten from Level? constant for now)
+	player->setPos(D3DXVECTOR3(-1200.0f, 0.0f, 0.0f));
 
 	return true;
 }
@@ -92,7 +119,7 @@ bool Game::update(clock_t ct)
 //RENDER :D we can put this inside if statements and check to see if anything has changed
 //that way we dont render when not necessary
 	graphics->BeginRender();
-	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo());
+	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getTiles(), (level->getProg()%3));
 	display_time(ct, 20);
 	graphics->EndRender();
 
@@ -125,8 +152,9 @@ void Game::handleInteractions()
 	}
 }
 */
-
+/*
 void Game::drawLvl()
 {
 	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo());
 }
+*/

@@ -1,0 +1,1 @@
+./enemySprites/ClawSoldier.png#1
