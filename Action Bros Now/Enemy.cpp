@@ -9,7 +9,7 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 {}
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Enemy::Enemy(int ID, char KEY, Vector2D pos, Sprite *ptr, int w, int h)
+Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr, int w, int h)
 			:BaseGameEntity(ID, KEY, pos, ptr, w, h),
 							 status(InRange),
 							 CurrentState(Idle::Instance())
@@ -25,10 +25,7 @@ void Enemy::UpdateState(clock_t ct)
 	now = clock();
 	if(now - aniFStart >= ANIMATIONGAP)
 	{
-		m_src.left = anim * width;
-		m_src.right = m_src.left + width;
-		m_src.top = state * height;
-		m_src.bottom = m_src.top + height;
+		this->calcDrawRECT();
 
 		if(anim == 5)
 			anim = 0;
@@ -36,8 +33,8 @@ void Enemy::UpdateState(clock_t ct)
 			anim++;
 
 		aniFStart = now;
-		this->move();
 	}
+	this->move();
 }
 
 void Enemy::ChangeState(State<Enemy>* pNewState)

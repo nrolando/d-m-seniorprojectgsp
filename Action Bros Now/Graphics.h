@@ -47,7 +47,7 @@ private:
 
 //SPRITE STUFF***************{
 	LPD3DXSPRITE	        gSprite;
-	std::vector<SpriteRend> lvlSprites;
+	//std::vector<SpriteRend> lvlSprites;
 //*********************************}
 
 	//direct text
@@ -75,15 +75,18 @@ public:
 	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
 
 //loads the player's current level//will be used at start of main and in update()
-	bool loadLvlFromFile(int);
-	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo*);			//draw lvl surfaces
-	bool loadPlayerSS();
+	//bool loadLvlFromFile(int);
+	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo, std::vector<Tile>, int);		//draw lvl surfaces
+	//load the sprite containers
+	bool loadEntityCont();
+	bool loadSpriteCont(int);
 
 	void displayTime(clock_t, int);
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	
 
+	void setCamPos(D3DXVECTOR3 p)	{ camPos = p; }
 	D3DXVECTOR3 getCameraPos()		{ return camPos; }
 };
 

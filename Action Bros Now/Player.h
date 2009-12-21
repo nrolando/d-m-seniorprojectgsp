@@ -11,23 +11,13 @@
 //#define SPRITE_WIDTH 128
 
 
-class Player : protected BaseGameEntity
+class Player : public BaseGameEntity
 {
 private:
 	//character attributes
 	int health,special,
 		pPower,kPower,sPower, lives;
 
-	//data for the sprite
-	eSprInfo *sprInfo;
-
-	//clock vars for animations & stun timers//moved to BGE
-//!!!!!!!!init these to 0!!!!!!!!!!!!!!!!!!!!!!!!
-	//clock_t now, stunStart, aniFStart;
-
-	//character's speed/movement 
-	//D3DXVECTOR3 POS;
-	D3DXVECTOR3 vel;
 	bool alive;
 public:
 	Player();
@@ -49,11 +39,9 @@ public:
 	int getsPower() {sPower;}
 	int getpPower() {pPower;}
 	std::string getName()	{ return name;}
-	
 
-	RECT getCBox() {return sprInfo->cBox;}
-	void initSprInfo(int, int, D3DXVECTOR3);
-	eSprInfo* getDrawInfo() {return sprInfo;}
+//will be moved/modified
+	//void initSprInfo(int, int, D3DXVECTOR3);
 
 	virtual void UpdateStat(int stat,int val);
 	virtual void UpdateState(clock_t);

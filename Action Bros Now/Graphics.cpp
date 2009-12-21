@@ -155,14 +155,16 @@ IDirect3DSurface9* Graphics::getBackBuffer(void)
 		return backbuffer;
 }
 
-bool Graphics::loadPlayerSS()
+//this loads the entity (player and enemy) spritesheet continer. this is called once
+bool Graphics::loadEntityCont()
 {
 	std::ifstream fin;
+	std::ifstream inFile;
 	char fname[MAXCHARSIZE];
 	spriteSheet SS;
 
-	if(!spriteContainer::getInstance()->SS_isEmpty())
-		spriteContainer::getInstance()->SS_clearVec();
+	if(!spriteContainer::getInstance()->EC_isEmpty())
+		spriteContainer::getInstance()->EC_clearVec();
 
 	sprintf_s(fname, (size_t)MAXCHARSIZE, "./playerSS/loadSpr.txt");
 
@@ -170,6 +172,7 @@ bool Graphics::loadPlayerSS()
 	if(!fin.is_open())
 		return false;
 
+//load the player sheets
 	fin.getline(SS.sheetName, MAXCHARSIZE, '\n');
 	while(!fin.eof())
 	{
@@ -180,13 +183,74 @@ bool Graphics::loadPlayerSS()
 										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
 										0xFFFFFFFF,NULL,NULL,&SS.gTexture);
 
-		spriteContainer::getInstance()->SS_push(SS);
+		spriteContainer::getInstance()->EC_push(SS);
 
 		fin.getline(SS.sheetName, MAXCHARSIZE, '\n');
 	}
+	fin.close();
+
+//get ready to load the enemy sheets
+	sprintf_s(fname, (size_t)MAXCHARSIZE, "./enemySprites/load.txt");
+	inFile.open(fname);
+	if(!inFile.is_open())
+		return false;
+
+	//load the enemy sheets
+	inFile.getline(SS.sheetName, MAXCHARSIZE, '#');
+	while(!inFile.eof())
+	{
+		inFile >> SS.key;
+		inFile.ignore();
+
+		D3DXCreateTextureFromFileEx(pd3dDevice,SS.sheetName,
+										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+										0xFFFFFFFF,NULL,NULL,&SS.gTexture);
+		spriteContainer::getInstance()->EC_push(SS);
+
+		inFile.getline(SS.sheetName, MAXCHARSIZE, '#');
+	}
+	inFile.close();
 	return true;
 }
 
+//this clears and loads the sprite container for the current lvl
+//this is called for every new level (not sublevel)
+bool Graphics::loadSpriteCont(int prog)
+{
+	int lvl = prog/3;
+	char fname[MAXCHARSIZE];
+	std::ifstream fin;
+	spriteSheet tempSS;
+
+	if(!spriteContainer::getInstance()->isEmpty())
+		spriteContainer::getInstance()->clearVec();
+
+	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvlSprites/lvl%isprites/load%i.txt", lvl, lvl);
+
+	fin.open(fname);
+	if(!fin.is_open())
+		return false;
+
+	/*	READ IN .TXT ASCII TILES AND POSITION		*/
+	fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!fin.eof())
+	{
+		fin.get(tempSS.key);
+		fin.ignore();
+		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
+										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+										0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
+		spriteContainer::getInstance()->push(tempSS);
+		fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	}
+	fin.close();
+	return true;
+}
+/*
 bool Graphics::loadLvlFromFile(int prog)
 {
 	register unsigned int i = 0; int j = 0; int index = 0; //index variables
@@ -199,9 +263,6 @@ bool Graphics::loadLvlFromFile(int prog)
 	//variables for Sprites
 	SpriteRend tempSR;
 	Sprite tempSprite;
-
-	//test the test vector
-	int number = 0;
 
 	//set camPos to start of level. lvl dimensions are always 3000x1000
 	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
@@ -230,12 +291,14 @@ bool Graphics::loadLvlFromFile(int prog)
 	if(!fin.is_open())
 		return false;
 
+/*
 	//set sampler states, seems to work fine with or without
 	pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     pd3dDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-
+*/
+/*
 	//load texture file name into c-string
-		fin.get(check);
+	fin.get(check);
 	while(!fin.eof())
 	{
 		while(j < MAXCHARSIZE && check != '#')
@@ -282,7 +345,6 @@ bool Graphics::loadLvlFromFile(int prog)
 	if(!finput.is_open())
 		return false;
 
-/*	READ IN .TXT ASCII TILES AND POSITION		*/
 	while(!finput.eof())
 	{
 		finput >> check;
@@ -315,7 +377,6 @@ bool Graphics::loadLvlFromFile(int prog)
 			lvlSprites.push_back(tempSR);
 
 			++i;
-			++index;
 		}
 	}
 	i = j = 0;
@@ -323,7 +384,7 @@ bool Graphics::loadLvlFromFile(int prog)
 	finput.close();
 	return true;
 }
-
+*/
 /****************************************/
 //creates the vertex buffer for setupVB()
 /****************************************/
@@ -345,7 +406,8 @@ LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
 	return buffer;
 }
 
-void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo *playerSprite)
+void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo playerSprite,
+					   std::vector<Tile> uberTiles, int sublvl)
 {
 	RECT src;
 	D3DXVECTOR3 l_pos;
@@ -357,90 +419,68 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo *p
 	src.right = src.left + SCREEN_WIDTH;
 	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
 	src.bottom = src.top + SCREEN_HEIGHT;
-	gSprite->Draw(spriteContainer::getInstance()->getElem(0)->Texture, &src, NULL, NULL, 0xFFFFFFFF);
+	//the spriteCont must always have the first 3 elements the 3 sublvls for that level
+	gSprite->Draw(spriteContainer::getInstance()->getElem(sublvl)->gTexture, &src, NULL, NULL, 0xFFFFFFFF);
 	
 
 	//draw the tiles
-	for(unsigned int i = 0; i < lvlSprites.size(); i++)
+	for(unsigned int i = 1; i < uberTiles.size(); i++)
 	{
-		if(lvlSprites[i].ptr != NULL)
+		if(uberTiles[i].ptr != NULL)
 		{
-			if((lvlSprites[i].pos.x - lvlSprites[i].ptr->width/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
-				(lvlSprites[i].pos.x + lvlSprites[i].ptr->width/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
+			if((uberTiles[i].pos.x - uberTiles[i].w/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
+				(uberTiles[i].pos.x + uberTiles[i].w/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
 			{
-				if((lvlSprites[i].pos.y + lvlSprites[i].ptr->height/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-					(lvlSprites[i].pos.y - lvlSprites[i].ptr->height/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
+				if((uberTiles[i].pos.y + uberTiles[i].h/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+					(uberTiles[i].pos.y - uberTiles[i].h/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
 				{
-					l_pos.x = float((lvlSprites[i].pos.x - lvlSprites[i].ptr->width/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
+					l_pos.x = float((uberTiles[i].pos.x - uberTiles[i].w/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
 					if(l_pos.x < 0)
+					{
+						uberTiles[i].src.left = 0 - l_pos.x;
 						l_pos.x = 0;
-					//dest.right = dest.left + lvlSprites[i].ptr->width;
-					//if(dest.right > SCREEN_WIDTH)
-					//	dest.right = SCREEN_WIDTH;
-					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (lvlSprites[i].pos.y + lvlSprites[i].ptr->height/2.0f));
+					}
+
+					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (uberTiles[i].pos.y + uberTiles[i].h/2.0f));
 					if(l_pos.y < 0)
+					{
+						uberTiles[i].src.top = 0 - l_pos.y;
 						l_pos.y = 0;
-					//dest.bottom = dest.top + lvlSprites[i].ptr->height;
-					//if(dest.bottom > SCREEN_HEIGHT)
-					//	dest.bottom = SCREEN_HEIGHT;
+					}
+					
 					l_pos.z = 0.0f;
-					gSprite->Draw(lvlSprites[i].ptr->Texture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+
+					gSprite->Draw(uberTiles[i].ptr->gTexture, &uberTiles[i].src, NULL, &l_pos, 0xFFFFFFFF);
 				}
 			}
 		}
 	}
-
-	//draw the player
-	gSprite->Draw(playerSprite->ss_ptr->gTexture, &playerSprite->drawRect, NULL, &playerSprite->POS, 0xFFFFFFFF);
+//translate the player's world coordinates into screen coord, then render it
+	l_pos.x = float((playerSprite.POS.x - playerSprite.width/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
+	l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (playerSprite.POS.y + playerSprite.height/2.0f));
+	l_pos.z = 0.0f;
+	gSprite->Draw(playerSprite.ss_ptr->gTexture, &playerSprite.drawRect, NULL, &l_pos, 0xFFFFFFFF);
 
 
 	//draw the entities
-//**TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
-//**copied from above for loop**will finish later	
+//TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
-		//dont test, just draw
-		l_pos.x = float((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-		if(l_pos.x < 0)
-				l_pos.x = 0;
-				//dest.right = dest.left + enemyEntSprites[i]->getWidth();
-				//if(dest.right > SCREEN_WIDTH)
-				//	dest.right = SCREEN_WIDTH;
-		l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
-		if(l_pos.y < 0)
-			l_pos.y = 0;
-				//dest.bottom = dest.top + enemyEntSprites[i]->getHeight();
-				//if(dest.bottom > SCREEN_HEIGHT)
-				//	dest.bottom = SCREEN_HEIGHT;
-		l_pos.z = 0.0f;
-		gSprite->Draw(enemyEntSprites[i]->getSpritePtr()->Texture, &enemyEntSprites[i]->getSrc(), NULL, &l_pos, 0xFFFFFFFF);
-	}
-
-/*
-//test if sprite is within viewport
 		if((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
 			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
 		{
 			if((enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
 				(enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
 			{
-				dest.left = LONG((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-				if(dest.left < 0)
-					dest.left = 0;
-				dest.right = dest.left + enemyEntSprites[i]->getWidth();
-				if(dest.right > SCREEN_WIDTH)
-					dest.right = SCREEN_WIDTH;
-				dest.top = LONG((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
-				if(dest.top < 0)
-					dest.top = 0;
-				dest.bottom = dest.top + lvlSprites[i].ptr->height;
-				if(dest.bottom > SCREEN_HEIGHT)
-					dest.bottom = SCREEN_HEIGHT;
-				blitToSurface(enemyEntSprites[i]->getSpritePtr()->spriteSurf,
-					  &enemyEntSprites[i]->getSrc(), &dest);
+				l_pos.x = float((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
+		
+				l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
+				
+				l_pos.z = 0.0f;
+				gSprite->Draw(enemyEntSprites[i]->getSSPtr()->gTexture, &enemyEntSprites[i]->getSrc(), NULL, &l_pos, 0xFFFFFFFF);
 			}
 		}
-	}	*/
+	}
 	gSprite->End();
 }
 
@@ -456,7 +496,7 @@ void Graphics::displayTime(clock_t _time, int y)	//elapsed time
 	rct.top = y;
 	rct.bottom = rct.top + 50;
 
-	sprintf(display, "elapsed time: %i  CPS: %i", _time, CLOCKS_PER_SEC);
+	sprintf_s(display, (size_t)MAXCHARSIZE, "elapsed time: %i  CPS: %i", _time, CLOCKS_PER_SEC);
 
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);

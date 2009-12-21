@@ -70,12 +70,12 @@ void InputManager2::setInput()
 char InputManager2::getInput()
 {
 	//will only move once per press
-	if(downflag & INPUT_UP)
+	if(inputflag & INPUT_UP)
 	{
 		//move camera up
 		return 'u';
 	}
-	if(downflag & INPUT_DOWN)
+	if(inputflag & INPUT_DOWN)
 	{
 		//move camera down
 		return 'd';
