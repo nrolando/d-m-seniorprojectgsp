@@ -15,7 +15,7 @@ private:
 public:
 
 	Boss(int ID);
-	Boss(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr, int w, int h);
+	Boss(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
 	~Boss() {}
 
 	int getSpecialMeter() {return special;}

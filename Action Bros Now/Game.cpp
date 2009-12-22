@@ -69,9 +69,6 @@ bool Game::loadLvl()
 		lastLvl = (level->getProg()/3);
 	}
 
-	//set the camera to the level's starting position (parameter should be gotten from Level? constant for now)
-	graphics->setCamPos(D3DXVECTOR3(-1180.0f, 0.0f, 0.0f));
-
 //load the tiles for the next level
 	if(!level->loadTiles())
 		return false;
@@ -93,16 +90,6 @@ bool Game::update(clock_t ct)
 	inputMan->setInput();
 	input = inputMan->getInput();
 
-	//THIS IS TEMPORARY INPUT HANDLING
-	if(input == 'u')
-		moveCamera(D3DXVECTOR3(0.0f, 3.0f, 0.0f));
-	if(input == 'd')
-		moveCamera(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
-	if(input == 'l')
-		moveCamera(D3DXVECTOR3(-3.0f, 0.0f, 0.0f));
-	if(input == 'r')
-		moveCamera(D3DXVECTOR3(3.0f, 0.0f, 0.0f));
-
 //include collision.cpp file for this
 	if(player->actionPossible(input))
 	{
@@ -115,6 +102,7 @@ bool Game::update(clock_t ct)
 
 	player->UpdateState(ct);
 	EntMgr->update(ct);
+	graphics->updateCamera(player->getDrawInfo());
 
 //RENDER :D we can put this inside if statements and check to see if anything has changed
 //that way we dont render when not necessary
@@ -150,11 +138,5 @@ void Game::handleInteractions()
 			}
 		}
 	}
-}
-*/
-/*
-void Game::drawLvl()
-{
-	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo());
 }
 */
