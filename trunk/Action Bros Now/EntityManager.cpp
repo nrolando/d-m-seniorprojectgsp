@@ -26,7 +26,6 @@ bool EntityManager::loadFromFile(int prog)
 	D3DXVECTOR3 PoS;
 	spriteSheet *ss_ptr;
 	int id = 0;
-	int w; int h;
 
 	sprintf_s(fname, (size_t)maxcharsize, "./enemySprites/mobs%i-%i.txt", lvl, sublvl);
 
@@ -41,8 +40,6 @@ bool EntityManager::loadFromFile(int prog)
 		inFile >> PoS.x;
 		inFile >> PoS.y;
 		PoS.z = 0.0f;		//z will be modified later
-		inFile >> w;
-		inFile >> h;
 		inFile.ignore();
 
 		for(i = 0; i < spriteContainer::getInstance()->EC_size(); i++)
@@ -52,9 +49,9 @@ bool EntityManager::loadFromFile(int prog)
 		}
 		
 		if(map_key == 'b' || map_key == 'B')
-			entityVector.push_back(new Boss(id, map_key, PoS, ss_ptr, w, h));
+			entityVector.push_back(new Boss(id, map_key, PoS, ss_ptr));
 		else
-			entityVector.push_back(new Enemy(id, map_key, PoS, ss_ptr, w, h));
+			entityVector.push_back(new Enemy(id, map_key, PoS, ss_ptr));
 
 		id++;
 		inFile.get(map_key);

@@ -15,7 +15,7 @@
 #define FRAME_WIDTH		128
 #define FRAME_HEIGHT	128
 
-#define ANIMATIONGAP	150
+#define ANIMATIONGAP	120
 
 class BaseGameEntity
 {
@@ -28,7 +28,10 @@ protected:
 	eSprInfo sprInfo;
 	//set by getnameofentity(ID);
 	std::string name;
+	bool alive;
+	int health;
 	//entity velocity
+	float speed;
 	D3DXVECTOR3 vel;
 
 //animations varibales
@@ -43,17 +46,18 @@ public:
 		state = anim = 0;
 	}
 	//the constructor for enemies and bosses
-	BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *ptr, int w, int h)
+	BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *ptr)
 	{
 		entity_ID = ID;
 		name = GetNameOfEntity(ID);
 		key = _key;
 		sprInfo.POS = pos;
 		sprInfo.ss_ptr = ptr;
-		sprInfo.width = w;
-		sprInfo.height = h;
+		sprInfo.width = FRAME_WIDTH;
+		sprInfo.height = FRAME_HEIGHT;
 		state = anim = 0;
-		vel.x = -1.0f;
+		speed = 1.0f;
+		vel.x = -speed;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		now = stunStart = aniFStart = 0;
@@ -64,6 +68,7 @@ public:
 		//player position will be initiated in game:initGame
 		name = n;
 		state = anim = 0;
+		speed = 3.0f;
 		vel.x = 0.0f;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
@@ -74,13 +79,7 @@ public:
 	
 	virtual ~BaseGameEntity(){}
 
-	void calcDrawRECT()
-	{
-		sprInfo.drawRect.left = anim * sprInfo.width;
-		sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
-		sprInfo.drawRect.top = state * sprInfo.height;
-		sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
-	}
+	virtual void calcDrawRECT() = 0;
 
 	virtual void UpdateStat(int stat, int val) = 0;
 	virtual void UpdateState(clock_t) = 0;

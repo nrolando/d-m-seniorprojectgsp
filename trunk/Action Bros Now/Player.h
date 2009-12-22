@@ -5,8 +5,8 @@
 //these are for animation and stun length
 #define STUNTIME		500
 #define MAXSTUNFRAME	5
-#define MAXIDLEFRAME	5
-#define MAXWALKFRAME	5
+#define MAXIDLEFRAME	8
+#define MAXWALKFRAME	12
 //#define SPRITE_HEIGHT 128
 //#define SPRITE_WIDTH 128
 
@@ -15,10 +15,8 @@ class Player : public BaseGameEntity
 {
 private:
 	//character attributes
-	int health,special,
-		pPower,kPower,sPower, lives;
+	int special, pPower, kPower, sPower, lives;
 
-	bool alive;
 public:
 	Player();
 	Player(std::string);
@@ -40,9 +38,13 @@ public:
 	int getpPower() {pPower;}
 	std::string getName()	{ return name;}
 
-//will be moved/modified
-	//void initSprInfo(int, int, D3DXVECTOR3);
-
+	virtual void calcDrawRECT()
+	{
+		sprInfo.drawRect.left = anim * sprInfo.width;
+		sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
+		sprInfo.drawRect.top = state * sprInfo.height;
+		sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+	}
 	virtual void UpdateStat(int stat,int val);
 	virtual void UpdateState(clock_t);
 

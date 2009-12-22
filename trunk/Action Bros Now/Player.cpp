@@ -73,7 +73,9 @@ void Player::DoAction(char input)
 {
 	if(input == 'l')
 	{
-		vel.x = -1.0f;
+		vel.x = -speed;
+		vel.y = 0.0f;
+		vel.z = 0.0f;
 		if(state == IDLE)
 		{
 			anim = 0;
@@ -82,7 +84,31 @@ void Player::DoAction(char input)
 	}
 	else if(input == 'r')
 	{
-		vel.x = 1.0f;
+		vel.x = speed;
+		vel.y = 0.0f;
+		vel.z = 0.0f;
+		if(state == IDLE)
+		{
+			anim = 0;
+		}
+		state = WALK;
+	}
+	else if(input == 'd')
+	{
+		vel.x = 0.0f;
+		vel.y = -speed;
+		vel.z = 0.0f;
+		if(state == IDLE)
+		{
+			anim = 0;
+		}
+		state = WALK;
+	}
+	else if(input == 'u')
+	{
+		vel.x = 0.0f;
+		vel.y = speed;
+		vel.z = 0.0f;
 		if(state == IDLE)
 		{
 			anim = 0;
@@ -178,11 +204,11 @@ void Player::UpdateState(clock_t time)
 			this->calcDrawRECT();
 
 			//loop to the beginning of animation
-			if(anim == MAXIDLEFRAME)
-				anim = 0;
-			//advance 1 frame
-			else
+			if(anim < MAXIDLEFRAME)
 				anim++;
+			else
+				anim = 0;
+
 			aniFStart = now;
 		}
 		break;

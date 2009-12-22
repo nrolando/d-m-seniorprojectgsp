@@ -47,7 +47,6 @@ private:
 
 //SPRITE STUFF***************{
 	LPD3DXSPRITE	        gSprite;
-	//std::vector<SpriteRend> lvlSprites;
 //*********************************}
 
 	//direct text
@@ -69,10 +68,6 @@ public:
 
 	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*);
 	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*, int&, int&);
-	IDirect3DSurface9* getBackBuffer(void);
-	void blitToSurface(IDirect3DSurface9*, const RECT*, const RECT*);
-
-	LPDIRECT3DVERTEXBUFFER9 createVertexBuffer(int, DWORD);
 
 //loads the player's current level//will be used at start of main and in update()
 	//bool loadLvlFromFile(int);
@@ -85,9 +80,9 @@ public:
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	
-
 	void setCamPos(D3DXVECTOR3 p)	{ camPos = p; }
 	D3DXVECTOR3 getCameraPos()		{ return camPos; }
+	void updateCamera(eSprInfo);
 };
 
 #endif

@@ -57,9 +57,9 @@ bool Level::loadTiles()
 				}
 			}
 
-			//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
-			tempTile.pos.x = -1475.0f + i * tempTile.w;
-			tempTile.pos.y = 475.0f - j * tempTile.h;
+			//apply position: x,y,z is the upper left corner of image. background is always 3000x1000
+			tempTile.pos.x = -1500.0f + i * tempTile.w;
+			tempTile.pos.y = 500.0f - j * tempTile.h;
 			tempTile.pos.z = 0.0f;
 			tiles.push_back(tempTile);
 			++i;

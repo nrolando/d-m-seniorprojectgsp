@@ -141,20 +141,6 @@ LPDIRECT3DTEXTURE9 Graphics::getTextureFromBitmap(char *filename, int &w, int &h
 	return texture;
 }
 
-IDirect3DSurface9* Graphics::getBackBuffer(void)
-{
-	IDirect3DSurface9* backbuffer = NULL;
-
-	if (!pd3dDevice)
-		return NULL;
-
-	HRESULT hResult = pd3dDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-	if (FAILED(hResult))
-		return NULL;
-	else
-		return backbuffer;
-}
-
 //this loads the entity (player and enemy) spritesheet continer. this is called once
 bool Graphics::loadEntityCont()
 {
@@ -250,161 +236,6 @@ bool Graphics::loadSpriteCont(int prog)
 	fin.close();
 	return true;
 }
-/*
-bool Graphics::loadLvlFromFile(int prog)
-{
-	register unsigned int i = 0; int j = 0; int index = 0; //index variables
-	int w = 0; int h = 0;
-	std::ifstream fin, finput;
-	char fname[MAXCHARSIZE];
-	char check;		//checks for input deliminator and sprite match
-	int lvl = prog/3;
-	int sublvl = prog%3;
-	//variables for Sprites
-	SpriteRend tempSR;
-	Sprite tempSprite;
-
-	//set camPos to start of level. lvl dimensions are always 3000x1000
-	camPos.x = -1180.0f; camPos.y = 0.0f; camPos.z = 0.0f;
-	
-//clear the vectors
-	if(!spriteContainer::getInstance()->isEmpty())
-		spriteContainer::getInstance()->clearVec();
-	if(!lvlSprites.empty())
-		lvlSprites.clear();
-
-//initialize
-	while(i < MAXCHARSIZE)
-	{
-		tempSprite.filename[i] = '\0';
-		fname[i] = '\0';
-		++i;
-	}
-	i = 0; //reset i
-	
-//----------------------
-//it is safer to use sprintf_s in this case so that i can specify the
-//size of the array so it doesn't try to store it in safe memory
-//----------------------
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvl%isprites/load%i-%i.txt", lvl, lvl, sublvl);
-	fin.open(fname);
-	if(!fin.is_open())
-		return false;
-
-/*
-	//set sampler states, seems to work fine with or without
-	pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-    pd3dDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-*/
-/*
-	//load texture file name into c-string
-	fin.get(check);
-	while(!fin.eof())
-	{
-		while(j < MAXCHARSIZE && check != '#')
-		{
-			tempSprite.filename[j] = check;
-			fin.get(check);
-			++j;
-		}
-		j = 0;
-
-		fin >> tempSprite.s;
-		fin.ignore();
-
-		//load image info from file (pull w&h even tho it should always be 50x50
-		tempSprite.Texture = getTextureFromBitmap(tempSprite.filename, w, h);
-		tempSprite.width = w;
-		tempSprite.height = h;
-		spriteContainer::getInstance()->push(tempSprite);
-
-		while(j < MAXCHARSIZE)
-		{
-			tempSprite.filename[j] = '\0';
-			++j;
-		}
-		j = 0;
-
-		++i;
-		//load texture file name into c-string
-		fin.get(check);
-	}
-	i = 0;
-	fin.close();
-
-//*****apply position and textures to our sprites*****
-	//reset fname
-	while(i < MAXCHARSIZE)
-	{
-		fname[i] = '\0';
-		++i;
-	}
-	i = 0;
-	sprintf_s(fname, MAXCHARSIZE, "./lvl%isprites/render%i-%i.txt", lvl, lvl, sublvl);
-	finput.open(fname);
-	if(!finput.is_open())
-		return false;
-
-	while(!finput.eof())
-	{
-		finput >> check;
-
-		if(check == '#')
-		{
-			++j;
-			i = 0;
-		}
-		else
-		{
-			if(check == '.')
-			{
-				tempSR.ptr = NULL;
-			}
-			else
-			{
-			//set tile's ptr its corresponding texture in the container
-				for(unsigned int k = 0; k < spriteContainer::getInstance()->size(); ++k)
-				{
-					if(spriteContainer::getInstance()->getElem(k)->s == check)
-						tempSR.ptr = spriteContainer::getInstance()->getElem(k);
-				}
-			}
-
-			//do x,y calculation here: i think: if i < 30 -25 else +25; if j < 10 -25 else +25
-			tempSR.pos.x = -1475.0f + i * 50.0f;
-			tempSR.pos.y = 475.0f - j * 50.0f;
-			tempSR.pos.z = 0.0f;
-			lvlSprites.push_back(tempSR);
-
-			++i;
-		}
-	}
-	i = j = 0;
-	
-	finput.close();
-	return true;
-}
-*/
-/****************************************/
-//creates the vertex buffer for setupVB()
-/****************************************/
-LPDIRECT3DVERTEXBUFFER9 Graphics::createVertexBuffer(int size, DWORD usage)
-{
-	HRESULT hr;
-	LPDIRECT3DVERTEXBUFFER9 buffer;
-
-    // Create the vertex buffer.
-    hr = pd3dDevice->CreateVertexBuffer( size,
-                                         0, 
-										 usage,
-                                         D3DPOOL_DEFAULT, 
-										 &buffer, 
-										 NULL );
-	if FAILED ( hr)
-        return NULL;
-    
-	return buffer;
-}
 
 void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo playerSprite,
 					   std::vector<Tile> uberTiles, int sublvl)
@@ -419,36 +250,27 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 	src.right = src.left + SCREEN_WIDTH;
 	src.top = LONG(500.0f - (camPos.y + SCREEN_HEIGHT/2.0f));
 	src.bottom = src.top + SCREEN_HEIGHT;
+	l_pos.x = 0.0f;
+	l_pos.y = 0.0f;
+	l_pos.z = 0.9f;	//.9 is the farthest away, sprite doesn't draw at > 1.0
 	//the spriteCont must always have the first 3 elements the 3 sublvls for that level
-	gSprite->Draw(spriteContainer::getInstance()->getElem(sublvl)->gTexture, &src, NULL, NULL, 0xFFFFFFFF);
+	gSprite->Draw(spriteContainer::getInstance()->getElem(sublvl)->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 	
 
 	//draw the tiles
-	for(unsigned int i = 1; i < uberTiles.size(); i++)
+	for(unsigned int i = 0; i < uberTiles.size(); i++)
 	{
 		if(uberTiles[i].ptr != NULL)
 		{
-			if((uberTiles[i].pos.x - uberTiles[i].w/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
-				(uberTiles[i].pos.x + uberTiles[i].w/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
+			if(uberTiles[i].pos.x < (camPos.x + SCREEN_WIDTH/2.0f) &&
+				(uberTiles[i].pos.x + uberTiles[i].w) > (camPos.x - SCREEN_WIDTH/2.0f))
 			{
-				if((uberTiles[i].pos.y + uberTiles[i].h/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-					(uberTiles[i].pos.y - uberTiles[i].h/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
+				if(uberTiles[i].pos.y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+					(uberTiles[i].pos.y - uberTiles[i].h) < (camPos.y + SCREEN_HEIGHT/2.0f))
 				{
-					l_pos.x = float((uberTiles[i].pos.x - uberTiles[i].w/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-					if(l_pos.x < 0)
-					{
-						uberTiles[i].src.left = 0 - l_pos.x;
-						l_pos.x = 0;
-					}
-
-					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (uberTiles[i].pos.y + uberTiles[i].h/2.0f));
-					if(l_pos.y < 0)
-					{
-						uberTiles[i].src.top = 0 - l_pos.y;
-						l_pos.y = 0;
-					}
-					
-					l_pos.z = 0.0f;
+					l_pos.x = float(uberTiles[i].pos.x - (camPos.x - SCREEN_WIDTH/2.0f));
+					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - uberTiles[i].pos.y);
+					l_pos.z = ((uberTiles[i].pos.y - uberTiles[i].h) + 500.0f)/1000.0f;
 
 					gSprite->Draw(uberTiles[i].ptr->gTexture, &uberTiles[i].src, NULL, &l_pos, 0xFFFFFFFF);
 				}
@@ -456,27 +278,24 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 		}
 	}
 //translate the player's world coordinates into screen coord, then render it
-	l_pos.x = float((playerSprite.POS.x - playerSprite.width/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-	l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (playerSprite.POS.y + playerSprite.height/2.0f));
-	l_pos.z = 0.0f;
+	l_pos.x = float(playerSprite.POS.x - (camPos.x - SCREEN_WIDTH/2.0f));
+	l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - playerSprite.POS.y);
+	l_pos.z = ((playerSprite.POS.y - playerSprite.height) + 500.0f)/1000.0f;
 	gSprite->Draw(playerSprite.ss_ptr->gTexture, &playerSprite.drawRect, NULL, &l_pos, 0xFFFFFFFF);
-
 
 	//draw the entities
 //TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
-		if((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) < (camPos.x + SCREEN_WIDTH/2.0f) &&
-			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()/2.0f) > (camPos.x - SCREEN_WIDTH/2.0f))
+		if(enemyEntSprites[i]->getPos().x < (camPos.x + SCREEN_WIDTH/2.0f) &&
+			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()) > (camPos.x - SCREEN_WIDTH/2.0f))
 		{
-			if((enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f) > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-				(enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()/2.0f) < (camPos.y + SCREEN_HEIGHT/2.0f))
+			if(enemyEntSprites[i]->getPos().y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+				(enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()) < (camPos.y + SCREEN_HEIGHT/2.0f))
 			{
-				l_pos.x = float((enemyEntSprites[i]->getPos().x - enemyEntSprites[i]->getWidth()/2.0f) - (camPos.x - SCREEN_WIDTH/2.0f));
-		
-				l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - (enemyEntSprites[i]->getPos().y + enemyEntSprites[i]->getHeight()/2.0f));
-				
-				l_pos.z = 0.0f;
+				l_pos.x = float(enemyEntSprites[i]->getPos().x - (camPos.x - SCREEN_WIDTH/2.0f));
+				l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - enemyEntSprites[i]->getPos().y);
+				l_pos.z = ((enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()) + 500.0f)/1000.0f;;
 				gSprite->Draw(enemyEntSprites[i]->getSSPtr()->gTexture, &enemyEntSprites[i]->getSrc(), NULL, &l_pos, 0xFFFFFFFF);
 			}
 		}
@@ -509,6 +328,31 @@ camera's position*/
 void Graphics::moveCamera(D3DXVECTOR3 vec)
 {
 	camPos += vec;
+	//dont allow camera to go off screen
+	if(camPos.x < (-1500.0f + SCREEN_WIDTH/2.0f))
+		camPos.x = (-1500.0f + SCREEN_WIDTH/2.0f);
+	else if(camPos.x > (1500.0f - SCREEN_WIDTH/2.0f))
+		camPos.x = (1500.0f - SCREEN_WIDTH/2.0f);
+	if(camPos.y > (500.0f - SCREEN_HEIGHT/2.0f))
+		camPos.y = (500.0f - SCREEN_HEIGHT/2.0f);
+	else if(camPos.y < (-500.0f + SCREEN_HEIGHT/2.0f))
+		camPos.y = (-500.0f + SCREEN_HEIGHT/2.0f);
+}
+
+void Graphics::updateCamera(eSprInfo si)
+{
+	static float xRange = (SCREEN_WIDTH/6.0f);
+	static float yRange = (SCREEN_HEIGHT/6.0f);
+
+	if(si.POS.x + si.width/2.0f < camPos.x - xRange)
+		camPos.x = si.POS.x + si.width/2.0f + xRange;
+	if(si.POS.x + si.width/2.0f > camPos.x + xRange)
+		camPos.x = si.POS.x + si.width/2.0f - xRange;
+	if(si.POS.y - si.height/2.0f < camPos.y - yRange)
+		camPos.y = si.POS.y - si.height/2.0f + yRange;
+	if(si.POS.y - si.height/2.0f > camPos.y + yRange)
+		camPos.y = si.POS.y - si.height/2.0f - yRange;
+
 	//dont allow camera to go off screen
 	if(camPos.x < (-1500.0f + SCREEN_WIDTH/2.0f))
 		camPos.x = (-1500.0f + SCREEN_WIDTH/2.0f);
