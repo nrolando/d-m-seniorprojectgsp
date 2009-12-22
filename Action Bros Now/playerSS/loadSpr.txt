@@ -1,1 +1,1 @@
-./playerSS/player.png
+./playerSS/Baek.png
