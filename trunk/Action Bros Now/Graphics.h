@@ -60,7 +60,7 @@ public:
 	Graphics();
 	~Graphics();
 
-	bool initD3D(HWND&);
+	bool initD3D(HWND);
 	void _shutdown();
 
 	void BeginRender();	//clears screen, begin scene

@@ -69,27 +69,52 @@ void InputManager2::setInput()
 
 char InputManager2::getInput()
 {
-	//will only move once per press
+
+	/////////////////////
+	//the movement keys//
+	/////////////////////
+
+	//these are diagonal movement
+	if((KEYDOWN(buffer, DIK_UP)) & (KEYDOWN(buffer, DIK_RIGHT)))
+	{
+		//wxyz
+		return 'w';
+	}
+	if((KEYDOWN(buffer, DIK_UP)) & (KEYDOWN(buffer, DIK_LEFT)))
+	{
+		return 'x';
+	}
+	if(inputflag & INPUT_DOWN & INPUT_RIGHT)
+	{
+		return 'y';
+	}
+	if(inputflag & INPUT_DOWN & INPUT_LEFT)
+	{
+		return 'z';
+	}
+
+	//these are normal movement
 	if(inputflag & INPUT_UP)
 	{
-		//move camera up
+		//move up
 		return 'u';
 	}
 	if(inputflag & INPUT_DOWN)
 	{
-		//move camera down
+		//move down
 		return 'd';
 	}
 	if(inputflag & INPUT_LEFT)
 	{
-		//move camera left
+		//move left
 		return 'l';
 	}
 	if(inputflag & INPUT_RIGHT)
 	{
-		//move camera right
+		//move right
 		return 'r';
 	}
+	
 	else
 		return 'i';
 }

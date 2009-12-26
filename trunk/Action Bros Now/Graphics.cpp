@@ -13,7 +13,7 @@ Graphics::~Graphics()
 	
 }
 
-bool Graphics::initD3D(HWND &hwnd)
+bool Graphics::initD3D(HWND hwnd)
 {
 	//create direct3D object
 	if( NULL == ( pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
@@ -33,10 +33,12 @@ bool Graphics::initD3D(HWND &hwnd)
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
+	
+
 	//create direct3D device
     if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                      &d3dpp, &pd3dDevice ) ) )
+                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                      & d3dpp, &pd3dDevice ) ) )
     {
         return false;
     }

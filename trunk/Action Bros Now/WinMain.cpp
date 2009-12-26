@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 {
 	clock_t then = clock();
 	clock_t now;
-	game = new Game(hInstance, wndHandle);
+	
 	MSG msg;
 
 	// call our function to init and create our window
@@ -26,6 +26,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		MessageBox(NULL, "Unable to create window", "ERROR", MB_OK);
 		return 1;
 	}
+	game = new Game(hInstance, wndHandle);
 	if(!game->initGame(wndHandle))
 	{
 		MessageBox(NULL, "Unable to initialize Direct3D", "ERROR", MB_OK);

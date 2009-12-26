@@ -77,20 +77,16 @@ void Player::DoAction(char input)
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		if(state == IDLE)
-		{
 			anim = 0;
-		}
 		state = WALK;
 	}
-	else if(input == 'r')
+	if(input == 'r')
 	{
 		vel.x = speed;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		if(state == IDLE)
-		{
 			anim = 0;
-		}
 		state = WALK;
 	}
 	else if(input == 'd')
@@ -116,6 +112,23 @@ void Player::DoAction(char input)
 		state = WALK;
 	}
 	else
+	{
+		sprInfo->POS.x += vel.x;
+		sprInfo->POS.y -= vel.y;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
+	}
+	//up & left
+	if(input == 'x')
+	{
+		sprInfo->POS.x -= vel.x;
+		sprInfo->POS.y -= vel.y;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
+	}
+	if(input == 'i')
 	{
 		state = IDLE;
 		vel.x = vel.y = vel.z = 0.0f;
