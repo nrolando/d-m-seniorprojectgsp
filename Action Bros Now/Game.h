@@ -44,7 +44,7 @@ public:
 	Game(HINSTANCE, HWND);
 	~Game();
 
-	bool initGame(HWND&);
+	bool initGame(HWND);
 	void _shutdown();
 
 //the game update. its passed the elapsed time since the last time it was called from the main game loop

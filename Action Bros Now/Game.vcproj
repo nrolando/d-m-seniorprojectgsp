@@ -163,15 +163,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\BaseGameEntity.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Boss.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Boss.h"
 				>
 			</File>
 			<File
@@ -179,19 +171,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BossOwnedStates.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Enemy.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Enemy.h"
 				>
 			</File>
 			<File
@@ -199,15 +179,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EnemyOwnedStates.h"
-				>
-			</File>
-			<File
 				RelativePath=".\EntityManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EntityManager.h"
 				>
 			</File>
 			<File
@@ -223,15 +195,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\inputManager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\inputManager2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\inputManager2.h"
 				>
 			</File>
 			<File
@@ -239,27 +203,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Player.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Sprite.h"
-				>
-			</File>
-			<File
 				RelativePath=".\spriteContainer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\spriteContainer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\State.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Status.h"
 				>
 			</File>
 			<File
@@ -273,11 +217,67 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\BaseGameEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Boss.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BossOwnedStates.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Enemy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EnemyOwnedStates.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EntityManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Game.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Graphics.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager2.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Player.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sprite.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spriteContainer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\State.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Status.h"
 				>
 			</File>
 		</Filter>
