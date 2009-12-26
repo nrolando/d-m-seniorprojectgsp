@@ -130,6 +130,26 @@ void Player::DoAction(char input)
 			anim = 0;
 		state = WALK;
 	}
+	//down & right
+	else if(input == 'y')
+	{
+		vel.x = speed;
+		vel.y = -speed;
+		vel.z = 0.0;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
+	}
+	//down & left
+	else if(input == 'z')
+	{
+		vel.x = -speed;
+		vel.y = -speed;
+		vel.z = 0.0;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
+	}
 	else if(input == 'i')
 	{
 		state = IDLE;

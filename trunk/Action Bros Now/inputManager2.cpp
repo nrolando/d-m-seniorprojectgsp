@@ -84,11 +84,11 @@ char InputManager2::getInput()
 	{
 		return 'x';
 	}
-	if(inputflag & INPUT_DOWN & INPUT_RIGHT)
+	if((KEYDOWN(buffer, DIK_DOWN)) & (KEYDOWN(buffer, DIK_RIGHT)))
 	{
 		return 'y';
 	}
-	if(inputflag & INPUT_DOWN & INPUT_LEFT)
+	if((KEYDOWN(buffer, DIK_DOWN)) & (KEYDOWN(buffer, DIK_LEFT)))
 	{
 		return 'z';
 	}
