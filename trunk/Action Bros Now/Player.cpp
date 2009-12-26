@@ -111,24 +111,26 @@ void Player::DoAction(char input)
 		}
 		state = WALK;
 	}
-	else
+	else if(input == 'w')
 	{
-		sprInfo->POS.x += vel.x;
-		sprInfo->POS.y -= vel.y;
+		vel.x = speed;
+		vel.y = speed;
+		vel.z = 0.0f;
 		if(state == IDLE)
 			anim = 0;
 		state = WALK;
 	}
 	//up & left
-	if(input == 'x')
+	else if(input == 'x')
 	{
-		sprInfo->POS.x -= vel.x;
-		sprInfo->POS.y -= vel.y;
+		vel.x = -speed;
+		vel.y = speed;
+		vel.z = 0.0f;
 		if(state == IDLE)
 			anim = 0;
 		state = WALK;
 	}
-	if(input == 'i')
+	else if(input == 'i')
 	{
 		state = IDLE;
 		vel.x = vel.y = vel.z = 0.0f;
