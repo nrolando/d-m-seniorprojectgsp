@@ -90,21 +90,7 @@ bool Game::update(clock_t ct)
 	inputMan->setInput();
 	input = inputMan->getInput();
 
-	//THIS IS TEMPORARY INPUT HANDLING
-	if(input == 'u')
-		moveCamera(D3DXVECTOR3(0.0f, 3.0f, 0.0f));
-	if(input == 'd')
-		moveCamera(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
-	if(input == 'l')
-		moveCamera(D3DXVECTOR3(-3.0f, 0.0f, 0.0f));
-	if(input == 'r')
-		moveCamera(D3DXVECTOR3(3.0f, 0.0f, 0.0f));
-	if(input == 'w')
-		moveCamera(D3DXVECTOR3(3.0f, 3.0f, 0.0f));
-	if(input == 'x')
-		moveCamera(D3DXVECTOR3(-3.0f, 3.0f, 0.0f));
-
-//include collision.cpp file for this
+	//include collision.cpp file for this
 	if(player->actionPossible(input))
 	{
 		//need to make these functions

@@ -37,7 +37,7 @@ bool Graphics::initD3D(HWND hwnd)
 
 	//create direct3D device
     if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                       & d3dpp, &pd3dDevice ) ) )
     {
         return false;

@@ -37,7 +37,7 @@ struct eSprInfo
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, ATTACK, SPECIAL, STUN,
+	IDLE, WALK, PUNCH, KICK, ATTACK, SPECIAL, STUN,
 };
 
 #endif

@@ -7,9 +7,8 @@
 #define MAXSTUNFRAME	5
 #define MAXIDLEFRAME	8
 #define MAXWALKFRAME	12
-//#define SPRITE_HEIGHT 128
-//#define SPRITE_WIDTH 128
-
+#define MAXPUNCHFRAME	5
+#define MAXKICKFRAME	7
 
 class Player : public BaseGameEntity
 {

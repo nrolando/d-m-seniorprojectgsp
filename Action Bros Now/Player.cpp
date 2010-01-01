@@ -80,7 +80,7 @@ void Player::DoAction(char input)
 			anim = 0;
 		state = WALK;
 	}
-	if(input == 'r')
+	else if(input == 'r')
 	{
 		vel.x = speed;
 		vel.y = 0.0f;
@@ -150,9 +150,40 @@ void Player::DoAction(char input)
 			anim = 0;
 		state = WALK;
 	}
-	else if(input == 'i')
+	else if(input == 'p')
 	{
-		state = IDLE;
+		//the player stops to punch
+		vel.x = vel.y = vel.z = 0.0f;
+		
+		if(state != PUNCH && animTime <= clock() - animStartTime)
+		{
+			//set the animation time
+			animTime = (MAXPUNCHFRAME+1) * ANIMATIONGAP;
+			animStartTime = clock();
+			anim = 0;
+			state = PUNCH;
+		}
+	}
+	else if(input == 'k')
+	{
+		//the player stops to kick
+		vel.x = vel.y = vel.z = 0.0f;
+		
+		if(state != KICK && animTime <= clock() - animStartTime)
+		{
+			//set the animation time
+			animTime = (MAXKICKFRAME+1) * ANIMATIONGAP;
+			animStartTime = clock();
+			anim = 0;
+			state = KICK;
+		}
+	}
+	else		//== 'i'
+	{
+		if(animTime <= clock() - animStartTime)	//or anything that's not supposed to idle itself
+		{
+			state = IDLE;
+		}
 		vel.x = vel.y = vel.z = 0.0f;
 	}
 
@@ -259,6 +290,28 @@ void Player::UpdateState(clock_t time)
 			if(anim == MAXWALKFRAME)
 				anim = 0;
 			//advance 1 frame
+			else
+				anim++;
+			aniFStart = now;
+		}
+		break;
+	case PUNCH:
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			this->calcDrawRECT();
+			if(anim == MAXPUNCHFRAME)
+				anim = 0;
+			else
+				anim++;
+			aniFStart = now;
+		}
+		break;
+	case KICK:
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			this->calcDrawRECT();
+			if(anim == MAXKICKFRAME)
+				anim = 0;
 			else
 				anim++;
 			aniFStart = now;

@@ -15,7 +15,7 @@
 #define FRAME_WIDTH		128
 #define FRAME_HEIGHT	128
 
-#define ANIMATIONGAP	120
+#define ANIMATIONGAP	80
 
 class BaseGameEntity
 {
@@ -38,6 +38,7 @@ protected:
 	clock_t now, stunStart, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
+	int animTime, animStartTime;		//total time the animation will take
 public:
 	BaseGameEntity(int ID)
 	{
