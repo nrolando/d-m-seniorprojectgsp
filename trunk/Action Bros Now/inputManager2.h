@@ -11,6 +11,8 @@
 #define INPUT_DOWN  0x0002
 #define INPUT_LEFT	0x0004
 #define INPUT_RIGHT 0x0008
+#define INPUT_F		0x0010
+#define INPUT_D		0x0020
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 

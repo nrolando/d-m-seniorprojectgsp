@@ -63,6 +63,16 @@ void InputManager2::setInput()
 		inputflag |= INPUT_DOWN;
 	else
 		inputflag = inputflag &(~INPUT_DOWN);
+//F and D is for punch and kick atm
+	if(KEYDOWN(buffer, DIK_F))
+		inputflag |= INPUT_F;
+	else
+		inputflag = inputflag &(~INPUT_F);
+
+	if(KEYDOWN(buffer, DIK_D))
+		inputflag |= INPUT_D;
+	else
+		inputflag = inputflag &(~INPUT_D);
 
 	downflag = (inputflag^lastinput)&inputflag;
 }
@@ -99,22 +109,32 @@ char InputManager2::getInput()
 		//move up
 		return 'u';
 	}
-	if(inputflag & INPUT_DOWN)
+	else if(inputflag & INPUT_DOWN)
 	{
 		//move down
 		return 'd';
 	}
-	if(inputflag & INPUT_LEFT)
+	else if(inputflag & INPUT_LEFT)
 	{
 		//move left
 		return 'l';
 	}
-	if(inputflag & INPUT_RIGHT)
+	else if(inputflag & INPUT_RIGHT)
 	{
 		//move right
 		return 'r';
 	}
-	
+//this is punch/kick
+	if(inputflag & INPUT_F)
+	{
+		//move camera right
+		return 'p';
+	}
+	else if(inputflag & INPUT_D)
+	{
+		//move camera right
+		return 'k';
+	}
 	else
 		return 'i';
 }

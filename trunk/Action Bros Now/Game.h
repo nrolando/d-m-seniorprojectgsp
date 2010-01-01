@@ -9,7 +9,7 @@
 #include <windows.h>
 
 //12-2
-//made the graphics stuff private 
+//made the graphics stuff private
 //added the update function
 //the graphics stuff is now handled soely by the engine
 
