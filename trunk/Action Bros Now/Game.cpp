@@ -93,14 +93,17 @@ bool Game::update(clock_t ct)
 	//include collision.cpp file for this
 	if(player->actionPossible(input))
 	{
-		//need to make these functions
-		player->DoAction(input,inputMan);
+		if(!inputMan->isLocked())
+		{	
+			if(player->DoAction(input) == ATTACK)
+				inputMan->lock();
+		}
 		//write this
 		//handleInteractions();
 	}
+	if(player->UpdatePlayerState(ct) == 1)
+		inputMan->unlock();
 
-
-	player->UpdatePlayerState(ct,inputMan);
 	EntMgr->update(ct);
 	graphics->updateCamera(player->getDrawInfo());
 

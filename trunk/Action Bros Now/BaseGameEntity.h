@@ -3,7 +3,6 @@
 
 #include "Status.h"
 #include "common.h"
-#include "InputManager2.h"
 #include "spriteContainer.h"
 #include <string>
 #include <ctime>
