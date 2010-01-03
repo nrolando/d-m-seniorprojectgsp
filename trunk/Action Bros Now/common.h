@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #define MAXCHARSIZE			50
+#define DEBUGMODE   1		//for bug testing *DO NOT CHANGE OR DELETE*
 
 #include <d3d9.h>
 #include <d3dx9tex.h>
@@ -11,6 +12,8 @@ struct spriteSheet
 	char key;
 	char sheetName[MAXCHARSIZE];
 	LPDIRECT3DTEXTURE9 gTexture;
+	LPDIRECT3DTEXTURE9 hBoxTexture;
+	LPDIRECT3DTEXTURE9 tBoxTexture;
 };
 
 struct Tile
@@ -37,7 +40,7 @@ struct eSprInfo
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, ATTACK, SPECIAL, STUN,
+	IDLE, WALK, PUNCH, KICK, SPECIAL, STUN,
 };
 
 #endif

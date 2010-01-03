@@ -29,13 +29,14 @@ class Enemy : public BaseGameEntity
 		bool isAlive();
 
 		/* Updates for HP/MP and States*/
-		virtual void calcDrawRECT()
-	{
-		sprInfo.drawRect.left = anim * sprInfo.width;
-		sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
-		sprInfo.drawRect.top = state_frame * sprInfo.height;
-		sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
-	}
+		virtual void calcDrawRECT(int state)
+		{
+			sprInfo.drawRect.left = anim * sprInfo.width;
+			sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
+			sprInfo.drawRect.top = state_frame * sprInfo.height;
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+		}
+
 		virtual void UpdateStat(int stat, int val);
 		virtual void UpdateState(clock_t);
 

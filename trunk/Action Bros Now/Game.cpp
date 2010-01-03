@@ -6,7 +6,7 @@ Game::Game()
 
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
-	player = new Player("Hero!");
+	player = new Player("Baek");
 	//inputMan = new InputManager2(hInstance,wndHandle);
 }
 
@@ -15,7 +15,7 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 {
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
-	player = new Player("Hero!");
+	player = new Player("Baek");
 	level = new Level();
 	inputMan = new InputManager2(HI, hWnd);
 }
@@ -94,13 +94,13 @@ bool Game::update(clock_t ct)
 	if(player->actionPossible(input))
 	{
 		//need to make these functions
-		player->DoAction(input);
+		player->DoAction(input,inputMan);
 		//write this
 		//handleInteractions();
 	}
 
 
-	player->UpdateState(ct);
+	player->UpdatePlayerState(ct,inputMan);
 	EntMgr->update(ct);
 	graphics->updateCamera(player->getDrawInfo());
 
@@ -108,7 +108,9 @@ bool Game::update(clock_t ct)
 //that way we dont render when not necessary
 	graphics->BeginRender();
 	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getTiles(), (level->getProg()%3));
-	display_time(ct, 20);
+	if(DEBUGMODE)
+		display_time(ct, 20);
+
 	graphics->EndRender();
 
 	return true;

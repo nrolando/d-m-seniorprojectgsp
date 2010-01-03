@@ -37,7 +37,7 @@ void Enemy::UpdateState(clock_t ct)
 
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
-			this->calcDrawRECT();
+			this->calcDrawRECT(state);
 
 			if(anim < 3)
 				anim++;

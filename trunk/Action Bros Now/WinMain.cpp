@@ -1,6 +1,3 @@
-/* 
-possible bugs: is it just me, or is the game really really laggy
-*/
 #include "Game.h"
 #include <windows.h>
 
@@ -19,7 +16,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	clock_t now;
 	
 	MSG msg;
-
+ 
 	// call our function to init and create our window
 	if (!initWindow(hInstance))
 	{

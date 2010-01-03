@@ -163,26 +163,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Boss.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BossOwnedStates.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Enemy.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EnemyOwnedStates.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EntityManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Game.cpp"
 				>
 			</File>
@@ -203,10 +183,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Player.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\spriteContainer.cpp"
 				>
 			</File>
@@ -221,31 +197,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\BaseGameEntity.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Boss.h"
-				>
-			</File>
-			<File
-				RelativePath=".\BossOwnedStates.h"
-				>
-			</File>
-			<File
 				RelativePath=".\common.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Enemy.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EnemyOwnedStates.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EntityManager.h"
 				>
 			</File>
 			<File
@@ -269,10 +221,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Player.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Sprite.h"
 				>
 			</File>
@@ -280,6 +228,16 @@
 				RelativePath=".\spriteContainer.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<Filter
+			Name="StateMachine"
+			>
 			<File
 				RelativePath=".\State.h"
 				>
@@ -290,10 +248,64 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="Entities"
 			>
+			<File
+				RelativePath=".\BaseGameEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Boss.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Boss.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Enemy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Enemy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EntityManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EntityManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Player.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="EntityStateMachine"
+			>
+			<File
+				RelativePath=".\BossOwnedStates.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BossOwnedStates.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EnemyOwnedStates.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EnemyOwnedStates.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

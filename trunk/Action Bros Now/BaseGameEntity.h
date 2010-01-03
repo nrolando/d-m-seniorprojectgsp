@@ -3,19 +3,19 @@
 
 #include "Status.h"
 #include "common.h"
+#include "InputManager2.h"
 #include "spriteContainer.h"
 #include <string>
 #include <ctime>
 
 #define maxcharsize		50
 
+#define ANIMATIONGAP	75
 //all sprite sheets will have same frame width/height? if so, take out of eSprInfo and just use this
 //right now, the player is instatiated with these values and the enemy reads its dimensions from file
 //this is not being used
 #define FRAME_WIDTH		128
 #define FRAME_HEIGHT	128
-
-#define ANIMATIONGAP	80
 
 class BaseGameEntity
 {
@@ -46,7 +46,7 @@ public:
 		name = GetNameOfEntity(ID);
 		state = anim = 0;
 	}
-	//the constructor for enemies and bosses
+	//the constructor for entities and bosses
 	BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *ptr)
 	{
 		entity_ID = ID;
@@ -80,11 +80,10 @@ public:
 	
 	virtual ~BaseGameEntity(){}
 
-	virtual void calcDrawRECT() = 0;
-
-	virtual void UpdateStat(int stat, int val) = 0;
+	//Update Functions
+	virtual void calcDrawRECT(int) = 0;
+	virtual void UpdateStat(int, int) = 0;
 	virtual void UpdateState(clock_t) = 0;
-	//virtual void setImg(/* *DirectXSurface */);
 
 	//move player according to velocity
 	void move()					{ sprInfo.POS += vel; }

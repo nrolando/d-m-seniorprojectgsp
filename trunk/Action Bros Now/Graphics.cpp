@@ -285,6 +285,20 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 	l_pos.z = ((playerSprite.POS.y - playerSprite.height) + 500.0f)/1000.0f;
 	gSprite->Draw(playerSprite.ss_ptr->gTexture, &playerSprite.drawRect, NULL, &l_pos, 0xFFFFFFFF);
 
+    //Draw for Debug mode here
+	if(DEBUGMODE)
+	{
+		D3DXVECTOR3 b_pos;
+		b_pos.x = l_pos.x;  
+		b_pos.y = l_pos.y + 48; //offset y position so that the hitbox is with sprite
+		b_pos.z = l_pos.z;
+
+		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/hBox.png", &playerSprite.ss_ptr->hBoxTexture);
+		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/tBox.png", &playerSprite.ss_ptr->tBoxTexture);
+		gSprite->Draw(playerSprite.ss_ptr->hBoxTexture, &playerSprite.hitBox, NULL, &b_pos, 0xFFFFFFFF);
+		gSprite->Draw(playerSprite.ss_ptr->tBoxTexture, &playerSprite.threatBox, NULL, &b_pos, 0xFFFFFFFF);
+	}
+
 	//draw the entities
 //TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
@@ -317,7 +331,7 @@ void Graphics::displayTime(clock_t _time, int y)	//elapsed time
 	rct.top = y;
 	rct.bottom = rct.top + 50;
 
-	sprintf_s(display, (size_t)MAXCHARSIZE, "elapsed time: %i  CPS: %i", _time, CLOCKS_PER_SEC);
+	sprintf_s(display, "Milliseconds: %i  CPS: %i", _time, CLOCKS_PER_SEC);
 
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);

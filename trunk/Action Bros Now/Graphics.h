@@ -11,8 +11,6 @@
 #include <ctime>
 #include <vector>
 
-//couldn't render textures using the D3DFVF_DIFFUSE flag.
-#define DIRECTINPUT_VERSION		0x0800
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
