@@ -1,4 +1,4 @@
-./lvl0sprites/lvl0-0.jpg#L
+./lvl0sprites/lvl0-0.png#L
 ./lvl0sprites/wood.jpg#_
 ./lvl0sprites/sheddoor.jpg#-
 ./lvl0sprites/shackwindow.jpg#[

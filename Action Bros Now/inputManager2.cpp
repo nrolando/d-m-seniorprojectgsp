@@ -5,6 +5,7 @@ InputManager2::InputManager2(HINSTANCE hInstance, HWND wndHandle)
 	inputflag = 0;
 	downflag  = 0;
 	lastinput = 0;
+	locked = false;
 
 	//create the DI object
 	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION,
@@ -63,78 +64,146 @@ void InputManager2::setInput()
 		inputflag |= INPUT_DOWN;
 	else
 		inputflag = inputflag &(~INPUT_DOWN);
-//F and D is for punch and kick atm
-	if(KEYDOWN(buffer, DIK_F))
-		inputflag |= INPUT_F;
+	if(KEYDOWN(buffer, DIK_Z))  //player punch action
+		inputflag |= INPUT_Z;
 	else
-		inputflag = inputflag &(~INPUT_F);
+		inputflag = inputflag &(~INPUT_Z);
 
-	if(KEYDOWN(buffer, DIK_D))
-		inputflag |= INPUT_D;
+	if(KEYDOWN(buffer, DIK_X)) //player kick action
+		inputflag |= INPUT_X;
 	else
-		inputflag = inputflag &(~INPUT_D);
+		inputflag = inputflag &(~INPUT_X);
+
+	if(KEYDOWN(buffer, DIK_C)) //player special action
+		inputflag |= INPUT_C;
+	else
+		inputflag = inputflag &(~INPUT_C);
 
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
 char InputManager2::getInput()
 {
-
-	/////////////////////
-	//the movement keys//
-	/////////////////////
-
 	//these are diagonal movement
-	if((KEYDOWN(buffer, DIK_UP)) & (KEYDOWN(buffer, DIK_RIGHT)))
+	if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
 	{
-		//wxyz
-		return 'w';
+		//player attacks while moving//
+		if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'w';
 	}
-	if((KEYDOWN(buffer, DIK_UP)) & (KEYDOWN(buffer, DIK_LEFT)))
+	if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
 	{
-		return 'x';
+		//player attacks while moving//
+		if(inputflag & INPUT_UP && inputflag & INPUT_LEFT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_UP && inputflag & INPUT_LEFT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_UP && inputflag & INPUT_LEFT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'x';
 	}
-	if((KEYDOWN(buffer, DIK_DOWN)) & (KEYDOWN(buffer, DIK_RIGHT)))
+	if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
 	{
-		return 'y';
+		//player attacks while moving//
+		if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'y';
 	}
-	if((KEYDOWN(buffer, DIK_DOWN)) & (KEYDOWN(buffer, DIK_LEFT)))
+	if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
 	{
-		return 'z';
+		//player attacks while moving//
+		if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'z';
 	}
 
-	//these are normal movement
+	//Player movement//
 	if(inputflag & INPUT_UP)
 	{
-		//move up
-		return 'u';
+		//player attacks while moving//
+		if(inputflag & INPUT_UP && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'u'; //move player up
 	}
 	else if(inputflag & INPUT_DOWN)
 	{
-		//move down
-		return 'd';
+		//player attacks while moving//
+		if(inputflag & INPUT_DOWN && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'd'; //move player down
 	}
 	else if(inputflag & INPUT_LEFT)
 	{
-		//move left
-		return 'l';
+		//player attacks while moving//
+		if(inputflag & INPUT_LEFT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else
+			return 'l'; //move player left
 	}
 	else if(inputflag & INPUT_RIGHT)
 	{
-		//move right
-		return 'r';
+		//player attacks while moving//
+		if(inputflag & INPUT_RIGHT && inputflag & INPUT_Z)
+			return 'p';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_X)
+			return 'k';
+		else if(inputflag & INPUT_RIGHT && inputflag & INPUT_C)
+			return 's';
+		else			//else if only movement
+			return 'r';
 	}
-//this is punch/kick
-	if(inputflag & INPUT_F)
+	
+	//Input for Player Attack Actions//
+	if(downflag & INPUT_Z)
 	{
 		//move camera right
 		return 'p';
 	}
-	else if(inputflag & INPUT_D)
+	
+	if(downflag & INPUT_X)
 	{
 		//move camera right
 		return 'k';
 	}
+	
+	if(downflag & INPUT_C)
+	{
+		//move camera right
+		return 's';
+	}
+
 	else
 		return 'i';
 }
+

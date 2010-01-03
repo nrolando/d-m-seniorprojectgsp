@@ -11,8 +11,9 @@
 #define INPUT_DOWN  0x0002
 #define INPUT_LEFT	0x0004
 #define INPUT_RIGHT 0x0008
-#define INPUT_F		0x0010
-#define INPUT_D		0x0020
+#define INPUT_Z		0x0010
+#define INPUT_X		0x0020
+#define INPUT_C		0x0040
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
@@ -35,6 +36,7 @@ private:
 
 	char inBuffer[3];		//for combos
 	char buffer[256];		//for the DI stuff
+	bool locked;
 
 	clock_t curTime;
 	clock_t prevTime;
@@ -45,6 +47,9 @@ public:
 
 	void setInput();
 	char getInput();
+	void unlock() {locked = false;}
+	void lock() {locked = true;}
+	bool isLocked() {return locked;}
 
 };
 #endif
