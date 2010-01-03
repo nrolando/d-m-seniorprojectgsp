@@ -23,7 +23,7 @@ public:
 	bool isAlive();
 	
 	/* Attribute Related functions */
-	void DoAction(char,InputManager2*);
+	PlayerStates DoAction(char);
 	void setState(int s) {state=s;}
 	void setSheetPtr(spriteSheet*);
 	void takeDMG(int DMG) {health -= DMG;}
@@ -36,7 +36,7 @@ public:
 	int getpPower() {pPower;}
 	std::string getName()	{ return name;}
 
-	void UpdatePlayerState(clock_t,InputManager2*);
+	int UpdatePlayerState(clock_t);
 	virtual void calcDrawRECT(int);
 	virtual void UpdateStat(int stat,int val);
 	virtual void UpdateState(clock_t) {};

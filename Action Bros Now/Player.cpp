@@ -53,10 +53,10 @@ void Player::UpdateStat(int stat, int val)
 	}
 }
 
-void Player::DoAction(char input,InputManager2* tempInp)
+PlayerStates Player::DoAction(char input)
 {
-	if(!tempInp->isLocked())
-	{
+	//if(!tempInp->isLocked())
+	//{
 		if(input == 'l')
 		{
 			vel.x = -speed;
@@ -65,6 +65,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		else if(input == 'r')
 		{
@@ -74,6 +76,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		else if(input == 'd')
 		{
@@ -83,6 +87,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		else if(input == 'u')
 		{
@@ -92,6 +98,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		else if(input == 'w')
 		{
@@ -101,6 +109,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		//up & left
 		else if(input == 'x')
@@ -111,6 +121,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		//down & right
 		else if(input == 'y')
@@ -121,6 +133,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		//down & left
 		else if(input == 'z')
@@ -131,6 +145,8 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			if(state == IDLE)
 				anim = 0;
 			state = WALK;
+
+			return WALK;
 		}
 		else if(input == 'p')
 		{
@@ -144,6 +160,7 @@ void Player::DoAction(char input,InputManager2* tempInp)
 				anim = 0;
 				state = PUNCH;
 			}
+			return ATTACK;
 		}
 		else if(input == 'k')
 		{
@@ -158,6 +175,7 @@ void Player::DoAction(char input,InputManager2* tempInp)
 				anim = 0;
 				state = KICK;
 			}
+			return ATTACK;
 		}
 		else
 		{
@@ -167,10 +185,11 @@ void Player::DoAction(char input,InputManager2* tempInp)
 			}
 			vel.x = vel.y = vel.z = 0.0f;
 		}
-	}
+
+	return IDLE;
 }
 
-void Player::UpdatePlayerState(clock_t time, InputManager2* input)
+int Player::UpdatePlayerState(clock_t time)
 {
 	now = clock();
 
@@ -205,89 +224,75 @@ void Player::UpdatePlayerState(clock_t time, InputManager2* input)
 			}
 			break;
 		case IDLE:
-			if(!input->isLocked())
+			//if time to switch frame of animation
+			if(now - aniFStart >= ANIMATIONGAP)
 			{
-				//if time to switch frame of animation
-				if(now - aniFStart >= ANIMATIONGAP)
-				{
-					//make sure state enum value matches up with location on sprite sheet!
-					//set the rect to the correct area of the sprite sheet
-					this->calcDrawRECT(state);
+				//make sure state enum value matches up with location on sprite sheet!
+				//set the rect to the correct area of the sprite sheet
+				this->calcDrawRECT(state);
 
-					//loop to the beginning of animation
-					if(anim >= MAXIDLEFRAME-1)
-						anim = 0;
-					else
-						anim++;
-					aniFStart = now;
-				}
-				break;
+				//loop to the beginning of animation
+				if(anim >= MAXIDLEFRAME-1)
+					anim = 0;
+				else
+					anim++;
+				aniFStart = now;
 			}
+			break;
 		case WALK:
-			if(!input->isLocked())
+			//if time to switch frame of animation
+			if(now - aniFStart >= ANIMATIONGAP)
 			{
-				//if time to switch frame of animation
-				if(now - aniFStart >= ANIMATIONGAP)
-				{
-					//make sure state enum value matches up with location on sprite sheet!
-					//set the rect to the correct area of the sprite sheet
-					this->calcDrawRECT(state);
+				//make sure state enum value matches up with location on sprite sheet!
+				//set the rect to the correct area of the sprite sheet
+				this->calcDrawRECT(state);
 
-					//loop to the beginning of animation
-					if(anim >= MAXWALKFRAME-1)
-						anim = 1;
-					//advance 1 frame
-					else
-						anim++;
-					aniFStart = now;
-				}
+				//loop to the beginning of animation
+				if(anim >= MAXWALKFRAME-1)
+					anim = 1;
+				//advance 1 frame
+				else
+					anim++;
+				aniFStart = now;
 			}
+			break;
+
 		case PUNCH:
 			//if time to switch frame of animation
 			if(now - aniFStart >= ANIMATIONGAP)
 			{
-				if(!input->isLocked())
-					input->lock();
-
 				this->calcDrawRECT(state);
 
-				if(input->isLocked())
+				if(anim < MAXPUNCHFRAME-1)
+					anim++;
+				else
 				{
-					if(anim < MAXPUNCHFRAME-1)
-						anim++;
-					else
-					{
-						anim = 0;
-						input->unlock();
-					}
+					anim = 0;
+					return 1;
 				}
 				aniFStart = now;
-			}
+			}			
 			break;
 
 		case KICK:
 			if(now - aniFStart >= ANIMATIONGAP)
 			{
-				if(!input->isLocked())
-					input->lock();
-
 				this->calcDrawRECT(state);
 
-				if(input->isLocked())
+				if(anim < MAXKICKFRAME-1)
+					anim++;
+				else
 				{
-					if(anim < MAXKICKFRAME-1)
-						anim++;
-					else
-					{
-						anim = 0;
-						input->unlock();
-					}
+					anim = 0;
+					return 1;
 				}
+
 				aniFStart = now;
 			}
 			break;
 	}
 	this->move();
+	return 0;
 }
 
 void Player::calcDrawRECT(int state)
