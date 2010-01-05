@@ -88,11 +88,11 @@ char InputManager2::getInput()
 	if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'w';
@@ -100,11 +100,11 @@ char InputManager2::getInput()
 	if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'x';
@@ -112,11 +112,11 @@ char InputManager2::getInput()
 	if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'y';
@@ -124,11 +124,11 @@ char InputManager2::getInput()
 	if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'z';
@@ -138,11 +138,11 @@ char InputManager2::getInput()
 	if(inputflag & INPUT_UP)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'u'; //move player up
@@ -150,11 +150,11 @@ char InputManager2::getInput()
 	else if(inputflag & INPUT_DOWN)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'd'; //move player down
@@ -162,11 +162,11 @@ char InputManager2::getInput()
 	else if(inputflag & INPUT_LEFT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else
 			return 'l'; //move player left
@@ -174,11 +174,11 @@ char InputManager2::getInput()
 	else if(inputflag & INPUT_RIGHT)
 	{
 		//player attacks while moving//
-		if(inputflag & INPUT_Z)
+		if(downflag & INPUT_Z)
 			return 'p';
-		else if(inputflag & INPUT_X)
+		else if(downflag & INPUT_X)
 			return 'k';
-		else if(inputflag & INPUT_C)
+		else if(downflag & INPUT_C)
 			return 's';
 		else			//else if only movement
 			return 'r';

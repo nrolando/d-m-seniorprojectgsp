@@ -15,6 +15,9 @@ Graphics::~Graphics()
 
 bool Graphics::initD3D(HWND hwnd)
 {
+
+	HRESULT hr;
+
 	//create direct3D object
 	if( NULL == ( pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
 	{
@@ -33,18 +36,20 @@ bool Graphics::initD3D(HWND hwnd)
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
-	
+	hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
+                                      & d3dpp, &pd3dDevice );
 
 	//create direct3D device
-    if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                      & d3dpp, &pd3dDevice ) ) )
+    if( FAILED(hr))
     {
-        return false;
+        pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                      & d3dpp, &pd3dDevice );
     }
 
 	//create the sprite
-	HRESULT hr=D3DXCreateSprite(pd3dDevice,&gSprite);
+	hr=D3DXCreateSprite(pd3dDevice,&gSprite);
 	if (FAILED(hr))
 		return false;
 
