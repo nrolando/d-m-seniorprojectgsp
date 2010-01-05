@@ -85,7 +85,16 @@ public:
 	virtual void UpdateState(clock_t) = 0;
 
 	//move player according to velocity
-	void move()					{ sprInfo.POS += vel; }
+	void move(clock_t TIME)
+	{
+		TIME = TIME/CLOCKS_PER_SEC;		//convert to seconds
+		if(TIME < 1)
+			TIME = 1;
+
+		sprInfo.POS.x += vel.x*TIME;
+		sprInfo.POS.y += vel.y*TIME;
+		sprInfo.POS.z += vel.z*TIME;
+	}
 
 	//get methods
 	std::string		getName()		{ return name; }

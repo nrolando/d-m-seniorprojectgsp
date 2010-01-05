@@ -94,7 +94,7 @@ bool Game::update(clock_t ct)
 	if(player->actionPossible(input))
 	{
 		if(!inputMan->isLocked())
-		{	
+		{
 			if(player->DoAction(input) == ATTACK)
 				inputMan->lock();
 		}

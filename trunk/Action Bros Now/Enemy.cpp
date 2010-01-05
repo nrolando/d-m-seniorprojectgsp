@@ -48,7 +48,7 @@ void Enemy::UpdateState(clock_t ct)
 		}
 		break;
 	};
-	this->move();
+	this->move(ct);
 }
 
 void Enemy::ChangeState(State<Enemy>* pNewState)

@@ -152,6 +152,8 @@ PlayerStates Player::DoAction(char input)
 		{
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
+//this checks if the animation is done, if not, nothing happens
+//note: all player input action should be done inside this if statement
 			if(state != PUNCH && animTime <= clock() - animStartTime)
 			{
 				//set the animation time
@@ -166,7 +168,8 @@ PlayerStates Player::DoAction(char input)
 		{
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
-		
+//this checks if the animation is done, if not, nothing happens
+//note: all player input action should be done inside this if statement
 			if(state != KICK && animTime <= clock() - animStartTime)
 			{
 				//set the animation time
@@ -291,7 +294,7 @@ int Player::UpdatePlayerState(clock_t time)
 			}
 			break;
 	}
-	this->move();
+	this->move(time);
 	return 0;
 }
 
