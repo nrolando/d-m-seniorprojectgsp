@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\soundManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\spriteContainer.cpp"
 				>
 			</File>
@@ -218,6 +222,10 @@
 			</File>
 			<File
 				RelativePath=".\Level.h"
+				>
+			</File>
+			<File
+				RelativePath=".\soundManager.h"
 				>
 			</File>
 			<File
