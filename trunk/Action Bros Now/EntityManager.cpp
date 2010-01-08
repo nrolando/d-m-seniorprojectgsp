@@ -61,16 +61,24 @@ bool EntityManager::loadFromFile(int prog)
 	return true;
 }
 
-bool EntityManager::update(clock_t _time)
+void EntityManager::updateEnemyState()
 {
-//this is all for testing atm; donnie, this is where you take over
 	for(unsigned int i = 0; i < entityVector.size(); i++)
 	{
-		entityVector[i]->UpdateState(_time);
+		entityVector[i]->UpdateState();
 	}
+}
 
-	return true;
+void EntityManager::moveEnemies(clock_t et)
+{
+	for(unsigned int i = 0; i < entityVector.size(); i++)
+	{
+		entityVector[i]->move(et);
+	}
+}
 
+bool EntityManager::update()
+{
 	//iterate through the vector list
 	/*std::vector<BaseGameEntity*>::size_type vsz = entityVector.size();
 	for(int i = 0; i < vsz; ++i)
@@ -95,4 +103,5 @@ bool EntityManager::update(clock_t _time)
 				break;
 			}
 		}*/
+	return true;
 }

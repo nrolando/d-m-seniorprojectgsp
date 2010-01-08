@@ -43,10 +43,12 @@ bool Graphics::initD3D(HWND hwnd)
 	//create direct3D device
     if( FAILED(hr))
     {
-        pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+       hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
                                       D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                                       & d3dpp, &pd3dDevice );
     }
+	if( FAILED(hr))
+		return false;
 
 	//create the sprite
 	hr=D3DXCreateSprite(pd3dDevice,&gSprite);

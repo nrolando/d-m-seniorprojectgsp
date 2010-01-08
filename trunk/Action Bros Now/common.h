@@ -2,7 +2,7 @@
 #define COMMON_H
 
 #define MAXCHARSIZE			50
-#define DEBUGMODE   1		//for bug testing *DO NOT CHANGE OR DELETE*
+#define DEBUGMODE   0		//for bug testing *DO NOT CHANGE OR DELETE*
 
 #include <d3d9.h>
 #include <d3dx9tex.h>
@@ -41,6 +41,14 @@ struct eSprInfo
 enum PlayerStates
 {
 	IDLE, WALK, PUNCH, KICK, SPECIAL, STUN, ATTACK
+};
+
+//THIS IS NICKS TEMP STATES FOR THE ENEMY SO I CAN GET HIM TO WALK, AND STUN TO TEST COLLISION
+//IDRK HOW ENEMYOWNEDSTATES WORK YET
+enum EnemyStates
+{
+	//CS = clawSoldier
+	CS_WALK, CS_RUN, CS_HIT1, CS_DIE, CS_HIT2
 };
 
 #endif

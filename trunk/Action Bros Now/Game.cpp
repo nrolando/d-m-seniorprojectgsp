@@ -85,26 +85,42 @@ bool Game::loadLvl()
 bool Game::update(clock_t ct)
 {
 	char input = ' ';
+	int hitEnemy;
 
 	//get user input
 	inputMan->setInput();
 	input = inputMan->getInput();
 
-	//include collision.cpp file for this
-	if(player->actionPossible(input))
+	//checks movement collision
+	if(actionPossible(input))
 	{
 		if(!inputMan->isLocked())
 		{
 			if(player->DoAction(input) == ATTACK)
+			{
 				inputMan->lock();
+			}
 		}
 		//write this
 		//handleInteractions();
 	}
-	if(player->UpdatePlayerState(ct) == 1)
-		inputMan->unlock();
 
-	EntMgr->update(ct);
+	//check for collision (needs to be moved/adjusted)
+	hitEnemy = checkAttacks();
+	
+	if(hitEnemy >= 0)
+	{
+		//drawHealthBars(EntMgr->getEnt(hitEnemy), player);
+	}
+
+	//update player state, enemies state
+	if(player->UpdatePlayerState() == 1)
+		inputMan->unlock();
+	EntMgr->updateEnemyState();
+	//move entities
+	player->move(ct);
+	EntMgr->moveEnemies(ct);
+	//update camera
 	graphics->updateCamera(player->getDrawInfo());
 
 //RENDER :D we can put this inside if statements and check to see if anything has changed
@@ -118,6 +134,50 @@ bool Game::update(clock_t ct)
 
 	return true;
 }
+
+bool Game::actionPossible(char input)
+{
+	//Code to check if player new position 
+	//is greater than the player's walking area
+	//or if the player has collided with something
+	return true;
+}
+
+int Game::checkAttacks()
+{
+	int index = -1;
+	eSprInfo pSprInfo = player->getDrawInfo();
+	eSprInfo e_SprInfo;
+	int distance = 0;	//distance from players threat.top to enemys hit.top
+	const int depthRange = 10;	//collision range for distance
+	std::vector<BaseGameEntity*> E = EntMgr->getEntVec();
+
+	if(player->checkFrames())
+	{
+		for(int i = 0; i < E.size(); ++i)
+		{
+			e_SprInfo = E[i]->getDrawInfo();
+			if(pSprInfo.threatBox.right >= e_SprInfo.hitBox.left && pSprInfo.threatBox.left <= e_SprInfo.hitBox.right)
+			{
+				distance = pSprInfo.threatBox.top - e_SprInfo.hitBox.top;
+				if(distance < 0)
+					distance *= -1;	//get absolute value
+				if(distance < depthRange)
+				{
+				//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
+				//one enemy function - takeDmg();
+					//enemyTakeDme(player->GetDmg());
+					E[i]->setState(CS_DIE);
+					E[i]->resetTimes();
+					player->setLAF(player->getAnimFrame());
+					index = i;
+				}
+			}
+		}
+	}
+	return index;
+}
+
 /*
 void Game::handleInteractions()
 {

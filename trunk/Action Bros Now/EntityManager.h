@@ -26,11 +26,15 @@ public:
 
 	std::vector<BaseGameEntity*> getEntVec()	{ return entityVector; }
 	
-	bool update(clock_t);
+	bool update();
+	void moveEnemies(clock_t);
+	void updateEnemyState();
 	//creates the entity vector for the enemies for this level
 	bool loadFromFile(int);		//progress
 	void loadFromFile(char* fileName);
 	void setImgPtrs();
+
+	int getVecSize()		{ return entityVector.size(); }
 
 	//update the entities
 	//void entiyUpdate(Player* player);
