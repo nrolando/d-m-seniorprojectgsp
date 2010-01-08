@@ -4,6 +4,24 @@
 #define MAXCHARSIZE			50
 #define DEBUGMODE   0		//for bug testing *DO NOT CHANGE OR DELETE*
 
+/////////////////////////////
+//defines for input manager//
+/////////////////////////////
+#define INPUT_UP	0x0001
+#define INPUT_DOWN  0x0002
+#define INPUT_LEFT	0x0004
+#define INPUT_RIGHT 0x0008
+#define INPUT_Z		0x0010
+#define INPUT_X		0x0020
+#define INPUT_C		0x0040
+
+#define KEYDOWN(name, key) (name[key] & 0x80)
+
+#define COMBO_TIME 10000
+/////////////////////////////
+//end input manager defines//
+/////////////////////////////
+
 #include <d3d9.h>
 #include <d3dx9tex.h>
 
@@ -50,5 +68,9 @@ enum EnemyStates
 	//CS = clawSoldier
 	CS_WALK, CS_RUN, CS_HIT1, CS_DIE, CS_HIT2
 };
+
+//predefined combo inputs for the inputmanager
+static char comboDefinitions[2][3] = {'p','p','p',
+									  'r','r','p',};
 
 #endif

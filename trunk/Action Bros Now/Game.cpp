@@ -88,10 +88,12 @@ bool Game::update(clock_t ct)
 	int hitEnemy;
 
 	//get user input
-	inputMan->setInput();
-	input = inputMan->getInput();
+	inputMan->setInput(ct);
+	input = inputMan->getInput(ct);
 
 	//checks movement collision
+	//MIKE: this locked mechanic needs to be augmented to make combos
+	//work properly
 	if(actionPossible(input))
 	{
 		if(!inputMan->isLocked())
