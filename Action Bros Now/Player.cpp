@@ -99,6 +99,10 @@ PlayerStates Player::DoAction(char input)
 
 		return WALK;
 	}
+	else if(input == '1')
+	{
+		return WALK;
+	}
 	//down & right
 	else if(input == 'y')
 	{

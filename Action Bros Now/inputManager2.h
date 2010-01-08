@@ -5,19 +5,10 @@
 #include <dinput.h>
 #include <time.h>
 
+#include "common.h"
+
 //#define DIRECTINPUT_VERSION 0x800
 
-#define INPUT_UP	0x0001
-#define INPUT_DOWN  0x0002
-#define INPUT_LEFT	0x0004
-#define INPUT_RIGHT 0x0008
-#define INPUT_Z		0x0010
-#define INPUT_X		0x0020
-#define INPUT_C		0x0040
-
-#define KEYDOWN(name, key) (name[key] & 0x80)
-
-#define COMBO_TIME 500
 
 class InputManager2
 {
@@ -34,19 +25,26 @@ private:
 	//iterator for the inBuffer
 	int buffIterator;
 
-	char inBuffer[3];		//for combos
+	char comboBuffer[3];	//for combos
 	char buffer[256];		//for the DI stuff
 	bool locked;
 
-	clock_t curTime;
-	clock_t prevTime;
+	//for the combo window
+	clock_t comboStart;
+
+	char comboCheck();
+	//makes getInput smaller 
+	char charReturn();
 
 public:
 	InputManager2(HINSTANCE hInstance, HWND wndHandle);
 	~InputManager2();
 
-	void setInput();
-	char getInput();
+	void setInput(clock_t);
+	char getInput(clock_t);
+
+	//going to need to look at this and mess with 
+	//for combo stuff
 	void unlock() {locked = false;}
 	void lock() {locked = true;}
 	bool isLocked() {return locked;}
