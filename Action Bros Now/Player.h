@@ -15,11 +15,9 @@ class Player : public BaseGameEntity
 private:
 	//character attributes
 	int special, pPower, kPower, sPower, lives;
-
 public:
 	Player(std::string);
 
-	bool actionPossible(char);
 	bool isAlive();
 	
 	/* Attribute Related functions */
@@ -36,12 +34,9 @@ public:
 	int getpPower() {pPower;}
 	std::string getName()	{ return name;}
 
-	int UpdatePlayerState(clock_t);
+	int UpdatePlayerState();
 	virtual void calcDrawRECT(int);
 	virtual void UpdateStat(int stat,int val);
-	virtual void UpdateState(clock_t) {};
-
-	//virtual void setImg(/* *DirectXSurface */);
-	//virtual char getName();
+	virtual void UpdateState() {};
 };
 #endif

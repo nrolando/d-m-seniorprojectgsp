@@ -12,29 +12,6 @@ Player::Player(std::string n):BaseGameEntity(n)
 	vel = D3DXVECTOR3(3.0f,3.0f,0.0f);
 	state = IDLE;
 	now = stunStart = aniFStart = animTime = 0;
-
-/*sprInfo Initialization*/
-//initializing for player sprites shouldn't be done here. check Player::initSprInfo()
-//sprInfo->POS = D3DXVECTOR3(50.0f,300.0f,0.0f);
-	
-}
-/*
-void Player::initSprInfo(int w, int h, D3DXVECTOR3 pos)
-{
-	sprInfo->ss_ptr = spriteContainer::getInstance()->SS_getElem(0);
-	sprInfo->width = w;
-	sprInfo->height = h;
-	sprInfo->POS = pos;
-
-}
-*/
-
-bool Player::actionPossible(char input)
-{
-	//Code to check if player new position 
-	//is greater than the player's walking area
-	//or if the player has collided with something
-	return true;
 }
 
 void Player::UpdateStat(int stat, int val)
@@ -55,144 +32,151 @@ void Player::UpdateStat(int stat, int val)
 
 PlayerStates Player::DoAction(char input)
 {
-	//if(!tempInp->isLocked())
-	//{
-		if(input == 'l')
-		{
-			vel.x = -speed;
-			vel.y = 0.0f;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+	if(input == 'l')
+	{
+		vel.x = -speed;
+		vel.y = 0.0f;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		else if(input == 'r')
-		{
-			vel.x = speed;
-			vel.y = 0.0f;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	else if(input == 'r')
+	{
+		vel.x = speed;
+		vel.y = 0.0f;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		else if(input == 'd')
-		{
-			vel.x = 0.0f;
-			vel.y = -speed;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	else if(input == 'd')
+	{
+		vel.x = 0.0f;
+		vel.y = -speed;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		else if(input == 'u')
-		{
-			vel.x = 0.0f;
-			vel.y = speed;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	else if(input == 'u')
+	{
+		vel.x = 0.0f;
+		vel.y = speed;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		else if(input == 'w')
-		{
-			vel.x = speed;
-			vel.y = speed;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	else if(input == 'w')
+	{
+		vel.x = speed;
+		vel.y = speed;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		//up & left
-		else if(input == 'x')
-		{
-			vel.x = -speed;
-			vel.y = speed;
-			vel.z = 0.0f;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	//up & left
+	else if(input == 'x')
+	{
+		vel.x = -speed;
+		vel.y = speed;
+		vel.z = 0.0f;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		//down & right
-		else if(input == 'y')
-		{
-			vel.x = speed;
-			vel.y = -speed;
-			vel.z = 0.0;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	//down & right
+	else if(input == 'y')
+	{
+		vel.x = speed;
+		vel.y = -speed;
+		vel.z = 0.0;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		//down & left
-		else if(input == 'z')
-		{
-			vel.x = -speed;
-			vel.y = -speed;
-			vel.z = 0.0;
-			if(state == IDLE)
-				anim = 0;
-			state = WALK;
+		return WALK;
+	}
+	//down & left
+	else if(input == 'z')
+	{
+		vel.x = -speed;
+		vel.y = -speed;
+		vel.z = 0.0;
+		if(state == IDLE)
+			anim = 0;
+		state = WALK;
 
-			return WALK;
-		}
-		else if(input == 'p')
-		{
-			//the player stops to kick
-			vel.x = vel.y = vel.z = 0.0f;
+		return WALK;
+	}
+	else if(input == 'p')
+	{
+		//the player stops to kick
+		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-			if(state != PUNCH && animTime <= clock() - animStartTime)
-			{
-				//set the animation time
-				animTime = (MAXPUNCHFRAME) * ANIMATIONGAP;
-				animStartTime = clock();
-				anim = 0;
-				state = PUNCH;
-			}
-			return ATTACK;
-		}
-		else if(input == 'k')
+		if(state != PUNCH && animTime <= clock() - animStartTime)
 		{
-			//the player stops to kick
-			vel.x = vel.y = vel.z = 0.0f;
+		//set the animation time
+		animTime = (MAXPUNCHFRAME) * ANIMATIONGAP;
+		animStartTime = clock();
+		anim = 0;
+		state = PUNCH;
+		//set hit frames
+		hitFrames[0] = 1;
+		hitFrames[1] = -1;
+		hitFrames[2] = -1;
+		}
+		return ATTACK;
+	}
+	else if(input == 'k')
+	{
+		//the player stops to kick
+		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-			if(state != KICK && animTime <= clock() - animStartTime)
-			{
-				//set the animation time
-				animTime = (MAXKICKFRAME) * ANIMATIONGAP;
-				animStartTime = clock();
-				anim = 0;
-				state = KICK;
-			}
-			return ATTACK;
-		}
-		else
+		if(state != KICK && animTime <= clock() - animStartTime)
 		{
-			if(animTime <= clock() - animStartTime)	//or anything that's not supposed to idle itself
-			{
-				state = IDLE;
-			}
-			vel.x = vel.y = vel.z = 0.0f;
+			//set the animation time
+			animTime = (MAXKICKFRAME) * ANIMATIONGAP;
+			animStartTime = clock();
+			anim = 0;
+			state = KICK;
+			//set hit frames
+			hitFrames[0] = 3;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
 		}
+		return ATTACK;
+	}
+	else
+	{
+		if(animTime <= clock() - animStartTime)	//or anything that's not supposed to idle itself
+		{
+			state = IDLE;
+			lastAttFrame = -1;		//reset
+		}
+		vel.x = vel.y = vel.z = 0.0f;
+	}
 
 	return IDLE;
 }
 
-int Player::UpdatePlayerState(clock_t time)
+int Player::UpdatePlayerState()
 {
 	now = clock();
 
@@ -294,7 +278,7 @@ int Player::UpdatePlayerState(clock_t time)
 			}
 			break;
 	}
-	this->move(time);
+
 	return 0;
 }
 

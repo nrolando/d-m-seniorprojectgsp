@@ -10,4 +10,4 @@ private:
 
 public:
 	static soundManager* getInstance();
-}
+};

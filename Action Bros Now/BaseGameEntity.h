@@ -9,7 +9,7 @@
 
 #define maxcharsize		50
 
-#define ANIMATIONGAP	75
+#define ANIMATIONGAP	90
 //all sprite sheets will have same frame width/height? if so, take out of eSprInfo and just use this
 //right now, the player is instatiated with these values and the enemy reads its dimensions from file
 //this is not being used
@@ -32,12 +32,20 @@ protected:
 	//entity velocity
 	float speed;
 	D3DXVECTOR3 vel;
+	//damage being dealt, determine by attack performed, along with any other desired factors
+	//grabbed by game to be passed to the EntityManager to deal the dmg to enemies
+	int dmg;
 
 //animations varibales
 	clock_t now, stunStart, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
 	int animTime, animStartTime;		//total time the animation will take
+
+	//aggressive frames
+	int hitFrames[3];
+	//this variable keeps an aggressive frame from attacking more than once
+	int lastAttFrame;
 public:
 	BaseGameEntity(int ID)
 	{
@@ -82,7 +90,7 @@ public:
 	//Update Functions
 	virtual void calcDrawRECT(int) = 0;
 	virtual void UpdateStat(int, int) = 0;
-	virtual void UpdateState(clock_t) = 0;
+	virtual void UpdateState() = 0;
 
 	//move player according to velocity
 	void move(clock_t TIME)
@@ -104,16 +112,34 @@ public:
 	int				getWidth()		{ return sprInfo.width; }
 	int				getHeight()		{ return sprInfo.height; }
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
+	int getDmg()					{ return dmg; }
+	int getAnimFrame()				{ return anim; }
+	int getLastAttFrame()			{ return lastAttFrame; }
+
 
 	//set methods
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
 	void setSrc(RECT rect)			{ sprInfo.drawRect = rect; }
 	void setSSPtr(spriteSheet *p)   { sprInfo.ss_ptr = p; }
+	void setState(int s)			{ state = s; }
+	void setLAF(int f)				{ lastAttFrame = f; }
 
 	int ID() {return entity_ID;}
 	
-
+	//check if the current animation frame is an aggressive frame and not equal to the last aggressive frame
+	bool checkFrames()
+	{
+		if((anim == hitFrames[0] || anim == hitFrames[1] || anim == hitFrames[2]) && anim != lastAttFrame)
+			return true;
+		else
+			return false;
+	}
+	void resetTimes()
+	{
+		animStartTime = clock();
+		aniFStart = clock();
+	}
 
 };
 

@@ -53,6 +53,11 @@ public:
 	//load level
 	bool loadLvl();
 
+	//player to enemy collision detection
+	bool actionPossible(char);
+	//checks threat boxes against hit boxes. returns index of last enemy to get hit
+	int checkAttacks();
+
 	//camera
 	void moveCamera(D3DXVECTOR3 vec)	{ graphics->moveCamera(vec); }
 
