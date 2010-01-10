@@ -11,8 +11,7 @@
 #include <ctime>
 #include <vector>
 
-#define SCREEN_WIDTH			640
-#define SCREEN_HEIGHT			480
+
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_TEX1)
 #define MAXSPRITESPERSUBLVL		50
 
@@ -45,6 +44,8 @@ private:
 
 //SPRITE STUFF***************{
 	LPD3DXSPRITE	        gSprite;
+	LPDIRECT3DTEXTURE9		hBoxTexture;
+	LPDIRECT3DTEXTURE9		tBoxTexture;
 //*********************************}
 
 	//direct text
@@ -73,6 +74,10 @@ public:
 	//load the sprite containers
 	bool loadEntityCont();
 	bool loadSpriteCont(int);
+	//Entities health and special guage
+	void DisplayBossStat(int,int,int,int);   //Displays Boss Health Bar
+	void DisplayEnemyHealth(int,int);  //Displays Enemy Health Bar
+	void DisplayPlayerStat(int,int,int,int); //Displays Player Health Bar
 
 	void displayTime(clock_t, int);
 

@@ -17,24 +17,23 @@ class Player : public BaseGameEntity
 {
 private:
 	//character attributes
-	int special, pPower, kPower, sPower, lives;
+	int special, maxSpecial, pPower, kPower, sPower, lives;
 public:
 	Player(std::string);
-
 	bool isAlive();
 	
 	/* Attribute Related functions */
-	PlayerStates DoAction(char);
-	void setState(int s) {state=s;}
+	void setState(int s)			{ state=s;}
+	void takeDMG(int DMG)			{ health -= DMG;}
 	void setSheetPtr(spriteSheet*);
-	void takeDMG(int DMG) {health -= DMG;}
-	
+	PlayerStates DoAction(char);
+
 	/*Get Functions for Attributes*/
-	int getHealth() {health;}
-	int getSpecialMeter() {special;}
-	int getkPower() {kPower;}
-	int getsPower() {sPower;}
-	int getpPower() {pPower;}
+	int getSpecial()		{ return special;}
+	int getMaxSpecial()     { return maxSpecial;}
+	int getkPower()			{ return kPower;}
+	int getsPower()			{ return sPower;}
+	int getpPower()			{ return pPower;}
 	std::string getName()	{ return name;}
 
 	int UpdatePlayerState();

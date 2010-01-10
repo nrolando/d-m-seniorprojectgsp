@@ -7,6 +7,7 @@ Game::Game()
 	graphics = new Graphics();
 	EntMgr = new EntityManager();
 	player = new Player("Baek");
+	input = ' ';
 	//inputMan = new InputManager2(hInstance,wndHandle);
 }
 
@@ -17,6 +18,7 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	EntMgr = new EntityManager();
 	player = new Player("Baek");
 	level = new Level();
+	input = ' ';
 	inputMan = new InputManager2(HI, hWnd);
 }
 
@@ -121,9 +123,13 @@ bool Game::update(clock_t ct)
 	graphics->BeginRender();
 	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getTiles(), (level->getProg()%3));
 	if(DEBUGMODE)
-		display_time(ct, 20);
+		display_time(ct, 50);
 
+	graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+	graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+	graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
 	graphics->EndRender();
+	
 
 	return true;
 }

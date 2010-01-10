@@ -16,6 +16,8 @@
 class Game
 {
 private:
+	char input;
+	
 	//input Engine
 	InputManager2* inputMan;
 
