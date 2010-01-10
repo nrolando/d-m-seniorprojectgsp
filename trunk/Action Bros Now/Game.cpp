@@ -153,7 +153,7 @@ int Game::checkAttacks()
 
 	if(player->checkFrames())
 	{
-		for(int i = 0; i < E.size(); ++i)
+		for(unsigned int i = 0; i < E.size(); ++i)
 		{
 			e_SprInfo = E[i]->getDrawInfo();
 			if(pSprInfo.threatBox.right >= e_SprInfo.hitBox.left && pSprInfo.threatBox.left <= e_SprInfo.hitBox.right)

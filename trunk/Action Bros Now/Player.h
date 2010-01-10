@@ -12,6 +12,8 @@
 #define MAXSTUNFRAME	0
 #define MAXCOMBO1FRAME	20
 
+#define MAXKICKANIMATION  50
+#define MAXPUNCHANIMATION 30
 
 class Player : public BaseGameEntity
 {
