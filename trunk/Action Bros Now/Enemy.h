@@ -9,10 +9,6 @@
 #define CSWALKFRAME			3	//number of walking frames
 #define CSDIEFRAME			3
 
-
-//this is my temporary way of doing this til enemyownedstates are implemented
-#define AN_ENEMY_STATE		0	
-
 class Enemy : public BaseGameEntity
 {
 	private:
@@ -32,7 +28,14 @@ class Enemy : public BaseGameEntity
 		bool isAlive();
 
 		/* Updates for HP/MP and States*/
-		virtual void calcDrawRECT(int state);
+		virtual void calcDrawRECT(int state)
+		{
+			sprInfo.drawRect.left = anim * sprInfo.width;
+			sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
+			sprInfo.drawRect.top = state_frame * sprInfo.height;
+			sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+		}
+
 		virtual void UpdateStat(int stat, int val);
 		virtual void UpdateState();
 
