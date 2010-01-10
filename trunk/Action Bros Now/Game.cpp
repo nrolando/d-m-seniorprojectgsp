@@ -67,19 +67,28 @@ bool Game::loadLvl()
 	{
 	//reload the sprite container for the tiles and enemies for the next level
 		if(!graphics->loadSpriteCont(level->getProg()))
+		{
+			MessageBox(NULL, "Unable to load sprite container", "ERROR", MB_OK);
 			return false;
+		}
 		lastLvl = (level->getProg()/3);
 	}
 
 //load the tiles for the next level
 	if(!level->loadTiles())
+	{
+		MessageBox(NULL, "Unable to load tiles", "ERROR", MB_OK);
 		return false;
+	}
 //load the enemies
 	if(!EntMgr->loadFromFile(level->getProg()))
+	{
+		MessageBox(NULL, "Unable to load enemies", "ERROR", MB_OK);
 		return false;
+	}
 
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
-	player->setPos(D3DXVECTOR3(-1200.0f, 0.0f, 0.0f));
+	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
 	return true;
 }
@@ -114,6 +123,19 @@ bool Game::update(clock_t ct)
 	EntMgr->updateEnemyState();
 	//move entities
 	player->move(ct);
+
+	//checks if player reaches end of level
+	if(player->getPos().x > 1350.0f)
+	{
+		//increment progress and loadLvl
+		level->incrementProg();
+		if(!this->loadLvl())
+		{
+			MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+			return false;
+		}
+	}
+
 	EntMgr->moveEnemies(ct);
 	//update camera
 	graphics->updateCamera(player->getDrawInfo());

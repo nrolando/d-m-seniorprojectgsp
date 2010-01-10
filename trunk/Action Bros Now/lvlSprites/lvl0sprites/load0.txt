@@ -1,4 +1,5 @@
 ./lvlSprites/lvl0sprites/lvl0-0.png#L
+./lvlSprites/lvl0sprites/lvl0-1.jpg#P
 ./lvlsprites/EntityStatMeters/hGuage.png#h
 ./lvlsprites/EntityStatMeters/sGuage.png#s
 ./lvlsprites/EntityStatMeters/eGuage.png#e

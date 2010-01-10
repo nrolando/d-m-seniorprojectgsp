@@ -27,6 +27,9 @@ bool EntityManager::loadFromFile(int prog)
 	spriteSheet *ss_ptr;
 	int id = 0;
 
+	if(!entityVector.empty())
+		entityVector.clear();
+
 	sprintf_s(fname, (size_t)maxcharsize, "./enemySprites/mobs%i-%i.txt", lvl, sublvl);
 
 	inFile.open(fname);
