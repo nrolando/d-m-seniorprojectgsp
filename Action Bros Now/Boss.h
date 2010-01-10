@@ -24,7 +24,7 @@ public:
 	bool isAlive();
 
 	virtual void UpdateStat(int stat, int val);
-	virtual void UpdateState(clock_t);
+	virtual void UpdateState();
 	
 	//virtual void UpdateState();
 	//virtual void setImg(/* *DirectXSurface */);

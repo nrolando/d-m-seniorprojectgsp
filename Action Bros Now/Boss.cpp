@@ -32,7 +32,7 @@ void Boss::UpdateStat(int stat, int val)
 	}
 }
 
-void Boss::UpdateState(clock_t ct)
+void Boss::UpdateState()
 {
 	CurrentState->Execute(this);
 }
