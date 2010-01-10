@@ -38,8 +38,6 @@ void Enemy::UpdateState()
 
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
-			this->calcDrawRECT(state);
-
 			if(anim < CSWALKFRAME)
 				anim++;
 			else
@@ -53,8 +51,6 @@ void Enemy::UpdateState()
 
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
-			this->calcDrawRECT(state);
-
 			if(anim < CSWALKFRAME)
 				anim++;
 			else
@@ -66,6 +62,8 @@ void Enemy::UpdateState()
 			state = CS_WALK;
 		break;
 	};
+
+	this->calcDrawRECT();
 }
 
 void Enemy::ChangeState(State<Enemy>* pNewState)
@@ -94,4 +92,43 @@ bool Enemy::isAlive()
 		return true;
 	else
 		return false;
+}
+
+void Enemy::calcDrawRECT()
+{
+//**copied from player, will need adjustments**
+	sprInfo.drawRect.left = anim * sprInfo.width;
+	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
+	sprInfo.drawRect.top = state * sprInfo.height;
+	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+
+	//Enemy's hitBox for dmg verification
+	sprInfo.hitBox.top  = long(sprInfo.POS.y);
+	sprInfo.hitBox.left = long(sprInfo.POS.x + 85);
+	sprInfo.hitBox.right = sprInfo.hitBox.left + 43;
+	sprInfo.hitBox.bottom  = sprInfo.hitBox.top + 70;
+
+	//Enemy's threatBox for dmg verification
+	//while in DEBUG this will be shown
+	if(state == PUNCH)
+	{
+		sprInfo.threatBox.top  = long(sprInfo.POS.y);
+		sprInfo.threatBox.left = long(sprInfo.POS.x);
+		sprInfo.threatBox.right = sprInfo.threatBox.left + 75;
+		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
+	}
+	else if(state == KICK)
+	{
+		sprInfo.threatBox.top  = long(sprInfo.POS.y);
+		sprInfo.threatBox.left = long(sprInfo.POS.x);
+		sprInfo.threatBox.right = sprInfo.threatBox.left + 90;
+		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
+	}
+	else
+	{
+		sprInfo.threatBox.top  = -8880;
+		sprInfo.threatBox.left = -8880;
+		sprInfo.threatBox.right = -8880;
+		sprInfo.threatBox.bottom = -8880;
+	}
 }

@@ -88,7 +88,7 @@ public:
 	virtual ~BaseGameEntity(){}
 
 	//Update Functions
-	virtual void calcDrawRECT(int) = 0;
+	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
 	virtual void UpdateState() = 0;
 

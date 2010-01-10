@@ -19,6 +19,9 @@ bool Level::loadTiles()
 	char fname[MAXCHARSIZE];
 	Tile tempTile;
 
+	if(!tiles.empty())
+		tiles.clear();
+
 	//tempTile src rect will always be the same unless its moving off screen
 	tempTile.src.left = 0;
 	tempTile.src.right = tempTile.w;

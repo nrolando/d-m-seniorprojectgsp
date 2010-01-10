@@ -34,9 +34,11 @@ void Player::UpdateStat(int stat, int val)
 
 PlayerStates Player::DoAction(char input)
 {
+	clock_t now = clock();
+
 	if(input == 'l')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = -speed;
 			vel.y = 0.0f;
@@ -54,7 +56,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'r')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = speed;
 			vel.y = 0.0f;
@@ -72,7 +74,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'd')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = 0.0f;
 			vel.y = -speed;
@@ -90,7 +92,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'u')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = 0.0f;
 			vel.y = speed;
@@ -109,7 +111,7 @@ PlayerStates Player::DoAction(char input)
 	//up & right
 	else if(input == 'w')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = speed;
 			vel.y = speed;
@@ -128,7 +130,7 @@ PlayerStates Player::DoAction(char input)
 	//up & left
 	else if(input == 'x')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = -speed;
 			vel.y = speed;
@@ -147,7 +149,7 @@ PlayerStates Player::DoAction(char input)
 	//down & right
 	else if(input == 'y')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = speed;
 			vel.y = -speed;
@@ -166,7 +168,7 @@ PlayerStates Player::DoAction(char input)
 	//down & left
 	else if(input == 'z')
 	{
-		if(animTime <= clock() - animStartTime)
+		if(animTime <= now - animStartTime)
 		{
 			vel.x = -speed;
 			vel.y = -speed;
@@ -188,11 +190,11 @@ PlayerStates Player::DoAction(char input)
 		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state != PUNCH && animTime <= clock() - animStartTime)
+		if(state != PUNCH && animTime <= now - animStartTime)
 		{
 		//set the animation time
-		animTime = (MAXPUNCHFRAME+1) * ANIMATIONGAP;
-		animStartTime = clock();
+		animTime = (MAXPUNCHFRAME) * MAXPUNCHANIMATION;
+		animStartTime = now;
 		anim = 0;
 		state = PUNCH;
 		lastAttFrame = -1;
@@ -209,11 +211,11 @@ PlayerStates Player::DoAction(char input)
 		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state != KICK && animTime <= clock() - animStartTime)
+		if(state != KICK && animTime <= now - animStartTime)
 		{
 			//set the animation time
-			animTime = (MAXKICKFRAME+1) * ANIMATIONGAP;
-			animStartTime = clock();
+			animTime = (MAXKICKFRAME) * MAXKICKANIMATION;
+			animStartTime = now;
 			anim = 0;
 			state = KICK;
 			lastAttFrame = -1;
@@ -231,11 +233,11 @@ PlayerStates Player::DoAction(char input)
 
 //take out the latter part of the if statement to activate 
 //combo at any time, even if player's current attack isn't finished
-		if(state != COMBO1)// && animTime <= clock() - animStartTime)
+		if(state != COMBO1)// && animTime <= now - animStartTime)
 		{
 			//set the animation time
-			animTime = (MAXCOMBO1FRAME+3) * ANIMATIONGAP;
-			animStartTime = clock();
+			animTime = (MAXCOMBO1FRAME) * MAXCOMBO1ANIMATION;
+			animStartTime = now;
 			anim = 0;
 			state = COMBO1;
 			lastAttFrame = -1;
@@ -248,7 +250,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else
 	{
-		if(animTime <= clock() - animStartTime && state != IDLE)	//or anything that's not supposed to idle itself
+		if(animTime <= now - animStartTime && state != IDLE)	//or anything that's not supposed to idle itself
 		{
 			vel.x = vel.y = vel.z = 0.0f;
 			//set hit frames
@@ -271,124 +273,104 @@ int Player::UpdatePlayerState()
 
 	switch(state)
 	{
-		case IDLE:
-			//if time to switch frame of animation
-			if(now - aniFStart >= ANIMATIONGAP)
-			{
-				//make sure state enum value matches up with location on sprite sheet!
-				//set the rect to the correct area of the sprite sheet
-				this->calcDrawRECT(state);
-
-				//loop to the beginning of animation
-				if(anim < MAXIDLEFRAME)
-					anim++;
-				else
-					anim = 0;
-				aniFStart = now;
-			}
-			break;
-		case WALK:
-			//if time to switch frame of animation
-			if(now - aniFStart >= ANIMATIONGAP)
-			{
-				//make sure state enum value matches up with location on sprite sheet!
-				//set the rect to the correct area of the sprite sheet
-				this->calcDrawRECT(state);
-
-				//loop to the beginning of animation
-				if(anim < MAXWALKFRAME)
-					anim++;
-				//advance 1 frame
-				else
-					anim = 0;
-				aniFStart = now;
-			}
-			break;
-
-		case PUNCH:
-			//if time to switch frame of animation
-			if(now - aniFStart >= MAXPUNCHANIMATION)
-			{
-				this->calcDrawRECT(state);
-
-				if(anim < MAXPUNCHFRAME)
-					anim++;
-				else
-				{
-					anim = 0;
-					flag = 1;
-				}
-				aniFStart = now;
-			}			
-			break;
-
-		case KICK:
-			if(now - aniFStart >= MAXKICKANIMATION)
-			{
-				this->calcDrawRECT(state);
-
-				if(anim < MAXKICKFRAME)
-					anim++;
-				else
-				{
-					anim = 0;
-					flag = 1;
-				}
-
-				aniFStart = now;
-			}
-			break;
-			case STUN:
-			//if has been long enough
-			if(now - stunStart >= STUNTIME)
-			{
-				//switch to first fram of idle state
-				state = IDLE;
+	case IDLE:
+		//if time to switch frame of animation
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of animation
+			if(anim < MAXIDLEFRAME)
+				anim++;
+			else
 				anim = 0;
-				aniFStart = now;
-				//make sure state enum value matches up with location on sprite sheet!
-				//set the rect to the correct area of the sprite sheet
-				this->calcDrawRECT(state);
-			}
-			//if still stunned and time to switch frame of animation
-			else if(now - aniFStart >= ANIMATIONGAP)
+			aniFStart = now;
+		}
+		break;
+	case WALK:
+		//if time to switch frame of animation
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of animation
+			if(anim < MAXWALKFRAME)
+				anim++;
+			//advance 1 frame
+			else
+				anim = 0;
+			aniFStart = now;
+		}
+		break;
+
+	case PUNCH:
+		//if time to switch frame of animation
+		if(now - aniFStart >= MAXPUNCHANIMATION)
+		{
+			if(anim < MAXPUNCHFRAME)
+				anim++;
+			else
 			{
-				//make sure state enum value matches up with location on sprite sheet!
-				//set the rect to the correct area of the sprite sheet
-				this->calcDrawRECT(state);
-
-				//loop to the beginning of the animation
-				if(anim >= MAXSTUNFRAME-1)
-					anim = 0;
-				//advance 1 frame
-				else
-					anim++;
-				aniFStart = now;
+				anim = 0;
+				flag = 1;
 			}
-			break;
-		case COMBO1:
-			if(now - aniFStart >= ANIMATIONGAP)
+			aniFStart = now;
+		}			
+		break;
+
+	case KICK:
+		if(now - aniFStart >= MAXKICKANIMATION)
+		{
+			if(anim < MAXKICKFRAME)
+				anim++;
+			else
 			{
-				this->calcDrawRECT(state);
-
-				if(anim < MAXCOMBO1FRAME)
-					anim++;
-				else
-				{
-					anim = 0;
-					flag = 1;
-				}
-
-				aniFStart = now;
+				anim = 0;
+				flag = 1;
 			}
-			break;
 
+			aniFStart = now;
+		}
+		break;
+	case STUN:
+		//if has been long enough
+		if(now - stunStart >= STUNTIME)
+		{
+			//switch to first fram of idle state
+			state = IDLE;
+			anim = 0;
+			aniFStart = now;
+		}
+		//if still stunned and time to switch frame of animation
+		else if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of the animation
+			if(anim >= MAXSTUNFRAME-1)
+				anim = 0;
+			//advance 1 frame
+			else
+				anim++;
+			aniFStart = now;
+		}
+		break;
+	case COMBO1:
+		if(now - aniFStart >= MAXCOMBO1ANIMATION)
+		{
+			if(anim < MAXCOMBO1FRAME)
+				anim++;
+			else
+			{
+				anim = 0;
+				flag = 1;
+			}
+
+			aniFStart = now;
+		}
+		break;
 	}
+
+	this->calcDrawRECT();
 
 	return flag;
 }
 
-void Player::calcDrawRECT(int state)
+void Player::calcDrawRECT()
 {
 	sprInfo.drawRect.left = anim * sprInfo.width;
 	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
@@ -419,10 +401,10 @@ void Player::calcDrawRECT(int state)
 	}
 	else
 	{
-		sprInfo.threatBox.top  = 0;
-		sprInfo.threatBox.left = 0;
-		sprInfo.threatBox.right = 0;
-		sprInfo.threatBox.bottom  = 0;
+		sprInfo.threatBox.top  = -8880;
+		sprInfo.threatBox.left = -8880;
+		sprInfo.threatBox.right = -8880;
+		sprInfo.threatBox.bottom = -8880;
 	}
 }
 
