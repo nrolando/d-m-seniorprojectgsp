@@ -278,7 +278,7 @@ int Player::UpdatePlayerState()
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
 			//loop to the beginning of animation
-			if(anim < MAXIDLEFRAME)
+			if(anim < MAXIDLEFRAME-1)
 				anim++;
 			else
 				anim = 0;
@@ -290,7 +290,7 @@ int Player::UpdatePlayerState()
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
 			//loop to the beginning of animation
-			if(anim < MAXWALKFRAME)
+			if(anim < MAXWALKFRAME-1)
 				anim++;
 			//advance 1 frame
 			else
@@ -303,7 +303,7 @@ int Player::UpdatePlayerState()
 		//if time to switch frame of animation
 		if(now - aniFStart >= MAXPUNCHANIMATION)
 		{
-			if(anim < MAXPUNCHFRAME)
+			if(anim < MAXPUNCHFRAME-1)
 				anim++;
 			else
 			{
@@ -317,7 +317,7 @@ int Player::UpdatePlayerState()
 	case KICK:
 		if(now - aniFStart >= MAXKICKANIMATION)
 		{
-			if(anim < MAXKICKFRAME)
+			if(anim < MAXKICKFRAME-1)
 				anim++;
 			else
 			{
