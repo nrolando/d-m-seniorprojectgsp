@@ -109,10 +109,12 @@ void Graphics::BeginRender()
 {
 	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
 	pd3dDevice->BeginScene();
+	gSprite->Begin(D3DXSPRITE_ALPHABLEND);
 }
 
 void Graphics::EndRender()
 {
+	gSprite->End();
 	pd3dDevice->EndScene();
 	// Present the backbuffer contents to the display
 	pd3dDevice->Present( NULL, NULL, NULL, NULL );
@@ -150,6 +152,166 @@ LPDIRECT3DTEXTURE9 Graphics::getTextureFromBitmap(char *filename, int &w, int &h
 	return texture;
 }
 
+void Graphics::DisplayPlayerStat(int currhealth,int maxhealth,int currspecial,int maxspecial)
+{
+	HRESULT hr;
+
+	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(HEALTHBAR_POSX,HEALTHBAR_POSY,HEALTHBAR_POSZ),
+				healPos  = D3DXVECTOR3(HEALTH_POSX,HEALTH_POSY,HEALTH_POSZ),
+				sBarPos  = D3DXVECTOR3(SPECIALBAR_POSX,SPECIALBAR_POSY,SPECIALBAR_POSZ),
+				specPos	 = D3DXVECTOR3(SPECIAL_POSX,SPECIAL_POSY,SPECIAL_POSZ);
+	
+	RECT healthBar,
+		 health,
+		 specialBar,
+		 special;
+	
+	D3DXIMAGE_INFO hBar,
+				   sBar,
+				   sMeter,
+				   hMeter;
+
+	//this checks if the sprite image information was 
+	//successfully retrieved for health and special
+	//upon failure nothing will be drawn
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('h')->sheetName, &hBar);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Health Bar", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('s')->sheetName, &sBar);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Special Bar", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('S')->sheetName, &sMeter);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Special Meter", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('H')->sheetName, &hMeter);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Health Meter", "ERROR", MB_OK);}
+	else
+	{
+		//Health and Special Bars
+		healthBar.top = 0;
+		healthBar.left = 0;
+		healthBar.right = healthBar.left + hBar.Width;
+		healthBar.bottom = healthBar.top + hBar.Height;
+
+		specialBar.top = 0;
+		specialBar.left = 0;
+		specialBar.right = specialBar.left + sBar.Width;
+		specialBar.bottom = specialBar.top + sBar.Height;
+
+		//This fills the Bars
+		health.top = 0;
+		health.left = 0;
+		health.right = long(health.left + ((float)currhealth/(float)maxhealth * hMeter.Width));
+		health.bottom = health.top + hMeter.Height;
+
+		special.top = 0;
+		special.left = 0;
+		special.right = long(special.left + ((float)currspecial/(float)maxspecial *  + sMeter.Width));
+		special.bottom = special.top + sMeter.Height;
+
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('h')->gTexture, &healthBar, NULL, &hBarPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('H')->gTexture, &health, NULL, &healPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('s')->gTexture, &specialBar, NULL, &sBarPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('S')->gTexture, &special, NULL, &specPos, 0xFFFFFFFF);
+	}
+	
+}
+
+void Graphics::DisplayEnemyHealth(int currhealth,int maxhealth)
+{
+	HRESULT hr;
+
+	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(ENEMY_HEALTHBAR_POSX,ENEMY_HEALTHBAR_POSY,ENEMY_HEALTHBAR_POSZ),
+				healPos  = D3DXVECTOR3(ENEMY_HEALTH_POSX,ENEMY_HEALTH_POSY,ENEMY_HEALTH_POSZ);
+	
+	RECT healthBar,
+		 health;
+	
+	D3DXIMAGE_INFO hBar,
+				   hMeter;
+
+	//this checks if the sprite image information was 
+	//successfully retrieved for health and special
+	//upon failure nothing will be drawn
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('e')->sheetName, &hBar);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Enemy Health Bar", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('E')->sheetName, &hMeter);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Enemy Special Bar", "ERROR", MB_OK);}
+	else
+	{
+		//Health and Bar
+		healthBar.top = 0;
+		healthBar.left = 0;
+		healthBar.right = healthBar.left + hBar.Width;
+		healthBar.bottom = healthBar.top + hBar.Height;
+
+		//This fills the Bar
+		health.top = 0;
+		health.left = 0;
+		health.right = long(health.left + ((float)currhealth/(float)maxhealth * hMeter.Width));
+		health.bottom = health.top + hMeter.Height;
+
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('e')->gTexture, &healthBar, NULL, &hBarPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('E')->gTexture, &health, NULL, &healPos, 0xFFFFFFFF);
+	}
+}
+
+void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int maxspecial)
+{
+	HRESULT hr;
+
+	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(BOSS_HEALTHBAR_POSX,BOSS_HEALTHBAR_POSY,BOSS_HEALTHBAR_POSZ),
+				healPos  = D3DXVECTOR3(BOSS_HEALTH_POSX,BOSS_HEALTH_POSY,BOSS_HEALTH_POSZ),
+				specPos	 = D3DXVECTOR3(BOSS_SPECIAL_POSX,BOSS_SPECIAL_POSY,BOSS_SPECIAL_POSZ);
+	
+	RECT healthBar,
+		 health,
+		 special;
+	
+	D3DXIMAGE_INFO hBar,
+				   sMeter,
+				   hMeter;
+
+	//this checks if the sprite image information was 
+	//successfully retrieved for health and special
+	//upon failure nothing will be drawn
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('b')->sheetName, &hBar);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Health Bar", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('B')->sheetName, &hMeter);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Special Bar", "ERROR", MB_OK);}
+	hr = D3DXGetImageInfoFromFile(spriteContainer::getInstance()->getElemKey('D')->sheetName, &sMeter);
+	if FAILED (hr)
+	{MessageBox(NULL, "Unable to display Player Special Meter", "ERROR", MB_OK);}
+	else
+	{
+		//Health and Special Bars
+		healthBar.top = 0;
+		healthBar.left = 0;
+		healthBar.right = healthBar.left + hBar.Width;
+		healthBar.bottom = healthBar.top + hBar.Height;
+
+		//This fills the Bars
+		health.top = 0;
+		health.left = 0;
+		health.right = long(health.left + ((float)currhealth/(float)maxhealth * hMeter.Width));
+		health.bottom = health.top + hMeter.Height;
+
+		special.top = 0;
+		special.left = 0;
+		special.right = long(special.left + ((float)currspecial/(float)maxspecial *  + sMeter.Width));
+		special.bottom = special.top + sMeter.Height;
+
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('b')->gTexture, &healthBar, NULL, &hBarPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('B')->gTexture, &health, NULL, &healPos, 0xFFFFFFFF);
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('D')->gTexture, &special, NULL, &specPos, 0xFFFFFFFF);
+	}
+}
+
 //this loads the entity (player and enemy) spritesheet continer. this is called once
 bool Graphics::loadEntityCont()
 {
@@ -166,6 +328,12 @@ bool Graphics::loadEntityCont()
 	fin.open(fname);
 	if(!fin.is_open())
 		return false;
+//If in DEBUG MODE then load HIT/THREAT boxes
+	if(DEBUGMODE)
+	{
+		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/hBox.png", &hBoxTexture);
+		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/tBox.png", &tBoxTexture);
+	}
 
 //load the player sheets
 	fin.getline(SS.sheetName, MAXCHARSIZE, '\n');
@@ -235,10 +403,10 @@ bool Graphics::loadSpriteCont(int prog)
 		fin.get(tempSS.key);
 		fin.ignore();
 		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
-										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
-										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
-										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
-										0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
+									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+									0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
 		spriteContainer::getInstance()->push(tempSS);
 		fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
@@ -252,7 +420,7 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 	RECT src;
 	D3DXVECTOR3 l_pos;
 
-	gSprite->Begin(D3DXSPRITE_ALPHABLEND);
+	
 
 	//draw lvl
 	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
@@ -286,7 +454,7 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 			}
 		}
 	}
-//translate the player's world coordinates into screen coord, then render it
+	//translate the player's world coordinates into screen coord, then render it
 	l_pos.x = float(playerSprite.POS.x - (camPos.x - SCREEN_WIDTH/2.0f));
 	l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - playerSprite.POS.y);
 	l_pos.z = ((playerSprite.POS.y - playerSprite.height) + 500.0f)/1000.0f;
@@ -300,14 +468,12 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 		b_pos.y = l_pos.y + 48; //offset y position so that the hitbox is with sprite
 		b_pos.z = l_pos.z;
 
-		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/hBox.png", &playerSprite.ss_ptr->hBoxTexture);
-		D3DXCreateTextureFromFile(pd3dDevice, "./playerSS/tBox.png", &playerSprite.ss_ptr->tBoxTexture);
-		gSprite->Draw(playerSprite.ss_ptr->hBoxTexture, &playerSprite.hitBox, NULL, &b_pos, 0xFFFFFFFF);
-		gSprite->Draw(playerSprite.ss_ptr->tBoxTexture, &playerSprite.threatBox, NULL, &b_pos, 0xFFFFFFFF);
+		gSprite->Draw(hBoxTexture, &playerSprite.hitBox, NULL, &b_pos, 0xFFFFFFFF);
+		gSprite->Draw(tBoxTexture, &playerSprite.threatBox, NULL, &b_pos, 0xFFFFFFFF);
 	}
 
 	//draw the entities
-//TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
+	//TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
 		if(enemyEntSprites[i]->getPos().x < (camPos.x + SCREEN_WIDTH/2.0f) &&
@@ -323,7 +489,6 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 			}
 		}
 	}
-	gSprite->End();
 }
 
 //display text to the screen
@@ -333,7 +498,7 @@ void Graphics::displayTime(clock_t _time, int y)	//elapsed time
 	char display[MAXCHARSIZE];
 	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 180, 0, 0);
 
-	rct.left = 20;
+	rct.left = 245;
 	rct.right = rct.left + 250;
 	rct.top = y;
 	rct.bottom = rct.top + 50;

@@ -24,6 +24,7 @@ public:
 	//EntityManager(clock_t ct);
 	~EntityManager();
 
+	BaseGameEntity* getEntVec(int i)			{ return entityVector[i];}
 	std::vector<BaseGameEntity*> getEntVec()	{ return entityVector; }
 	
 	bool update();

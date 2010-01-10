@@ -4,7 +4,9 @@
 Player::Player(std::string n):BaseGameEntity(n)
 {
 	health = 100;
-	special = 0;
+	maxHealth = 100;
+	special = 100;
+	maxSpecial = 100;
 	pPower = 20;
 	kPower = 10;
 	sPower = 80;
@@ -305,7 +307,7 @@ int Player::UpdatePlayerState()
 
 		case PUNCH:
 			//if time to switch frame of animation
-			if(now - aniFStart >= ANIMATIONGAP)
+			if(now - aniFStart >= MAXPUNCHANIMATION)
 			{
 				this->calcDrawRECT(state);
 
@@ -321,7 +323,7 @@ int Player::UpdatePlayerState()
 			break;
 
 		case KICK:
-			if(now - aniFStart >= ANIMATIONGAP)
+			if(now - aniFStart >= MAXKICKANIMATION)
 			{
 				this->calcDrawRECT(state);
 

@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 {
 	clock_t then = clock();
 	clock_t now;
-	
+
 	MSG msg;
  
 	// call our function to init and create our window

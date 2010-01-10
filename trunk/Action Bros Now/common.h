@@ -1,9 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define MAXCHARSIZE			50
-#define DEBUGMODE   0		//for bug testing *DO NOT CHANGE OR DELETE*
-
 /////////////////////////////
 //defines for input manager//
 /////////////////////////////
@@ -27,13 +24,67 @@
 #include <d3d9.h>
 #include <d3dx9tex.h>
 
+#define MAXCHARSIZE			50
+///////////DEBUGMODE////////////
+//   Used for Bug Testing	  //
+//When enabled CPU clock speed//
+//and player hitboxes will be //
+//		   displayed		  //
+////////////////////////////////
+#define DEBUGMODE   1
+
+#define SCREEN_WIDTH			640
+#define SCREEN_HEIGHT			480
+
+//Player Macros for player stat screen position//
+//Health
+#define HEALTHBAR_POSX 10
+#define HEALTHBAR_POSY 10
+#define HEALTHBAR_POSZ 0
+#define HEALTH_POSX 35
+#define HEALTH_POSY 10
+#define HEALTH_POSZ 0.35f
+//Special
+#define SPECIALBAR_POSX 10 
+#define	SPECIALBAR_POSY 35
+#define SPECIALBAR_POSZ 0
+#define SPECIAL_POSX 35
+#define SPECIAL_POSY 35
+#define SPECIAL_POSZ 0.35f
+
+//Enemy Macros for enemy stat Screen Position//
+//Health
+#define ENEMY_HEALTHBAR_POSX SCREEN_WIDTH-210
+#define ENEMY_HEALTHBAR_POSY 10
+#define ENEMY_HEALTHBAR_POSZ 0
+#define ENEMY_HEALTH_POSX SCREEN_WIDTH-210
+#define ENEMY_HEALTH_POSY 10
+#define ENEMY_HEALTH_POSZ 0.35f
+
+//Boss Macros for boss stat screen position//
+//Health
+#define BOSS_HEALTHBAR_POSX 0
+#define BOSS_HEALTHBAR_POSY SCREEN_HEIGHT-35
+#define BOSS_HEALTHBAR_POSZ 0
+#define BOSS_HEALTH_POSX 3 
+#define BOSS_HEALTH_POSY SCREEN_HEIGHT-35
+#define BOSS_HEALTH_POSZ 0.35f
+
+//Special
+#define BOSS_SPECIAL_POSX (SCREEN_WIDTH/2)+24
+#define BOSS_SPECIAL_POSY SCREEN_HEIGHT-34
+#define BOSS_SPECIAL_POSZ 0.30f
+
 struct spriteSheet
 {
 	char key;
 	char sheetName[MAXCHARSIZE];
 	LPDIRECT3DTEXTURE9 gTexture;
-	LPDIRECT3DTEXTURE9 hBoxTexture;
-	LPDIRECT3DTEXTURE9 tBoxTexture;
+};
+struct EntitiesOnScreen
+{
+	int column;
+	int row;
 };
 
 struct Tile
@@ -55,6 +106,12 @@ struct eSprInfo
 	spriteSheet *ss_ptr;
 	RECT drawRect, cBox,
 		 threatBox, hitBox;
+};
+
+//Different Entity Types
+enum EntityTypes
+{
+	PLAYER, ENEMY, BOSS
 };
 
 //for the player states

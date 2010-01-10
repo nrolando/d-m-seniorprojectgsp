@@ -28,7 +28,7 @@ protected:
 	//set by getnameofentity(ID);
 	std::string name;
 	bool alive;
-	int health;
+	int health,maxHealth;
 	//entity velocity
 	float speed;
 	D3DXVECTOR3 vel;
@@ -109,6 +109,8 @@ public:
 	spriteSheet*	getSSPtr()		{ return sprInfo.ss_ptr; }
 	RECT			getSrc()		{ return sprInfo.drawRect; }
 	D3DXVECTOR3		getPos()		{ return sprInfo.POS; }
+	int				getHealth()		{ return health;}
+	int				getMaxHealth()	{ return maxHealth;}
 	int				getWidth()		{ return sprInfo.width; }
 	int				getHeight()		{ return sprInfo.height; }
 	eSprInfo		getDrawInfo()	{ return sprInfo; }

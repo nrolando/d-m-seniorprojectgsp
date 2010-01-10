@@ -27,6 +27,7 @@ public:
 	void push(spriteSheet ss)		{ spriteCont.push_back(ss); }
 	size_t size()					{ return spriteCont.size(); }
 	spriteSheet* getElem(int i)		{ return &spriteCont[i]; }
+	spriteSheet* getElemKey(char c);
 
 	//access the entity container (EC)
 	bool EC_isEmpty()					{ return entityCont.empty(); }

@@ -15,3 +15,13 @@ spriteContainer::spriteContainer()
 	return
 		instance;
 }
+
+ spriteSheet* spriteContainer::getElemKey(char key)
+ {
+	 for(unsigned int i = 0; i < spriteCont.size(); ++i)
+	 {
+		 if(spriteCont[i].key == key)
+			return &spriteCont[i];
+	 }
+	 return NULL;
+ }
