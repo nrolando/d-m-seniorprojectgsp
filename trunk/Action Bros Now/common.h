@@ -17,7 +17,9 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME 10000
+#define COMBO_TIME 1000
+#define NUM_COMBOS		2		//number of different combos in comboDefintion
+#define COMBO_HITS		3		//number of hits it takes to complete a combo
 /////////////////////////////
 //end input manager defines//
 /////////////////////////////
@@ -58,7 +60,7 @@ struct eSprInfo
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, SPECIAL, STUN, ATTACK
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, ATTACK
 };
 
 //THIS IS NICKS TEMP STATES FOR THE ENEMY SO I CAN GET HIM TO WALK, AND STUN TO TEST COLLISION

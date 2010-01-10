@@ -5,10 +5,9 @@ InputManager2::InputManager2(HINSTANCE hInstance, HWND wndHandle)
 	inputflag = 0;
 	downflag  = 0;
 	lastinput = 0;
-	locked = false;
 
 	comboStart = 0;
-	buffIterator = 0;
+	iter = 0;
 
 	//create the DI object
 	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION,
@@ -42,8 +41,10 @@ InputManager2::~InputManager2()
     } 
 }
 
-void InputManager2::setInput(clock_t time)
+void InputManager2::setInput()
 {
+	//all the else's in this function seem really pointless
+
 	hr = g_lpDIDevice->GetDeviceState(sizeof(buffer), (LPVOID)&buffer);
 
 	lastinput = inputflag;
@@ -51,12 +52,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_LEFT))
 	{
 		inputflag |= INPUT_LEFT;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'l';
-			buffIterator++;
-	
 	}
 	else
 		inputflag = inputflag &(~INPUT_LEFT);
@@ -64,12 +59,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_RIGHT))
 	{
 		inputflag |= INPUT_RIGHT;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'r';
-			buffIterator++;
-	
 	}
 	else
 		inputflag = inputflag &(~INPUT_RIGHT);
@@ -77,11 +66,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_UP))
 	{
 		inputflag |= INPUT_UP;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'u';
-			buffIterator++;
 	}
 	else
 		inputflag = inputflag &(~INPUT_UP);
@@ -89,12 +73,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_DOWN))
 	{
 		inputflag |= INPUT_DOWN;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'd';
-			buffIterator++;
-
 	}
 	else
 		inputflag = inputflag &(~INPUT_DOWN);
@@ -102,11 +80,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_Z))  //player punch action
 	{
 		inputflag |= INPUT_Z;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'p';
-			buffIterator++;
 	}
 	else
 		inputflag = inputflag &(~INPUT_Z);
@@ -114,11 +87,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_X)) //player kick action
 	{
 		inputflag |= INPUT_X;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 'k';
-			buffIterator++;
 	}
 	else
 		inputflag = inputflag &(~INPUT_X);
@@ -126,11 +94,6 @@ void InputManager2::setInput(clock_t time)
 	if(KEYDOWN(buffer, DIK_C)) //player special action
 	{
 		inputflag |= INPUT_C;
-		if(comboStart == 0)
-			comboStart = time;
-
-		comboBuffer[buffIterator] = 's';
-			buffIterator++;
 	}
 	else
 		inputflag = inputflag &(~INPUT_C);
@@ -138,24 +101,13 @@ void InputManager2::setInput(clock_t time)
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
-char InputManager2::getInput(clock_t now)
+char InputManager2::getInput()
 {
-	//THIS SHOULD WORK CANNOT BREAK POINT TEST
-	//NEED TO PROPERLY AUGMENT LOCKED SYSTEM AND GET AN ANIMATION 
-	//FOR COMBOS IN ORDER TO TEST PROPERLY
-	//either the combo window has closed or the buff is full
-	if(comboStart > 0 && now - comboStart >= COMBO_TIME || buffIterator > 2)
-	{
-		comboStart = 0;
-		buffIterator = 0;
-		//check if combo is correct
-		char temp = comboCheck();
-		//if correct return the combo's char
-		if(temp != 'i')
-			return temp;
-	}
+	char combo;
+	clock_t now = clock();
+
 	//these are diagonal movement
-	else if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
+	if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
 	{
 		char tempC = charReturn();
 		if(tempC != 'i')
@@ -191,6 +143,13 @@ char InputManager2::getInput(clock_t now)
 	//Player movement//
 	if(inputflag & INPUT_UP)
 	{
+		if(downflag & INPUT_UP)
+		{
+			combo = comboCheck('u');
+			if(combo != 'i')
+				return combo;
+		}
+
 		char tempC = charReturn();
 		if(tempC != 'i')
 			return tempC;
@@ -199,6 +158,13 @@ char InputManager2::getInput(clock_t now)
 	}
 	else if(inputflag & INPUT_DOWN)
 	{
+		if(downflag & INPUT_DOWN)
+		{
+			combo = comboCheck('d');
+			if(combo != 'i')
+				return combo;
+		}
+
 		char tempC = charReturn();
 		if(tempC != 'i')
 			return tempC;
@@ -207,6 +173,13 @@ char InputManager2::getInput(clock_t now)
 	}
 	else if(inputflag & INPUT_LEFT)
 	{
+		if(downflag & INPUT_LEFT)
+		{
+			combo = comboCheck('l');
+			if(combo != 'i')
+				return combo;
+		}
+
 		char tempC = charReturn();
 		if(tempC != 'i')
 			return tempC;
@@ -215,6 +188,13 @@ char InputManager2::getInput(clock_t now)
 	}
 	else if(inputflag & INPUT_RIGHT)
 	{
+		if(downflag & INPUT_RIGHT)
+		{
+			combo = comboCheck('r');
+			if(combo != 'i')
+				return combo;
+		}
+
 		char tempC = charReturn();
 		if(tempC != 'i')
 			return tempC;
@@ -225,54 +205,92 @@ char InputManager2::getInput(clock_t now)
 	//Input for Player Attack Actions//
 	if(downflag & INPUT_Z)
 	{
+		combo = comboCheck('p');
+		if(combo != 'i')
+			return combo;
+
 		//move camera right
 		return 'p';
 	}
 	
 	if(downflag & INPUT_X)
 	{
+		combo = comboCheck('k');
+		if(combo != 'i')
+			return combo;
+
 		//move camera right
 		return 'k';
 	}
 	
 	if(downflag & INPUT_C)
 	{
+		combo = comboCheck('s');
+		if(combo != 'i')
+			return combo;
+
 		//move camera right
 		return 's';
 	}
-
-	else
-		return 'i';
+	
+	return 'i';
 }
 
-char InputManager2::comboCheck()
+char InputManager2::comboCheck(char input)
 {
-	int check = -1;
-	//compare the buffer to the predefined combos
-	for(int i = 0; i < 2; i++)
+	bool flag = false;		//set to true when a combo's been completed
+	static int check = -1;
+	clock_t now = clock();
+
+	//resets variables to start checking for new combo initiation
+	if(now - comboStart > COMBO_TIME)
 	{
-		if(check == -1)//if no match keep looking
+		iter = 0;
+		check = -1;
+	}
+
+	//if(iter == 0) look for the first input for any combo, then set combo checking and timer for that combo
+	if(iter == 0)
+	{
+		for(int i = 0; i < NUM_COMBOS; ++i)
 		{
-			for(int j = 0; j < 3; j++)
+			if(input == comboDefinitions[i][iter])
 			{
-				if(comboBuffer[j] == comboDefinitions[i][j])
-					check = i;
-				else
-					check = -1;
+				comboStart = now;
+				iter++;
+				check = i;
 			}
 		}
 	}
-	//return a char based on check
-	//either a combo char or 'i' (nothing)
-	switch(check)
+	else
 	{
-	case 0:
-		return '1';
-	case 1:
-		return '2';
-	default:
-		return 'i';
+		if(input == comboDefinitions[check][iter])
+		{
+			iter++;
+			if(iter == COMBO_HITS)
+				flag = true;
+		}
+				
 	}
+	
+	if(flag)
+	{
+		comboStart = 0;
+		switch(check)
+		{
+		case 0:
+			return '1';
+			break;
+		case 1:
+			return '2';
+			break;
+		default:
+			return 'i';
+			break;
+		};
+	}
+	else
+		return 'i';
 }
 
 char InputManager2::charReturn()

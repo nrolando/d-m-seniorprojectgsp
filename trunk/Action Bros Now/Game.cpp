@@ -88,21 +88,13 @@ bool Game::update(clock_t ct)
 	int hitEnemy;
 
 	//get user input
-	inputMan->setInput(ct);
-	input = inputMan->getInput(ct);
+	inputMan->setInput();
+	input = inputMan->getInput();
 
 	//checks movement collision
-	//MIKE: this locked mechanic needs to be augmented to make combos
-	//work properly
 	if(actionPossible(input))
 	{
-		if(!inputMan->isLocked())
-		{
-			if(player->DoAction(input) == ATTACK)
-			{
-				inputMan->lock();
-			}
-		}
+		player->DoAction(input);
 		//write this
 		//handleInteractions();
 	}
@@ -116,8 +108,7 @@ bool Game::update(clock_t ct)
 	}
 
 	//update player state, enemies state
-	if(player->UpdatePlayerState() == 1)
-		inputMan->unlock();
+	player->UpdatePlayerState();
 	EntMgr->updateEnemyState();
 	//move entities
 	player->move(ct);
