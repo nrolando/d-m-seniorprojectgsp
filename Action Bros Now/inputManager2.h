@@ -22,17 +22,16 @@ private:
 	int downflag;
 	int lastinput;
 
-	//iterator for the inBuffer
-	int buffIterator;
-
-	char comboBuffer[3];	//for combos
 	char buffer[256];		//for the DI stuff
-	bool locked;
 
+//COMBO MEMBERS***************
 	//for the combo window
 	clock_t comboStart;
+	//iterator for combos
+	int iter;
+	char comboCheck(char);
+//COMBO MEMBERS***************
 
-	char comboCheck();
 	//makes getInput smaller 
 	char charReturn();
 
@@ -40,14 +39,7 @@ public:
 	InputManager2(HINSTANCE hInstance, HWND wndHandle);
 	~InputManager2();
 
-	void setInput(clock_t);
-	char getInput(clock_t);
-
-	//going to need to look at this and mess with 
-	//for combo stuff
-	void unlock() {locked = false;}
-	void lock() {locked = true;}
-	bool isLocked() {return locked;}
-
+	void setInput();
+	char getInput();
 };
 #endif
