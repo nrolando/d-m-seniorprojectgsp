@@ -37,7 +37,7 @@ protected:
 	int dmg;
 
 //animations varibales
-	clock_t now, stunStart, aniFStart;
+	clock_t stunStart, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
 	int animTime, animStartTime;		//total time the animation will take
@@ -68,7 +68,8 @@ public:
 		vel.x = -speed;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
-		now = stunStart = aniFStart = 0;
+		stunStart = 0;
+		aniFStart = clock();
 	}
 	//the constructor for the player
 	BaseGameEntity(std::string n)
@@ -82,7 +83,8 @@ public:
 		vel.z = 0.0f;
 		sprInfo.width = FRAME_WIDTH;
 		sprInfo.height = FRAME_HEIGHT;
-		now = stunStart = aniFStart = 0;
+		stunStart = animTime = 0;
+		aniFStart = clock();
 	}
 	
 	virtual ~BaseGameEntity(){}

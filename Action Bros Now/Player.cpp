@@ -13,7 +13,6 @@ Player::Player(std::string n):BaseGameEntity(n)
 	lives = 3;
 	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	state = IDLE;
-	now = stunStart = aniFStart = animTime = 0;
 }
 
 void Player::UpdateStat(int stat, int val)
@@ -48,7 +47,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -66,7 +68,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -84,7 +89,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -102,7 +110,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -121,7 +132,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -140,7 +154,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -159,7 +176,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -178,7 +198,10 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
+			{
+				aniFStart = now;
 				anim = 0;
+			}
 			state = WALK;
 
 			return WALK;
@@ -196,6 +219,7 @@ PlayerStates Player::DoAction(char input)
 		animTime = (MAXPUNCHFRAME) * MAXPUNCHANIMATION;
 		animStartTime = now;
 		anim = 0;
+		aniFStart = now;
 		state = PUNCH;
 		lastAttFrame = -1;
 		//set hit frames
@@ -217,6 +241,7 @@ PlayerStates Player::DoAction(char input)
 			animTime = (MAXKICKFRAME) * MAXKICKANIMATION;
 			animStartTime = now;
 			anim = 0;
+			aniFStart = now;
 			state = KICK;
 			lastAttFrame = -1;
 			//set hit frames
@@ -239,6 +264,7 @@ PlayerStates Player::DoAction(char input)
 			animTime = (MAXCOMBO1FRAME) * MAXCOMBO1ANIMATION;
 			animStartTime = now;
 			anim = 0;
+			aniFStart = now;
 			state = COMBO1;
 			lastAttFrame = -1;
 			//set hit frames
@@ -257,6 +283,7 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
+			aniFStart = now;
 			state = IDLE;
 			anim = 0;
 			lastAttFrame = -1;		//reset
@@ -268,7 +295,7 @@ PlayerStates Player::DoAction(char input)
 
 int Player::UpdatePlayerState()
 {
-	now = clock();
+	clock_t now = clock();
 	int flag = 0;
 
 	switch(state)

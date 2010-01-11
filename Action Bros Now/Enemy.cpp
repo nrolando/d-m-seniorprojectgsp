@@ -26,7 +26,7 @@ void Enemy::UpdateState()
 	CurrentState->Execute(this);
 
 	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW. IDK HOW ENEMYOWNEDSTATES AND THE STATE CLASSES WORK
-	now = clock();
+	clock_t now = clock();
 	switch(state)
 	{
 	case CS_WALK:
