@@ -29,7 +29,6 @@ class Enemy : public BaseGameEntity
 
 		/* Updates for HP/MP and States*/
 		virtual void calcDrawRECT();
-
 		virtual void UpdateStat(int stat, int val);
 		virtual void UpdateState();
 
