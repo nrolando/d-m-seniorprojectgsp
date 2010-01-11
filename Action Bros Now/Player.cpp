@@ -321,7 +321,7 @@ int Player::UpdatePlayerState()
 				anim++;
 			//advance 1 frame
 			else
-				anim = 0;
+				anim = 1;
 			aniFStart = now;
 		}
 		break;
