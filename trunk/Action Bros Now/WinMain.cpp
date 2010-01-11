@@ -53,9 +53,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 			if(!game->update((now-then)))
 				return 1;
 			then = now;
-			//pause to force our frames per second
-			while(clock() < now + FPSdelay)
-				Sleep(1);
 		}
 	}
 	game->_shutdown();

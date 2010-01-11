@@ -216,7 +216,7 @@ PlayerStates Player::DoAction(char input)
 		if(state != PUNCH && animTime <= now - animStartTime)
 		{
 		//set the animation time
-		animTime = (MAXPUNCHFRAME) * MAXPUNCHANIMATION;
+		animTime = (MAXPUNCHFRAME+1) * MAXPUNCHANIMATION;
 		animStartTime = now;
 		anim = 0;
 		aniFStart = now;
@@ -238,7 +238,7 @@ PlayerStates Player::DoAction(char input)
 		if(state != KICK && animTime <= now - animStartTime)
 		{
 			//set the animation time
-			animTime = (MAXKICKFRAME) * MAXKICKANIMATION;
+			animTime = (MAXKICKFRAME+1) * MAXKICKANIMATION;
 			animStartTime = now;
 			anim = 0;
 			aniFStart = now;
@@ -261,10 +261,10 @@ PlayerStates Player::DoAction(char input)
 		if(state != COMBO1)// && animTime <= now - animStartTime)
 		{
 			//set the animation time
-			animTime = (MAXCOMBO1FRAME) * MAXCOMBO1ANIMATION;
-			animStartTime = now;
+			animTime = (MAXCOMBO1FRAME+1) * MAXCOMBO1ANIMATION;
+			animStartTime = clock();
 			anim = 0;
-			aniFStart = now;
+			aniFStart = clock();
 			state = COMBO1;
 			lastAttFrame = -1;
 			//set hit frames
@@ -276,7 +276,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else
 	{
-		if(animTime <= now - animStartTime && state != IDLE)	//or anything that's not supposed to idle itself
+		if(animTime <= clock() - animStartTime && state != IDLE)	//or anything that's not supposed to idle itself
 		{
 			vel.x = vel.y = vel.z = 0.0f;
 			//set hit frames
@@ -379,8 +379,13 @@ int Player::UpdatePlayerState()
 	case COMBO1:
 		if(now - aniFStart >= MAXCOMBO1ANIMATION)
 		{
-			if(anim < MAXCOMBO1FRAME)
+			if(anim < MAXCOMBO1FRAME-1)
+			{
 				anim++;
+		//this is used to debug: put a break point at sleep(0) to test if frames are being read
+				if(anim == 20)
+					Sleep(0);
+			}
 			else
 			{
 				anim = 0;
