@@ -70,7 +70,7 @@ public:
 
 //loads the player's current level//will be used at start of main and in update()
 	//bool loadLvlFromFile(int);
-	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo, std::vector<Tile>, int);		//draw lvl surfaces
+	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo, std::vector<Tile>,std::vector<Tile>, int);		//draw lvl surfaces
 	//load the sprite containers
 	bool loadEntityCont();
 	bool loadSpriteCont(int);

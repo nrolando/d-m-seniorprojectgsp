@@ -37,7 +37,7 @@ PlayerStates Player::DoAction(char input)
 
 	if(input == 'l')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = -speed;
 			vel.y = 0.0f;
@@ -58,7 +58,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'r')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = speed;
 			vel.y = 0.0f;
@@ -79,7 +79,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'd')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = 0.0f;
 			vel.y = -speed;
@@ -100,7 +100,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'u')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = 0.0f;
 			vel.y = speed;
@@ -122,7 +122,7 @@ PlayerStates Player::DoAction(char input)
 	//up & right
 	else if(input == 'w')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = speed;
 			vel.y = speed;
@@ -144,7 +144,7 @@ PlayerStates Player::DoAction(char input)
 	//up & left
 	else if(input == 'x')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = -speed;
 			vel.y = speed;
@@ -166,7 +166,7 @@ PlayerStates Player::DoAction(char input)
 	//down & right
 	else if(input == 'y')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = speed;
 			vel.y = -speed;
@@ -188,7 +188,7 @@ PlayerStates Player::DoAction(char input)
 	//down & left
 	else if(input == 'z')
 	{
-		if(animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = -speed;
 			vel.y = -speed;
@@ -209,23 +209,20 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'p')
 	{
-		//the player stops to kick
-		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state != PUNCH && animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
-		//set the animation time
-		animTime = (MAXPUNCHFRAME+1) * MAXPUNCHANIMATION;
-		animStartTime = now;
-		anim = 0;
-		aniFStart = now;
-		state = PUNCH;
-		lastAttFrame = -1;
-		//set hit frames
-		hitFrames[0] = 1;
-		hitFrames[1] = -1;
-		hitFrames[2] = -1;
+			//the player stops to kick
+			vel.x = vel.y = vel.z = 0.0f;
+			anim = 0;
+			aniFStart = now;
+			state = PUNCH;
+			lastAttFrame = -1;
+			//set hit frames
+			hitFrames[0] = 1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
 		}
 		return ATTACK;
 	}
@@ -235,11 +232,8 @@ PlayerStates Player::DoAction(char input)
 		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state != KICK && animTime <= now - animStartTime)
+		if(state == IDLE || state == WALK)
 		{
-			//set the animation time
-			animTime = (MAXKICKFRAME+1) * MAXKICKANIMATION;
-			animStartTime = now;
 			anim = 0;
 			aniFStart = now;
 			state = KICK;
@@ -253,16 +247,12 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == '1')
 	{
-		//the player stops to kick
-		vel.x = vel.y = vel.z = 0.0f;
-
 //take out the latter part of the if statement to activate 
 //combo at any time, even if player's current attack isn't finished
 		if(state != COMBO1)// && animTime <= now - animStartTime)
 		{
-			//set the animation time
-			animTime = (MAXCOMBO1FRAME+1) * MAXCOMBO1ANIMATION;
-			animStartTime = clock();
+			//the player stops to kick
+			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
 			aniFStart = clock();
 			state = COMBO1;
@@ -276,7 +266,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else
 	{
-		if(animTime <= clock() - animStartTime && state != IDLE)	//or anything that's not supposed to idle itself
+		if(state == WALK)	//or anything that's not supposed to idle itself
 		{
 			vel.x = vel.y = vel.z = 0.0f;
 			//set hit frames
@@ -335,7 +325,7 @@ int Player::UpdatePlayerState()
 			else
 			{
 				anim = 0;
-				flag = 1;
+				state = IDLE;
 			}
 			aniFStart = now;
 		}			
@@ -349,7 +339,7 @@ int Player::UpdatePlayerState()
 			else
 			{
 				anim = 0;
-				flag = 1;
+				state = IDLE;
 			}
 
 			aniFStart = now;
@@ -389,7 +379,7 @@ int Player::UpdatePlayerState()
 			else
 			{
 				anim = 0;
-				flag = 1;
+				state = IDLE;
 			}
 
 			aniFStart = now;

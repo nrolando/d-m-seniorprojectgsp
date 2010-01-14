@@ -9,6 +9,8 @@
 #define CSWALKFRAME			3	//number of walking frames
 #define CSDIEFRAME			3
 
+#define CSWALKFRAMETIME		150
+
 class Enemy : public BaseGameEntity
 {
 	private:
