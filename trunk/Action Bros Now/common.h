@@ -31,7 +31,7 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   1
+#define DEBUGMODE   0
 
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480

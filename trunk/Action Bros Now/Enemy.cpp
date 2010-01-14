@@ -36,7 +36,7 @@ void Enemy::UpdateState()
 		//set the animation frame for this state
 		state_frame = 0;
 
-		if(now - aniFStart >= ANIMATIONGAP)
+		if(now - aniFStart >= CSWALKFRAMETIME)
 		{
 			if(anim < CSWALKFRAME)
 				anim++;
@@ -53,8 +53,6 @@ void Enemy::UpdateState()
 		{
 			if(anim < CSWALKFRAME)
 				anim++;
-			else
-				anim = 0;
 
 			aniFStart = now;
 		}
@@ -104,9 +102,9 @@ void Enemy::calcDrawRECT()
 
 	//Enemy's hitBox for dmg verification
 	sprInfo.hitBox.top  = long(sprInfo.POS.y);
-	sprInfo.hitBox.left = long(sprInfo.POS.x + 85);
-	sprInfo.hitBox.right = sprInfo.hitBox.left + 43;
-	sprInfo.hitBox.bottom  = sprInfo.hitBox.top + 70;
+	sprInfo.hitBox.left = long(sprInfo.POS.x + 60);
+	sprInfo.hitBox.right = sprInfo.hitBox.left + 68;
+	sprInfo.hitBox.bottom  = sprInfo.hitBox.top + 88;
 
 	//Enemy's threatBox for dmg verification
 	//while in DEBUG this will be shown

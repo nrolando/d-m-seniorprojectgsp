@@ -97,17 +97,27 @@ bool Game::update(clock_t ct)
 {
 	char input = ' ';
 	int hitEnemy;
+	static bool flag = true;
+	bool flag1;
 
 	//get user input
 	inputMan->setInput();
 	input = inputMan->getInput();
 
 	//checks movement collision
-	if(actionPossible(input))
+	if(flag1 = actionPossible(input))
 	{
 		player->DoAction(input);
+		flag = true;
 		//write this
 		//handleInteractions();
+	}
+	if(flag && !flag1)
+	{
+		player->setState(IDLE);
+		player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		player->setAnim(0);
+		flag = false;
 	}
 
 	//check for collision (needs to be moved/adjusted)
@@ -124,9 +134,12 @@ bool Game::update(clock_t ct)
 	//move entities
 	player->move(ct);
 
-	//checks if player reaches end of level
-	if(player->getPos().x > 1350.0f)
+	//checks if player beat the level
+	if(player->getPos().x > 1350.0f /*&& boss == dead*/)
 	{
+		/*automatically move player off level and initiate transmission to next level
+		if the player is moving into a whole new level, maybe a score calculation will take place
+		before transmission*/
 		//increment progress and loadLvl
 		level->incrementProg();
 		if(!this->loadLvl())
@@ -143,7 +156,8 @@ bool Game::update(clock_t ct)
 //RENDER :D we can put this inside if statements and check to see if anything has changed
 //that way we dont render when not necessary
 	graphics->BeginRender();
-	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getTiles(), (level->getProg()%3));
+	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getBackTiles(),
+		level->getFrontTiles(), (level->getProg()%3));
 	if(DEBUGMODE)
 		display_time(ct, 50);
 
@@ -158,9 +172,16 @@ bool Game::update(clock_t ct)
 
 bool Game::actionPossible(char input)
 {
+	eSprInfo psi = player->getDrawInfo();
 	//Code to check if player new position 
 	//is greater than the player's walking area
 	//or if the player has collided with something
+	if((input == 'u' || input == 'w'  || input == 'x') && psi.POS.y >= YLIMIT_TOP)
+		return false;
+	if((input == 'd' || input == 'y' || input == 'z') && psi.POS.y <= YLIMIT_BOTTOM)
+		return false;
+	if((input == 'l' || input == 'z' || input == 'x') && psi.POS.x <= -1500.0f)
+		return false;
 	return true;
 }
 
@@ -190,6 +211,7 @@ int Game::checkAttacks()
 					//enemyTakeDme(player->GetDmg());
 					E[i]->setState(CS_DIE);
 					E[i]->resetTimes();
+					E[i]->setAnim(0);
 					player->setLAF(player->getAnimFrame());
 					index = i;
 				}

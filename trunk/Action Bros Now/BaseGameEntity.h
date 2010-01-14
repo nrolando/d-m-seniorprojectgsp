@@ -40,7 +40,6 @@ protected:
 	clock_t stunStart, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
-	int animTime, animStartTime;		//total time the animation will take
 
 	//aggressive frames
 	int hitFrames[3];
@@ -77,13 +76,13 @@ public:
 		//player position will be initiated in game:initGame
 		name = n;
 		state = anim = 0;
-		speed = 3.0f;
+		speed = 4.0f;
 		vel.x = 0.0f;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		sprInfo.width = FRAME_WIDTH;
 		sprInfo.height = FRAME_HEIGHT;
-		stunStart = animTime = 0;
+		stunStart = 0;
 		aniFStart = clock();
 	}
 	
@@ -124,10 +123,12 @@ public:
 	//set methods
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
+	void setVel(D3DXVECTOR3 v)		{ vel = v; }
 	void setSrc(RECT rect)			{ sprInfo.drawRect = rect; }
 	void setSSPtr(spriteSheet *p)   { sprInfo.ss_ptr = p; }
 	void setState(int s)			{ state = s; }
 	void setLAF(int f)				{ lastAttFrame = f; }
+	void setAnim(int a)				{ anim = a; }
 
 	int ID() {return entity_ID;}
 	
@@ -141,7 +142,6 @@ public:
 	}
 	void resetTimes()
 	{
-		animStartTime = clock();
 		aniFStart = clock();
 	}
 

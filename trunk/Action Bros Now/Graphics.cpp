@@ -415,12 +415,10 @@ bool Graphics::loadSpriteCont(int prog)
 }
 
 void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo playerSprite,
-					   std::vector<Tile> uberTiles, int sublvl)
+					   std::vector<Tile> bTiles, std::vector<Tile> fTiles, int sublvl)
 {
 	RECT src;
 	D3DXVECTOR3 l_pos;
-
-	
 
 	//draw lvl
 	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
@@ -434,26 +432,47 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 	gSprite->Draw(spriteContainer::getInstance()->getElem(sublvl)->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 	
 
-	//draw the tiles
-	for(unsigned int i = 0; i < uberTiles.size(); i++)
+	//draw the background tiles
+	for(unsigned int i = 0; i < bTiles.size(); i++)
 	{
-		if(uberTiles[i].ptr != NULL)
+		if(bTiles[i].ptr != NULL)
 		{
-			if(uberTiles[i].pos.x < (camPos.x + SCREEN_WIDTH/2.0f) &&
-				(uberTiles[i].pos.x + uberTiles[i].w) > (camPos.x - SCREEN_WIDTH/2.0f))
+			if(bTiles[i].pos.x < (camPos.x + SCREEN_WIDTH/2.0f) &&
+				(bTiles[i].pos.x + bTiles[i].w) > (camPos.x - SCREEN_WIDTH/2.0f))
 			{
-				if(uberTiles[i].pos.y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-					(uberTiles[i].pos.y - uberTiles[i].h) < (camPos.y + SCREEN_HEIGHT/2.0f))
+				if(bTiles[i].pos.y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+					(bTiles[i].pos.y - bTiles[i].h) < (camPos.y + SCREEN_HEIGHT/2.0f))
 				{
-					l_pos.x = float(uberTiles[i].pos.x - (camPos.x - SCREEN_WIDTH/2.0f));
-					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - uberTiles[i].pos.y);
-					l_pos.z = ((uberTiles[i].pos.y - uberTiles[i].h) + 500.0f)/1000.0f;
+					l_pos.x = float(bTiles[i].pos.x - (camPos.x - SCREEN_WIDTH/2.0f));
+					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - bTiles[i].pos.y);
+					l_pos.z = 0.8f;
 
-					gSprite->Draw(uberTiles[i].ptr->gTexture, &uberTiles[i].src, NULL, &l_pos, 0xFFFFFFFF);
+					gSprite->Draw(bTiles[i].ptr->gTexture, &bTiles[i].src, NULL, &l_pos, 0xFFFFFFFF);
 				}
 			}
 		}
 	}
+	//draw the foreground tiles
+	for(unsigned int i = 0; i < fTiles.size(); i++)
+	{
+		if(fTiles[i].ptr != NULL)
+		{
+			if(fTiles[i].pos.x < (camPos.x + SCREEN_WIDTH/2.0f) &&
+				(fTiles[i].pos.x + bTiles[i].w) > (camPos.x - SCREEN_WIDTH/2.0f))
+			{
+				if(fTiles[i].pos.y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+					(fTiles[i].pos.y - fTiles[i].h) < (camPos.y + SCREEN_HEIGHT/2.0f))
+				{
+					l_pos.x = float(fTiles[i].pos.x - (camPos.x - SCREEN_WIDTH/2.0f));
+					l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - fTiles[i].pos.y);
+					l_pos.z = 0.1f;
+
+					gSprite->Draw(fTiles[i].ptr->gTexture, &fTiles[i].src, NULL, &l_pos, 0xFFFFFFFF);
+				}
+			}
+		}
+	}
+
 	//translate the player's world coordinates into screen coord, then render it
 	l_pos.x = float(playerSprite.POS.x - (camPos.x - SCREEN_WIDTH/2.0f));
 	l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - playerSprite.POS.y);
