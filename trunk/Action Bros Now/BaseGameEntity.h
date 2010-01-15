@@ -40,6 +40,7 @@ protected:
 	clock_t stunStart, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
+	bool faceRight;		//keeps track of which direction the entity is facing
 
 	//aggressive frames
 	int hitFrames[3];
@@ -69,6 +70,7 @@ public:
 		vel.z = 0.0f;
 		stunStart = 0;
 		aniFStart = clock();
+		faceRight = false;
 	}
 	//the constructor for the player
 	BaseGameEntity(std::string n)
@@ -76,7 +78,7 @@ public:
 		//player position will be initiated in game:initGame
 		name = n;
 		state = anim = 0;
-		speed = 4.0f;
+		speed = 3.0f;
 		vel.x = 0.0f;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
@@ -84,6 +86,7 @@ public:
 		sprInfo.height = FRAME_HEIGHT;
 		stunStart = 0;
 		aniFStart = clock();
+		faceRight = true;
 	}
 	
 	virtual ~BaseGameEntity(){}

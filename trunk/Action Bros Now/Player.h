@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include "BaseGameEntity.h"
 
+#define NUM_STATES		7	//current number of player states in spritesheet for one direction
 //these are for animation and stun length
 #define STUNTIME		500
 //frame number count starts at 0
