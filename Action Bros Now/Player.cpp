@@ -42,8 +42,9 @@ PlayerStates Player::DoAction(char input)
 			vel.x = -speed;
 			vel.y = 0.0f;
 			vel.z = 0.0f;
+			faceRight = false;
 			//set hit frames
-			hitFrames[0] = 3;
+			hitFrames[0] = -1;
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 			if(state == IDLE)
@@ -63,6 +64,7 @@ PlayerStates Player::DoAction(char input)
 			vel.x = speed;
 			vel.y = 0.0f;
 			vel.z = 0.0f;
+			faceRight = true;
 			//set hit frames
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
@@ -127,6 +129,7 @@ PlayerStates Player::DoAction(char input)
 			vel.x = speed;
 			vel.y = speed;
 			vel.z = 0.0f;
+			faceRight = true;
 			//set hit frames
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
@@ -149,6 +152,7 @@ PlayerStates Player::DoAction(char input)
 			vel.x = -speed;
 			vel.y = speed;
 			vel.z = 0.0f;
+			faceRight = false;
 			//set hit frames
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
@@ -171,6 +175,7 @@ PlayerStates Player::DoAction(char input)
 			vel.x = speed;
 			vel.y = -speed;
 			vel.z = 0.0;
+			faceRight = true;
 			//set hit frames
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
@@ -193,6 +198,7 @@ PlayerStates Player::DoAction(char input)
 			vel.x = -speed;
 			vel.y = -speed;
 			vel.z = 0.0;
+			faceRight = false;
 			//set hit frames
 			hitFrames[0] = -1;
 			hitFrames[1] = -1;
@@ -394,9 +400,17 @@ int Player::UpdatePlayerState()
 
 void Player::calcDrawRECT()
 {
+	int state_frame;
+
+	//get direction
+	if(faceRight)
+		state_frame = state;
+	else
+		state_frame = state + NUM_STATES;
+
 	sprInfo.drawRect.left = anim * sprInfo.width;
 	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
-	sprInfo.drawRect.top = state * sprInfo.height;
+	sprInfo.drawRect.top = state_frame * sprInfo.height;
 	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
 
 	//Player's hitBox for dmg verification
