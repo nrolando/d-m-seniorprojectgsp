@@ -329,7 +329,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'L')
 	{
-			if(state == IDLE || state == WALK)
+		if(state == IDLE || state == WALK)
 		{
 			vel.x = -(speed * 2.0f);
 			vel.y = 0.0;
@@ -370,12 +370,12 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'k')
 	{
-		//the player stops to kick
-		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state == IDLE || state == WALK || state == WALK)
+		if(state == IDLE || state == WALK || state == RUN)
 		{
+			//the player stops to kick
+			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
 			aniFStart = now;
 			state = KICK;
@@ -389,9 +389,10 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == '1')
 	{
-//take out the latter part of the if statement to activate 
-//combo at any time, even if player's current attack isn't finished
-		if(state != COMBO1)// && animTime <= now - animStartTime)
+/***********	NOTE    *********
+~put "!=" any states we don't want player initiating combos during
+********************************/
+		if(state != COMBO1)
 		{
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
