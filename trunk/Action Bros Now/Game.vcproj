@@ -167,27 +167,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Graphics.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\inputManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\inputManager2.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Level.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\soundManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\spriteContainer.cpp"
 				>
 			</File>
 			<File
@@ -209,31 +189,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Graphics.h"
-				>
-			</File>
-			<File
-				RelativePath=".\inputManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\inputManager2.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Level.h"
-				>
-			</File>
-			<File
-				RelativePath=".\soundManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Sprite.h"
-				>
-			</File>
-			<File
-				RelativePath=".\spriteContainer.h"
 				>
 			</File>
 		</Filter>
@@ -312,6 +268,82 @@
 			</File>
 			<File
 				RelativePath=".\EnemyOwnedStates.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Input"
+			>
+			<File
+				RelativePath=".\inputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inputManager2.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Graphics &amp; Sound"
+			>
+			<File
+				RelativePath=".\dsutil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dsutil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dxutil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dxutil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Graphics.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Graphics.h"
+				>
+			</File>
+			<File
+				RelativePath=".\soundcontainer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\soundContainer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\soundManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\soundManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sprite.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spriteContainer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spriteContainer.h"
 				>
 			</File>
 		</Filter>

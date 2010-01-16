@@ -282,7 +282,10 @@ char InputManager2::comboCheck(char input)
 			return '1';
 			break;
 		case 1:
-			return '2';
+			return 'R';
+			break;
+		case 2:
+			return 'L';
 			break;
 		default:
 			return 'i';

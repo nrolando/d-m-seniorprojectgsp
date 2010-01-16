@@ -1,6 +1,17 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+
+#include <d3d9.h>
+#include <d3dx9tex.h>
+
+//includes for sound
+#include <dsound.h>
+#include "dsutil.h"
+
+//using namespace std;
+
+
 /////////////////////////////
 //defines for input manager//
 /////////////////////////////
@@ -14,15 +25,12 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME 1000
-#define NUM_COMBOS		2		//number of different combos in comboDefintion
+#define COMBO_TIME		1000
+#define NUM_COMBOS		3		//number of different combos in comboDefintion
 #define COMBO_HITS		3		//number of hits it takes to complete a combo
 /////////////////////////////
 //end input manager defines//
 /////////////////////////////
-
-#include <d3d9.h>
-#include <d3dx9tex.h>
 
 #define MAXCHARSIZE			50
 ///////////DEBUGMODE////////////
@@ -75,6 +83,16 @@
 #define BOSS_SPECIAL_POSY SCREEN_HEIGHT-34
 #define BOSS_SPECIAL_POSZ 0.30f
 
+//struct for containing sounds
+//bgm & sfx
+struct soundFile
+{
+	char soundName[MAXCHARSIZE];
+	LPDIRECTSOUNDBUFFER sound;
+};
+
+//struct for the sprite sheets
+//player, enemies, and lvl
 struct spriteSheet
 {
 	char key;
@@ -129,7 +147,8 @@ enum EnemyStates
 };
 
 //predefined combo inputs for the inputmanager
-static char comboDefinitions[2][3] = {'p','p','p',
-									  'r','r','p',};
+static char comboDefinitions[3][3] = {'p','p','p',		//uppercut combo
+									  'r','r','r',		//run right
+									  'l','l','l',};	//run left
 
 #endif
