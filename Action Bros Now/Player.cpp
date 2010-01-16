@@ -78,6 +78,22 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
+		//if player is running, keep running
+		else if(state == RUN)
+		{
+			vel.x = speed * 2.0f;
+			vel.y = 0.0f;
+			vel.z = 0.0f;
+			faceRight = true;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
+		}
 	}
 	else if(input == 'd')
 	{
@@ -213,11 +229,56 @@ PlayerStates Player::DoAction(char input)
 			return WALK;
 		}
 	}
+	//this should make him run to the right
+	else if(input == 'R')
+	{
+		if(state == IDLE || state == WALK)
+		{
+			vel.x = speed * 2.0f;
+			vel.y = 0.0;
+			vel.z = 0.0f;
+			faceRight = true;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+			if(state == IDLE)
+			{
+				aniFStart = now;
+				anim = 0;
+			}
+			state = RUN;
+
+			return RUN;
+		}
+	}
+	else if(input == 'L')
+	{
+			if(state == IDLE || state == WALK)
+		{
+			vel.x = -(speed * 2.0f);
+			vel.y = 0.0;
+			vel.z = 0.0f;
+			faceRight = false;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+			if(state == IDLE)
+			{
+				aniFStart = now;
+				anim = 0;
+			}
+			state = RUN;
+
+			return RUN;
+		}
+	}
 	else if(input == 'p')
 	{
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state == IDLE || state == WALK)
+		if(state == IDLE || state == WALK || state == RUN)
 		{
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
@@ -238,7 +299,7 @@ PlayerStates Player::DoAction(char input)
 		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state == IDLE || state == WALK)
+		if(state == IDLE || state == WALK || state == WALK)
 		{
 			anim = 0;
 			aniFStart = now;
@@ -272,7 +333,7 @@ PlayerStates Player::DoAction(char input)
 	}
 	else
 	{
-		if(state == WALK)	//or anything that's not supposed to idle itself
+		if(state == WALK || state == RUN)	//or anything that's not supposed to idle itself
 		{
 			vel.x = vel.y = vel.z = 0.0f;
 			//set hit frames
@@ -285,7 +346,7 @@ PlayerStates Player::DoAction(char input)
 			lastAttFrame = -1;		//reset
 		}
 	}
-
+	
 	return IDLE;
 }
 
@@ -379,7 +440,7 @@ int Player::UpdatePlayerState()
 			{
 				anim++;
 		//this is used to debug: put a break point at sleep(0) to test if frames are being read
-				if(anim == 20)
+			//	if(anim == 17)
 					Sleep(0);
 			}
 			else
