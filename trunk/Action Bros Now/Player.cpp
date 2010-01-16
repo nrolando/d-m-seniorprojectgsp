@@ -56,6 +56,21 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
+		else if(state == RUN)
+		{
+			vel.x = -(speed * 2.0f);
+			vel.y = 0.0f;
+			vel.z = 0.0f;
+			faceRight = false;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
+		}
 	}
 	else if(input == 'r')
 	{
@@ -159,6 +174,21 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
+		else if(state == RUN)
+		{
+			vel.x = speed * 2.0f;
+			vel.y = speed * 2.0f;
+			vel.z = 0.0f;
+			faceRight = true;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
+		}
 	}
 	//up & left
 	else if(input == 'x')
@@ -181,6 +211,21 @@ PlayerStates Player::DoAction(char input)
 			state = WALK;
 
 			return WALK;
+		}
+		else if(state == RUN)
+		{
+			vel.x = -(speed * 2.0f);
+			vel.y = speed * 2.0f;
+			vel.z = 0.0f;
+			faceRight = false;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
 		}
 	}
 	//down & right
@@ -205,6 +250,21 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
+		else if(state == RUN)
+		{
+			vel.x = speed * 2.0f;
+			vel.y = -(speed * 2.0f);
+			vel.z = 0.0f;
+			faceRight = true;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
+		}
 	}
 	//down & left
 	else if(input == 'z')
@@ -227,6 +287,21 @@ PlayerStates Player::DoAction(char input)
 			state = WALK;
 
 			return WALK;
+		}
+		else if(state == RUN)
+		{
+			vel.x = -(speed * 2.0f);
+			vel.y = -(speed * 2.0f);
+			vel.z = 0.0f;
+			faceRight = false;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
 		}
 	}
 	//this should make him run to the right
@@ -449,6 +524,19 @@ int Player::UpdatePlayerState()
 				state = IDLE;
 			}
 
+			aniFStart = now;
+		}
+		break;
+	case RUN:
+		//if time to switch frame of animation
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of animation
+			if(anim < MAXRUNFRAME-1)
+				anim++;
+			//advance 1 frame
+			else
+				anim = 1;
 			aniFStart = now;
 		}
 		break;
