@@ -11,6 +11,27 @@
 
 //using namespace std;
 
+//////////////////
+//player defines//
+//////////////////
+#define NUM_STATES		7	//current number of player states in spritesheet for one direction
+//these are for animation and stun length
+#define STUNTIME		500
+//frame number count starts at 0
+#define MAXIDLEFRAME	9
+#define MAXWALKFRAME	13
+#define MAXRUNFRAME		6
+#define MAXPUNCHFRAME	6
+#define MAXKICKFRAME	8
+#define MAXSTUNFRAME	1
+#define MAXCOMBO1FRAME	21
+
+#define MAXKICKANIMATION		50
+#define MAXPUNCHANIMATION		30
+#define MAXCOMBO1ANIMATION		60
+//////////////////////
+//end player defines//
+//////////////////////
 
 /////////////////////////////
 //defines for input manager//
