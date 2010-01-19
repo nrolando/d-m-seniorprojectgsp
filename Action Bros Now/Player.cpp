@@ -288,21 +288,6 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
-		else if(state == RUN)
-		{
-			vel.x = -(speed * 2.0f);
-			vel.y = -(speed * 2.0f);
-			vel.z = 0.0f;
-			faceRight = false;
-			//set hit frames
-			hitFrames[0] = -1;
-			hitFrames[1] = -1;
-			hitFrames[2] = -1;
-
-			state = RUN;
-
-			return RUN;
-		}
 	}
 	//this should make him run to the right
 	else if(input == 'R')
@@ -370,12 +355,12 @@ PlayerStates Player::DoAction(char input)
 	}
 	else if(input == 'k')
 	{
+		//the player stops to kick
+		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
 		if(state == IDLE || state == WALK || state == RUN)
 		{
-			//the player stops to kick
-			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
 			aniFStart = now;
 			state = KICK;
@@ -422,7 +407,7 @@ PlayerStates Player::DoAction(char input)
 			lastAttFrame = -1;		//reset
 		}
 	}
-	
+
 	return IDLE;
 }
 
@@ -515,20 +500,16 @@ int Player::UpdatePlayerState()
 			if(anim < MAXCOMBO1FRAME-1)
 			{
 				anim++;
-		//this is used to debug: put a break point at sleep(0) to test if frames are being read
-			//	if(anim == 17)
-					Sleep(0);
 			}
 			else
 			{
 				anim = 0;
 				state = IDLE;
 			}
-
 			aniFStart = now;
 		}
 		break;
-	case RUN:
+		case RUN:
 		//if time to switch frame of animation
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
@@ -537,10 +518,9 @@ int Player::UpdatePlayerState()
 				anim++;
 			//advance 1 frame
 			else
-				anim = 1;
+				anim = 0;
 			aniFStart = now;
 		}
-		break;
 	}
 
 	this->calcDrawRECT();

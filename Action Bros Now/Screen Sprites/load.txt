@@ -1,0 +1,13 @@
+./Screen Sprites/EntityStatMeters/hGuage.png#h
+./Screen Sprites/EntityStatMeters/sGuage.png#s
+./Screen Sprites/EntityStatMeters/eGuage.png#e
+./Screen Sprites/EntityStatMeters/bossGuage.png#b
+./Screen Sprites/EntityStatMeters/bHealth.png#B
+./Screen Sprites/EntityStatMeters/bSpecial.png#D
+./Screen Sprites/EntityStatMeters/pHealth.png#H
+./Screen Sprites/EntityStatMeters/pSpecial.png#S
+./Screen Sprites/EntityStatMeters/eHealth.png#E
+./Screen Sprites/Load.png#/
+./Screen Sprites/new.png#?
+./Screen Sprites/Title.png#,
+./Screen Sprites/brain sheet.jpg#>

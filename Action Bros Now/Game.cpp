@@ -8,6 +8,7 @@ Game::Game()
 	EntMgr = new EntityManager();
 	player = new Player("Baek");
 	input = ' ';
+	screen = 0;
 	//inputMan = new InputManager2(hInstance,wndHandle);
 }
 
@@ -20,6 +21,7 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	level = new Level();
 	input = ' ';
 	inputMan = new InputManager2(HI, hWnd);
+	screen = 0;	//start at 1 until we get splash
 }
 
 Game::~Game()
@@ -96,76 +98,101 @@ bool Game::loadLvl()
 bool Game::update(clock_t ct)
 {
 	char input = ' ';
+	int num;
 	int hitEnemy;
 	static bool flag = true;
-	bool flag1;
+	bool flag1 = true;
+	bool newGame = true;
 
 	//get user input
 	inputMan->setInput();
-	input = inputMan->getInput();
+	input = inputMan->getInput(screen);
 
-	//checks movement collision
-	if(flag1 = actionPossible(input))
+	switch(screen)
 	{
-		player->DoAction(input);
-		flag = true;
-		//write this
-		//handleInteractions();
-	}
-	if(flag && !flag1)
-	{
-		player->setState(IDLE);
-		player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		player->setAnim(0);
-		flag = false;
-	}
-
-	//check for collision (needs to be moved/adjusted)
-	hitEnemy = checkAttacks();
-	
-	if(hitEnemy >= 0)
-	{
-		//drawHealthBars(EntMgr->getEnt(hitEnemy), player);
-	}
-
-	//update player state, enemies state
-	player->UpdatePlayerState();
-	EntMgr->updateEnemyState();
-	//move entities
-	player->move(ct);
-
-	//checks if player beat the level
-	if(player->getPos().x > 1350.0f /*&& boss == dead*/)
-	{
-		/*automatically move player off level and initiate transmission to next level
-		if the player is moving into a whole new level, maybe a score calculation will take place
-		before transmission*/
-		//increment progress and loadLvl
-		level->incrementProg();
-		if(!this->loadLvl())
+	case 0:		//splash
+		this->splashScreen();
+		break;
+	case 1:		//title/menu
+		num = this->titleScreen(input);
+		if(num >= 0)
 		{
-			MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
-			return false;
+			screen++;
+			level->setProg(num);
+			//load that level
+			if(!this->loadLvl())
+			{
+				MessageBox(NULL, "Unable to load lvl", "ERROR", MB_OK);
+				return 1;
+			}
 		}
-	}
+		break;
+	case 2:		//game
+		//checks movement collision
+		if(flag1 = actionPossible(input))
+		{
+			player->DoAction(input);
+			flag = true;
+			//write this
+			//handleInteractions();
+		}
+		if(flag && !flag1)
+		{
+			player->setState(IDLE);
+			player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			player->setAnim(0);
+			flag = false;
+		}
 
-	EntMgr->moveEnemies(ct);
-	//update camera
-	graphics->updateCamera(player->getDrawInfo());
+		//check for collision (needs to be moved/adjusted)
+		hitEnemy = checkAttacks();
+		
+		if(hitEnemy >= 0)
+		{
+			//drawHealthBars(EntMgr->getEnt(hitEnemy), player);
+		}
 
-//RENDER :D we can put this inside if statements and check to see if anything has changed
-//that way we dont render when not necessary
-	graphics->BeginRender();
-	graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getBackTiles(),
-		level->getFrontTiles(), (level->getProg()%3));
-	if(DEBUGMODE)
-		display_time(ct, 50);
+		//update player state, enemies state
+		player->UpdatePlayerState();
+		EntMgr->updateEnemyState();
+		//move entities
+		player->move(ct);
 
-	graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-	graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-	graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
-	graphics->EndRender();
-	
+		//checks if player beat the level
+		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
+		{
+			/*automatically move player off level and initiate transmission to next level
+			if the player is moving into a whole new level, maybe a score calculation will take place
+			before transmission*/
+			//increment progress and loadLvl
+			level->incrementProg();
+			if(!this->loadLvl())
+			{
+				MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+				return false;
+			}
+		}
+
+		EntMgr->moveEnemies(ct);
+		//update camera
+		graphics->updateCamera(player->getDrawInfo());
+
+	//RENDER :D we can put this inside if statements and check to see if anything has changed
+	//that way we dont render when not necessary
+		graphics->BeginRender();
+		graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getBackTiles(),
+			level->getFrontTiles(), (level->getProg()%3));
+		if(DEBUGMODE)
+			display_time(ct, 50);
+
+		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+		graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+		graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
+		graphics->EndRender();
+		break;
+	case 3:		//gameover/win
+		break;
+	};
 
 	return true;
 }
@@ -248,3 +275,114 @@ void Game::handleInteractions()
 	}
 }
 */
+
+int Game::titleScreen(char input)
+{
+	static SCREENS current_screen = TITLE;
+	//title: 0 - new game; 1 - load game; 2 - options
+	static int selection = 0;
+
+	switch(input)
+	{
+	case 'r':
+		if(current_screen == TITLE)
+		{
+			if(selection < 2)
+				selection++;
+		}
+		break;
+	case 'l':
+		if(current_screen == TITLE)
+		{
+			if(selection > 0)
+				selection--;
+		}
+		break;
+	case 'd':
+		break;
+	case 'u':
+		break;
+	case 'p':	//the select button
+		if(current_screen == TITLE)
+		{
+			if(selection == 0)		//start new game
+				return 0;
+			else if(selection == 1)	//go to load screen
+			{
+				current_screen = LOAD;
+				selection = 0;
+			}
+			else if(selection == 2)	//go to options screen
+			{
+				current_screen = OPTIONS;
+				selection = 0;
+			}
+		}
+		if(current_screen == LOAD)
+		{
+			//return loadGame();
+		}
+		break;
+	case 'k':		//the back button
+		if(current_screen == OPTIONS || current_screen == LOAD)
+		{
+			current_screen = TITLE;
+			selection = 0;
+		}
+		break;
+	};
+
+//draw screen
+	graphics->BeginRender();
+	switch(current_screen)
+	{
+	case TITLE:
+		graphics->drawTitle(selection);
+		break;
+	case LOAD:
+		break;
+	case OPTIONS:
+		break;
+	};
+	graphics->EndRender();
+
+	return -1;
+}
+
+void Game::splashScreen()
+{
+	clock_t now = clock();
+	static int splashCol = 0;
+	static int splashRow = 0;
+	static int aniFStart = clock();
+
+	const int maxCol = 5;
+	const int maxRow = 10;
+	const int height = 400;
+	const int width = 400;
+
+	if(now - aniFStart >= ANIMATIONGAP)
+	{
+		if(splashCol < maxCol-1)
+			splashCol++;
+		else
+		{
+			splashCol = 0;
+			splashRow++;
+		}
+
+		aniFStart = now;
+	}
+	if(splashRow == maxRow)
+		screen++;
+	else
+	{
+		//splashCol = 1; splashRow = 7;	//testing purposes
+		if(splashCol == 1 && splashRow == 7)
+			graphics->BeginSplashRender();
+		else
+			graphics->BeginRender();
+		graphics->drawSplash(splashRow, splashCol, width, height);
+		graphics->EndRender();
+	}
+}

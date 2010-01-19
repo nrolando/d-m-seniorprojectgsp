@@ -1,10 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "BaseGameEntity.h"
-#include "common.h"
-
-//defines moved to common.h
-
 
 class Player : public BaseGameEntity
 {

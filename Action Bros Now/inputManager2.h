@@ -40,6 +40,7 @@ public:
 	~InputManager2();
 
 	void setInput();
-	char getInput();
+	//passing screen advancement
+	char getInput(int);
 };
 #endif

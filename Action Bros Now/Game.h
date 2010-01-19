@@ -16,6 +16,8 @@
 class Game
 {
 private:
+	//index to keep track of screen advancement
+	int screen;
 	char input;
 	
 	//input Engine
@@ -51,6 +53,10 @@ public:
 
 //the game update. its passed the elapsed time since the last time it was called from the main game loop
 	bool update(clock_t);
+
+//returns progress for game start, if -1, player hasn't chosen yet
+	int titleScreen(char);
+	void splashScreen();
 
 	//load level
 	bool loadLvl();

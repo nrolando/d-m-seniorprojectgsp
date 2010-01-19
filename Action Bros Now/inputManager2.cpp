@@ -43,7 +43,7 @@ InputManager2::~InputManager2()
 
 void InputManager2::setInput()
 {
-	//all the else's in this function seem really pointless
+	//all the else's in this function seem pointless
 
 	hr = g_lpDIDevice->GetDeviceState(sizeof(buffer), (LPVOID)&buffer);
 
@@ -101,137 +101,156 @@ void InputManager2::setInput()
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
-char InputManager2::getInput()
+char InputManager2::getInput(int screen)
 {
 	char combo;
 	clock_t now = clock();
 
-	//these are diagonal movement
-	if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
+	switch(screen)
 	{
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'w';
-	}
-	if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
-	{
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'x';
-	}
-	if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
-	{
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'y';
-	}
-	if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
-	{
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'z';
-	}
-
-	//Player movement//
-	if(inputflag & INPUT_UP)
-	{
+	case 1:
 		if(downflag & INPUT_UP)
-		{
-			combo = comboCheck('u');
-			if(combo != 'i')
-				return combo;
-		}
-
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'u'; //move player up
-	}
-	else if(inputflag & INPUT_DOWN)
-	{
+			return 'u';
 		if(downflag & INPUT_DOWN)
-		{
-			combo = comboCheck('d');
-			if(combo != 'i')
-				return combo;
-		}
-
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'd'; //move player down
-	}
-	else if(inputflag & INPUT_LEFT)
-	{
+			return 'd';
 		if(downflag & INPUT_LEFT)
-		{
-			combo = comboCheck('l');
-			if(combo != 'i')
-				return combo;
-		}
-
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else
-			return 'l'; //move player left
-	}
-	else if(inputflag & INPUT_RIGHT)
-	{
+			return 'l';
 		if(downflag & INPUT_RIGHT)
+			return 'r';
+		if(downflag & INPUT_Z)
+			return 'p';
+		if(downflag & INPUT_X)
+			return 'k';
+		break;
+	case 2:
+		//these are diagonal movement
+		if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
 		{
-			combo = comboCheck('r');
-			if(combo != 'i')
-				return combo;
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'w';
+		}
+		if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
+		{
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'x';
+		}
+		if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
+		{
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'y';
+		}
+		if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
+		{
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'z';
 		}
 
-		char tempC = charReturn();
-		if(tempC != 'i')
-			return tempC;
-		else			//else if only movement
-			return 'r';
-	}
-	
-	//Input for Player Attack Actions//
-	if(downflag & INPUT_Z)
-	{
-		combo = comboCheck('p');
-		if(combo != 'i')
-			return combo;
+		//Player movement//
+		if(inputflag & INPUT_UP)
+		{
+			if(downflag & INPUT_UP)
+			{
+				combo = comboCheck('u');
+				if(combo != 'i')
+					return combo;
+			}
 
-		//move camera right
-		return 'p';
-	}
-	
-	if(downflag & INPUT_X)
-	{
-		combo = comboCheck('k');
-		if(combo != 'i')
-			return combo;
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'u'; //move player up
+		}
+		else if(inputflag & INPUT_DOWN)
+		{
+			if(downflag & INPUT_DOWN)
+			{
+				combo = comboCheck('d');
+				if(combo != 'i')
+					return combo;
+			}
 
-		//move camera right
-		return 'k';
-	}
-	
-	if(downflag & INPUT_C)
-	{
-		combo = comboCheck('s');
-		if(combo != 'i')
-			return combo;
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'd'; //move player down
+		}
+		else if(inputflag & INPUT_LEFT)
+		{
+			if(downflag & INPUT_LEFT)
+			{
+				combo = comboCheck('l');
+				if(combo != 'i')
+					return combo;
+			}
 
-		//move camera right
-		return 's';
-	}
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else
+				return 'l'; //move player left
+		}
+		else if(inputflag & INPUT_RIGHT)
+		{
+			if(downflag & INPUT_RIGHT)
+			{
+				combo = comboCheck('r');
+				if(combo != 'i')
+					return combo;
+			}
+
+			char tempC = charReturn();
+			if(tempC != 'i')
+				return tempC;
+			else			//else if only movement
+				return 'r';
+		}
+		
+		//Input for Player Attack Actions//
+		if(downflag & INPUT_Z)
+		{
+			combo = comboCheck('p');
+			if(combo != 'i')
+				return combo;
+
+			//move camera right
+			return 'p';
+		}
+		
+		if(downflag & INPUT_X)
+		{
+			combo = comboCheck('k');
+			if(combo != 'i')
+				return combo;
+
+			//move camera right
+			return 'k';
+		}
+		
+		if(downflag & INPUT_C)
+		{
+			combo = comboCheck('s');
+			if(combo != 'i')
+				return combo;
+
+			//move camera right
+			return 's';
+		}
+		break;
+	};
 	
 	return 'i';
 }
