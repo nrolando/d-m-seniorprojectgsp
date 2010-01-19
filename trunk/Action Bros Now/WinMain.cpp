@@ -29,14 +29,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 		MessageBox(NULL, "Unable to initialize Direct3D", "ERROR", MB_OK);
 		return 1;
 	}
-
-	//load that level
-	if(!game->loadLvl())
-	{
-		MessageBox(NULL, "Unable to load lvl", "ERROR", MB_OK);
-		return 1;
-	}
-
 	
     ZeroMemory( &msg, sizeof(msg) );
 	while(msg.message!=WM_QUIT)

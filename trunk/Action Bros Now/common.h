@@ -153,6 +153,12 @@ enum EntityTypes
 	PLAYER, ENEMY, BOSS
 };
 
+//for the title/menu screen
+enum SCREENS
+{
+	TITLE, LOAD, OPTIONS
+};
+
 //for the player states
 enum PlayerStates
 {

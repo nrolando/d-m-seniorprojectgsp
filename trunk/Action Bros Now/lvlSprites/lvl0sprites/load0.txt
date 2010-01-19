@@ -1,15 +1,6 @@
 ./lvlSprites/lvl0sprites/lvl0-0.png#L
-./lvlSprites/lvl0sprites/lvl0-1.jpg#P
-./lvlSprites/lvl0sprites/lvl0-2.jpg#I
-./lvlsprites/EntityStatMeters/hGuage.png#h
-./lvlsprites/EntityStatMeters/sGuage.png#s
-./lvlsprites/EntityStatMeters/eGuage.png#e
-./lvlsprites/EntityStatMeters/bossGuage.png#b
-./lvlsprites/EntityStatMeters/bHealth.png#B
-./lvlsprites/EntityStatMeters/bSpecial.png#D
-./lvlsprites/EntityStatMeters/pHealth.png#H
-./lvlsprites/EntityStatMeters/pSpecial.png#S
-./lvlsprites/EntityStatMeters/eHealth.png#E
+./lvlSprites/lvl0sprites/lvl0-1.png#P
+./lvlSprites/lvl0sprites/lvl0-2.png#I
 ./lvlSprites/lvl0sprites/wood.jpg#_
 ./lvlSprites/lvl0sprites/sheddoor.jpg#-
 ./lvlSprites/lvl0sprites/shackwindow.jpg#[

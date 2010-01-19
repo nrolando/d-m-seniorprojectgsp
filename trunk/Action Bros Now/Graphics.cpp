@@ -107,7 +107,14 @@ void Graphics::_shutdown()
 
 void Graphics::BeginRender()
 {
-	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,200,0), 1.0f, 0 );
+	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
+	pd3dDevice->BeginScene();
+	gSprite->Begin(D3DXSPRITE_ALPHABLEND);
+}
+
+void Graphics::BeginSplashRender()
+{
+	pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255,255,255), 1.0f, 0 );
 	pd3dDevice->BeginScene();
 	gSprite->Begin(D3DXSPRITE_ALPHABLEND);
 }
@@ -384,7 +391,7 @@ bool Graphics::loadSpriteCont(int prog)
 {
 	int lvl = prog/3;
 	char fname[MAXCHARSIZE];
-	std::ifstream fin;
+	std::ifstream fin, FIN;
 	spriteSheet tempSS;
 
 	if(!spriteContainer::getInstance()->isEmpty())
@@ -411,6 +418,29 @@ bool Graphics::loadSpriteCont(int prog)
 		fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
 	fin.close();
+
+	//load the screen sprites
+	sprintf_s(fname, (size_t)MAXCHARSIZE, "./Screen Sprites/load.txt");
+
+	FIN.open(fname);
+	if(!FIN.is_open())
+		return false;
+
+	/*	READ IN .TXT ASCII TILES AND POSITION		*/
+	FIN.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!FIN.eof())
+	{
+		FIN.get(tempSS.key);
+		FIN.ignore();
+		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
+									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+									0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
+		spriteContainer::getInstance()->push(tempSS);
+		FIN.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	}
+	FIN.close();
 	return true;
 }
 
@@ -526,6 +556,68 @@ void Graphics::displayTime(clock_t _time, int y)	//elapsed time
 
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
+}
+
+void Graphics::displayString(int x, int y, char* msg)
+{
+	RECT rct;
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 255, 255, 255);
+
+	rct.left = x;
+	rct.right = (rct.left + strlen(msg)*20);
+	rct.top = y;
+	rct.bottom = rct.top + 50;
+
+	m_font->DrawText(NULL, msg, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+}
+
+void Graphics::drawTitle(int cursor)
+{
+	//screen position
+	D3DXVECTOR3 l_pos;
+
+	l_pos.x = l_pos.y = 0.0f;
+	l_pos.z = 0.9f;
+	//draw title screen
+	gSprite->Draw(spriteContainer::getInstance()->getElemKey(',')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+
+	//draw the title screen sprites
+	if(cursor == 0)
+	{
+		l_pos.x = (SCREEN_WIDTH/10) * 1;
+		l_pos.y = (SCREEN_HEIGHT/20) * 15;
+		l_pos.z = 0.5f;
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('?')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+		this->displayString((SCREEN_WIDTH/10) * 7, (SCREEN_HEIGHT/10) * 8, "LOAD");
+	}
+	else if(cursor == 1)
+	{
+		l_pos.x = (SCREEN_WIDTH/10) * 6;
+		l_pos.y = (SCREEN_HEIGHT/20) * 15;
+		l_pos.z = 0.5f;
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('/')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+		this->displayString((SCREEN_WIDTH/10) * 2, (SCREEN_HEIGHT/10) * 8, "NEW");
+	}
+}
+
+void Graphics::drawSplash(int r, int c, int w, int h)
+{
+	//screen position
+	D3DXVECTOR3 l_pos;
+	RECT src;
+//note: 200 is half frame width/height
+	l_pos.x = SCREEN_WIDTH/2 - 200;
+	l_pos.y = SCREEN_HEIGHT/2 - 200;
+	l_pos.z = 0.9f;
+
+	src.left = c*w;
+	src.right = src.left+w;
+	src.top = r*h;
+	src.bottom = src.top+h;
+
+	//draw splash screen
+	gSprite->Draw(spriteContainer::getInstance()->getElemKey('>')->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 }
 
 /*************************************************************************

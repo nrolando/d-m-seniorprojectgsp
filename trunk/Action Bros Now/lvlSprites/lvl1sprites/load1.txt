@@ -1,12 +1,4 @@
 ./lvlSprites/lvl1sprites/lvl1-0.png#L
 ./lvlSprites/lvl1sprites/lvl1-1.png#P
 ./lvlSprites/lvl1sprites/lvl1-2.png#I
-./lvlsprites/EntityStatMeters/hGuage.png#h
-./lvlsprites/EntityStatMeters/sGuage.png#s
-./lvlsprites/EntityStatMeters/eGuage.png#e
-./lvlsprites/EntityStatMeters/bossGuage.png#b
-./lvlsprites/EntityStatMeters/bHealth.png#B
-./lvlsprites/EntityStatMeters/bSpecial.png#D
-./lvlsprites/EntityStatMeters/pHealth.png#H
-./lvlsprites/EntityStatMeters/pSpecial.png#S
-./lvlsprites/EntityStatMeters/eHealth.png#E
+./lvlSprites/lvl1sprites/fingerCactus.png#c

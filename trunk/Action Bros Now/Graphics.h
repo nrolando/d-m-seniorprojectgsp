@@ -63,6 +63,7 @@ public:
 	void _shutdown();
 
 	void BeginRender();	//clears screen, begin scene
+	void BeginSplashRender();
 	void EndRender();	//end scene and present
 
 	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*);
@@ -80,6 +81,11 @@ public:
 	void DisplayPlayerStat(int,int,int,int); //Displays Player Health Bar
 
 	void displayTime(clock_t, int);
+	void displayString(int, int, char*);
+
+	//load screens for splash, menus, etc
+	void drawTitle(int);
+	void drawSplash(int, int, int, int);
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	
