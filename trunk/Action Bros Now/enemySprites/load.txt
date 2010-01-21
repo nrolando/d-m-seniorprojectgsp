@@ -1,1 +1,1 @@
-./enemySprites/ClawSoldier.png#1
+./enemySprites/Soldier1.png#1
