@@ -215,6 +215,10 @@
 			Name="Entities"
 			>
 			<File
+				RelativePath=".\BaseGameEntity.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BaseGameEntity.h"
 				>
 			</File>

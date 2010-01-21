@@ -15,7 +15,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy);
+	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static Idle* Instance();
@@ -33,7 +33,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy);
+	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static Patrol* Instance();
@@ -51,7 +51,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy);
+	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static Chase* Instance();
@@ -69,7 +69,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy);
+	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static Attack* Instance();
@@ -87,7 +87,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy);
+	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static RunAway* Instance();

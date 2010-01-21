@@ -8,7 +8,6 @@
 #include <ctime>
 
 #define maxcharsize		50
-
 #define ANIMATIONGAP	90
 //all sprite sheets will have same frame width/height? if so, take out of eSprInfo and just use this
 //right now, the player is instatiated with these values and the enemy reads its dimensions from file
@@ -16,10 +15,13 @@
 #define FRAME_WIDTH		128
 #define FRAME_HEIGHT	128
 
+class Player;
+
 class BaseGameEntity
 {
 private:
 	int entity_ID;
+	static int entity_NextID;
 	char key;
 //----------------------------------------------------------
 protected:
@@ -49,14 +51,14 @@ protected:
 public:
 	BaseGameEntity(int ID)
 	{
-		entity_ID = ID; 
+		setID(ID); 
 		name = GetNameOfEntity(ID);
 		state = anim = 0;
 	}
-	//the constructor for entities and bosses
+	//the constructor for enemies and bosses
 	BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *ptr)
 	{
-		entity_ID = ID;
+		setID(ID);
 		name = GetNameOfEntity(ID);
 		key = _key;
 		sprInfo.POS = pos;
@@ -65,7 +67,8 @@ public:
 		sprInfo.height = FRAME_HEIGHT;
 		state = anim = 0;
 		speed = 1.0f;
-		vel.x = -speed;
+		health = maxHealth = 100;
+		vel.x = 0.0f;
 		vel.y = 0.0f;
 		vel.z = 0.0f;
 		stunStart = 0;
@@ -94,7 +97,7 @@ public:
 	//Update Functions
 	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
-	virtual void UpdateState() = 0;
+	virtual void UpdateState(D3DXVECTOR3) = 0;
 
 	//move player according to velocity
 	void move(clock_t TIME)
@@ -108,6 +111,9 @@ public:
 		sprInfo.POS.z += vel.z*TIME;
 	}
 
+	
+	void setID(int val);
+
 	//get methods
 	std::string		getName()		{ return name; }
 	spriteSheet*	getSSPtr()		{ return sprInfo.ss_ptr; }
@@ -117,10 +123,12 @@ public:
 	int				getMaxHealth()	{ return maxHealth;}
 	int				getWidth()		{ return sprInfo.width; }
 	int				getHeight()		{ return sprInfo.height; }
+	const int		ID()			{ return entity_ID;}
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
 	int getDmg()					{ return dmg; }
 	int getAnimFrame()				{ return anim; }
 	int getLastAttFrame()			{ return lastAttFrame; }
+	int getDistance(D3DXVECTOR3,D3DXVECTOR3);		
 
 
 	//set methods
@@ -132,8 +140,6 @@ public:
 	void setState(int s)			{ state = s; }
 	void setLAF(int f)				{ lastAttFrame = f; }
 	void setAnim(int a)				{ anim = a; }
-
-	int ID() {return entity_ID;}
 	
 	//check if the current animation frame is an aggressive frame and not equal to the last aggressive frame
 	bool checkFrames()

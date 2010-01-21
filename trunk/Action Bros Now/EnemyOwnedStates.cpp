@@ -1,7 +1,6 @@
-#include <iostream>
 #include "EnemyOwnedStates.h"
-#include "Status.h"
 #include "Enemy.h"
+#include "Status.h"
 
 //-------------------------methods for Idle-------------------------------//
 Idle* Idle::Instance()
@@ -16,14 +15,19 @@ void Idle::Enter(Enemy *enemy)
 	printf("Idling the area...\n");
 }
 
-void Idle::Execute(Enemy* enemy)
+void Idle::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 {
 	printf("Idling...\n");
 
-	if(enemy->getStatus() == InFace)
+	if(enemy->getDistance(enemy->getPos(),playerPos) <= CHASE_RANGE)
 	{
-		printf("Being threatened...changing state");
-		enemy->ChangeState(RunAway::Instance());
+		printf("Within Range...changing state");
+		enemy->ChangeState(Chase::Instance());
+	}
+	else if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE)
+	{
+		printf("Within Attack Range...changing state");
+		enemy->ChangeState(Attack::Instance());
 	}
 }
 
@@ -48,7 +52,7 @@ void Patrol::Enter(Enemy *enemy)
 }
 
 //template<entity_type>
-void Patrol::Execute(Enemy *enemy)
+void Patrol::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 {
 	if(enemy->getStatus() == OutOfRange)
 	{
@@ -81,17 +85,35 @@ void Chase::Enter(Enemy *enemy)
 	printf("Chasing after player...\n");
 }
 
-void Chase::Execute(Enemy *enemy)
+void Chase::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 {
-	if(enemy->getStatus() == EnemyDead)
+	//If player is within attack range then switch to Attack state
+	if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE)
+			enemy->ChangeState(Attack::Instance());
+	else if(enemy->getPos().y > playerPos.y+RANGE_OFFSET)
 	{
-		printf("Player is dead...now Patroling....\n");
-		enemy->ChangeState(Patrol::Instance());
+		enemy->setState(E_WALK);
+		enemy->movement('d');
 	}
-	if(enemy->getStatus() == InRange)
+	else if(enemy->getPos().y < playerPos.y-RANGE_OFFSET) 
 	{
-		printf("Going for attack!\n");
-		enemy->ChangeState(Attack::Instance());
+		enemy->setState(E_WALK);
+		enemy->movement('u');
+	}
+	else if(enemy->getPos().x > playerPos.x)
+	{
+		enemy->setState(E_WALK);
+		enemy->movement('l');
+	}
+	else if(enemy->getPos().x < playerPos.x) 
+	{
+		enemy->setState(E_WALK);
+		enemy->movement('r');
+	}
+	else
+	{
+		enemy->movement('n');
+		enemy->setState(E_IDLE);
 	}
 	printf("Chasing Player still!\n");
 }
@@ -115,18 +137,36 @@ void Attack::Enter(Enemy *enemy)
 	printf("Attacking player...\n");
 }
 
-void Attack::Execute(Enemy *enemy)
+void Attack::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 {
-	if(enemy->getStatus() == EnemyDead)
-	{
-		printf("Enemy died from attack, returning to patrol....\n");
-		enemy->ChangeState(Patrol::Instance());
+	if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE &&
+	   enemy->getDistance(enemy->getPos(),playerPos) >= (ATTACK_RANGE/2))
+	{	
+			enemy->movement('n');
+			enemy->setState(E_ATTACK1);
 	}
-
-	if(enemy->getStatus() == WeakerThanEnemy)
+	else if(enemy->getDistance(enemy->getPos(),playerPos) < ATTACK_RANGE/2)
 	{
-		printf("WeakerThanPlayer, now Running from player....\n");
-		enemy->ChangeState(RunAway::Instance());
+		if(playerPos.x < enemy->getPos().x)
+		{
+			enemy->setState(E_WALK);
+			enemy->movement('r');
+		}
+		else if(playerPos.x < enemy->getPos().x)
+		{
+			enemy->setState(E_WALK);
+			enemy->movement('l');
+		}
+	}
+	else if(enemy->getDistance(enemy->getPos(),playerPos) > ATTACK_RANGE)
+	{
+		enemy->movement('n');
+		enemy->ChangeState(Chase::Instance());
+	}
+	else if(enemy->getHealth() < 80)
+	{
+		enemy->movement('n');	
+		//enemy->ChangeState(RunAway::Instance());
 	}
 	printf("Attacking Player still!\n");
 }
@@ -149,18 +189,9 @@ void RunAway::Enter(Enemy *enemy)
 	printf("Running from player...\n");
 }
 
-void RunAway::Execute(Enemy *enemy)
+void RunAway::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 {
-	if(enemy->getStatus() == OutOfRange)
-	{
-		printf("Enemy out of Range...Back to Chasing!\n");
-		enemy->ChangeState(Chase::Instance());
-	}
-	else if(enemy->getStatus() == EnemyDead)
-	{
-		printf("While Running Enemy died..Back to Patrolling\n");
-		enemy->ChangeState(Patrol::Instance());
-	}
+	
 	printf("Running away from player still!\n");
 }
 

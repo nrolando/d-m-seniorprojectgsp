@@ -29,7 +29,7 @@ public:
 	
 	bool update();
 	void moveEnemies(clock_t);
-	void updateEnemyState();
+	void UpdateEnemyState(D3DXVECTOR3);
 	//creates the entity vector for the enemies for this level
 	bool loadFromFile(int);		//progress
 	void loadFromFile(char* fileName);

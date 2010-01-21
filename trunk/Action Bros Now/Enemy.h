@@ -6,8 +6,11 @@
 #include "Status.h"
 
 #define STUNTIME			500
-#define CSWALKFRAME			3	//number of walking frames
-#define CSDIEFRAME			3
+#define IDLEANIMATION		5000
+#define ATTACKFRAME			4
+#define CSWALKFRAME			6	//number of walking frames
+#define IDLEFRAME           6
+#define CSDIEFRAME			6
 
 #define CSWALKFRAMETIME		150
 
@@ -17,6 +20,7 @@ class Enemy : public BaseGameEntity
 		status_type status;
 	protected:
 		State<Enemy> *CurrentState;
+		bool rotated;
 		int state_frame;
 		
 		/* Attributes */
@@ -32,7 +36,7 @@ class Enemy : public BaseGameEntity
 		/* Updates for HP/MP and States*/
 		virtual void calcDrawRECT();
 		virtual void UpdateStat(int stat, int val);
-		virtual void UpdateState();
+		virtual void UpdateState(D3DXVECTOR3);
 
 		bool update();
 
@@ -42,10 +46,13 @@ class Enemy : public BaseGameEntity
 
 		int setPower(int p) {power = p;}
 		int getPower() {return power;}
+		bool isRotated() {return rotated;}
 
 		/* Enemy State Updates */
 		void ChangeState(State<Enemy>* pNewState);
 		void ChangeStatus(status_type sts) {status = sts;}
+		void movement(char);
+		void rotate()			{rotated = !rotated;}
 		status_type getStatus() {return status;}
 };
 

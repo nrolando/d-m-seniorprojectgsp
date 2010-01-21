@@ -7,38 +7,38 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
 {
+
 	state_frame = 0;
+	rotated = false;
 }
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
-Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr)
-			:BaseGameEntity(ID, KEY, pos, ptr),
-							 status(InRange),
-							 CurrentState(Idle::Instance())
+Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr) 
+:BaseGameEntity(ID, KEY, pos, ptr), status(InRange), CurrentState(Idle::Instance())
 {
 	state_frame = 0;
+	rotated = false;
 }
 
-void increaseHealth(int h);
-
-void Enemy::UpdateState()
+void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 {
-	CurrentState->Execute(this);
+	CurrentState->Execute(this,playerPos);
 
-	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW. IDK HOW ENEMYOWNEDSTATES AND THE STATE CLASSES WORK
+	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
 	clock_t now = clock();
 	switch(state)
 	{
-	case CS_WALK:
-		//just make them move left for now
-		vel.x = -speed;
-		vel.y = vel.z = 0.0f;
-		//set the animation frame for this state
-		state_frame = 0;
-
+	case E_IDLE:
+		if(now - aniFStart >= IDLEANIMATION)
+		{
+			if(anim < IDLEFRAME-1)
+				anim++;
+			else
+				anim = 1;
+		}
 		if(now - aniFStart >= CSWALKFRAMETIME)
 		{
-			if(anim < CSWALKFRAME)
+			if(anim < CSWALKFRAME-1)
 				anim++;
 			else
 				anim = 0;
@@ -46,22 +46,34 @@ void Enemy::UpdateState()
 			aniFStart = now;
 		}
 		break;
-	case CS_DIE:		//this is playing for stun atm
+	case E_ATTACK1:
+
+		if(now - aniFStart >= ANIMATIONGAP)
+		{
+			if(anim < ATTACKFRAME-1)
+				anim++;
+			else
+				anim = 1;
+
+			aniFStart = now;
+		}
+		break;
+	case E_DIE:		//this is playing for stun atm
 		vel.x = vel.y = vel.z = 0.0f;
 
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
-			if(anim < CSWALKFRAME)
+			if(anim < CSWALKFRAME-1)
 				anim++;
 
 			aniFStart = now;
 		}
 		if(now - aniFStart >= STUNTIME)
-			state = CS_WALK;
+			state = E_IDLE;
 		break;
-	};
+	}
 
-	this->calcDrawRECT();
+	calcDrawRECT();
 }
 
 void Enemy::ChangeState(State<Enemy>* pNewState)
@@ -128,5 +140,32 @@ void Enemy::calcDrawRECT()
 		sprInfo.threatBox.left = -8880;
 		sprInfo.threatBox.right = -8880;
 		sprInfo.threatBox.bottom = -8880;
+	}
+}
+
+void Enemy::movement(char dir)
+{
+	clock_t now = clock();
+	switch(dir)
+	{
+		case 'l':
+			vel.x = -speed;
+			vel.y = vel.z = 0;
+			break;
+		case 'd':
+			vel.y = -speed;
+			vel.x = vel.z = 0;
+			break;
+		case 'r':
+			vel.x = speed;
+			vel.y = vel.z = 0;
+			break;
+		case 'u':
+			vel.y = speed; 
+			vel.x = vel.z = 0;
+			break;
+		default:
+			vel.x = vel.y = vel.z = 0;
+			break;
 	}
 }

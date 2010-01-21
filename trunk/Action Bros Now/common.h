@@ -49,9 +49,16 @@
 #define COMBO_TIME		1000
 #define NUM_COMBOS		3		//number of different combos in comboDefintion
 #define COMBO_HITS		3		//number of hits it takes to complete a combo
+
 /////////////////////////////
 //end input manager defines//
 /////////////////////////////
+
+#include <d3d9.h>
+#include <d3dx9tex.h>
+#include <iostream>
+#include <math.h>
+#include <assert.h>
 
 #define MAXCHARSIZE			50
 ///////////DEBUGMODE////////////
@@ -64,6 +71,15 @@
 
 #define SCREEN_WIDTH			640
 #define SCREEN_HEIGHT			480
+
+//Macros for Enemy and Bosses visual ranges
+#define RANGE_OFFSET 10
+#define CHASE_RANGE 100
+#define ATTACK_RANGE 30
+#define PATROL_RANGE 50
+
+//General Sprite Information
+
 
 //Player Macros for player stat screen position//
 //Health
@@ -174,7 +190,7 @@ enum PlayerStates
 enum EnemyStates
 {
 	//CS = clawSoldier
-	CS_WALK, CS_RUN, CS_HIT1, CS_DIE, CS_HIT2
+	E_IDLE, E_WALK, E_RUN, E_ATTACK1, E_ATTACK2, E_STUN, E_DIE
 };
 
 //predefined combo inputs for the inputmanager

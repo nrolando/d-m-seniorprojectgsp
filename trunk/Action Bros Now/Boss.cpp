@@ -32,9 +32,9 @@ void Boss::UpdateStat(int stat, int val)
 	}
 }
 
-void Boss::UpdateState()
+void Boss::UpdateState(D3DXVECTOR3 playerPos)
 {
-	CurrentState->Execute(this);
+	CurrentState->Execute(this,playerPos);
 }
 /*
 void Boss::ChangeState(State<Boss>* pNewState)
