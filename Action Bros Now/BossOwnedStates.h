@@ -1,10 +1,10 @@
 #include "State.h"
 
-//class Boss;
+class Boss;
 class Enemy;
 
 //Boss LessThanFifty State
-class LessThanFifty : public State<Enemy>
+class LessThanFifty : public State<Boss>
 {
 private:
 	LessThanFifty() {}
@@ -13,16 +13,16 @@ private:
 	LessThanFifty(const LessThanFifty&);
 	LessThanFifty& operator=(const LessThanFifty&);
 public:
-	virtual void Enter(Enemy* boss);
-	virtual void Exit(Enemy* boss);
-	virtual void Execute(Enemy* boss);
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static LessThanFifty* Instance();
 };
 
 //Boss LessThanTwentyFive State
-class LessThanTwentyFive : public State<Enemy>
+class LessThanTwentyFive : public State<Boss>
 {
 private:
 	LessThanTwentyFive() {}
@@ -31,9 +31,9 @@ private:
 	LessThanTwentyFive(const LessThanTwentyFive&);
 	LessThanTwentyFive& operator=(const LessThanTwentyFive&);
 public:
-	virtual void Enter(Enemy* boss);
-	virtual void Exit(Enemy* boss);
-	virtual void Execute(Enemy* boss);
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, D3DXVECTOR3 playerPos);
 
 	//this is a singleton
 	static LessThanTwentyFive* Instance();

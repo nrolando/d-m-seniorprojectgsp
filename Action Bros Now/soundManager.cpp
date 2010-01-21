@@ -33,11 +33,11 @@ bool soundManager::initSound(HWND hwnd)
 
 void soundManager::shutDown()
 {
-	if(g_pDS)
-	{
-		g_pDS->Release();
-		g_pDS = NULL;
-	}
+	//if(g_pDS)
+	//{
+	//	g_pDS->Release();
+	//	g_pDS = NULL;
+	//}
 }
 
 //called once to get everything out of files and into the container
@@ -160,5 +160,5 @@ bool soundManager::loadWAV(char *sName)
 //the good stuff
 void soundManager::playSoundLoop(char* sound)
 {
-	sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
+	//sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
 }

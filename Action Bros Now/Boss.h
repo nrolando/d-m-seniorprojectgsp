@@ -10,7 +10,7 @@
 class Boss : public Enemy
 {
 private:
-	//status_type status;
+	State<Boss> *CurrentState;
 	int health,special,sPower;
 public:
 
@@ -24,11 +24,9 @@ public:
 	bool isAlive();
 
 	virtual void UpdateStat(int stat, int val);
-	virtual void UpdateState();
+	virtual void UpdateState(D3DXVECTOR3);
 	
-	//virtual void UpdateState();
-	//virtual void setImg(/* *DirectXSurface */);
-	//virtual char getName();
+	void ChangeState(State<Boss>* pNewState);
 };
 
 #endif

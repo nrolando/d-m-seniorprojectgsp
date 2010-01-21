@@ -28,6 +28,6 @@ public:
 	int UpdatePlayerState();
 	virtual void calcDrawRECT();
 	virtual void UpdateStat(int stat,int val);
-	virtual void UpdateState() {};
+	virtual void UpdateState(D3DXVECTOR3 pPos) {};
 };
 #endif

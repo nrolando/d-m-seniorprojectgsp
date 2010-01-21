@@ -52,12 +52,13 @@ bool Game::initGame(HWND hwnd)
 //initialize the players sprite pointer
 	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
+	/*
 	//PROBLEMS IN THESE FUCTIONS//
 	if(!soundManager::getInstance()->initSound(hwnd))
 		return false;
 	if(!soundManager::getInstance()->loadAllSounds())
 		return false;
-
+	*/
 	return true;
 }
 
@@ -165,11 +166,13 @@ bool Game::update(clock_t ct)
 			//drawHealthBars(EntMgr->getEnt(hitEnemy), player);
 		}
 
-		//update player state, enemies state
-		player->UpdatePlayerState();
-		EntMgr->updateEnemyState();
-		//move entities
-		player->move(ct);
+	//update player state, enemies state
+	player->UpdatePlayerState();
+	EntMgr->UpdateEnemyState(player->getPos());
+	//move entities
+	player->move(ct);
+	for(int i = 0; i<EntMgr->getVecSize();++i)
+		EntMgr->getEntVec(i)->move(ct);
 
 		//checks if player beat the level
 		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
@@ -186,9 +189,9 @@ bool Game::update(clock_t ct)
 			}
 		}
 
-		EntMgr->moveEnemies(ct);
-		//update camera
-		graphics->updateCamera(player->getDrawInfo());
+	//EntMgr->moveEnemies(ct);
+	//update camera
+	graphics->updateCamera(player->getDrawInfo());
 
 	//RENDER :D we can put this inside if statements and check to see if anything has changed
 	//that way we dont render when not necessary
@@ -198,9 +201,9 @@ bool Game::update(clock_t ct)
 		if(DEBUGMODE)
 			display_time(ct, 50);
 
-		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
+		//graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+		//graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+		//graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
 		graphics->EndRender();
 		break;
 	case 3:		//gameover/win
@@ -249,7 +252,7 @@ int Game::checkAttacks()
 				//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
 				//one enemy function - takeDmg();
 					//enemyTakeDme(player->GetDmg());
-					E[i]->setState(CS_DIE);
+					E[i]->setState(E_DIE);
 					E[i]->resetTimes();
 					E[i]->setAnim(0);
 					player->setLAF(player->getAnimFrame());
