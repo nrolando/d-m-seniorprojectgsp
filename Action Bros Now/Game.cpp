@@ -52,13 +52,12 @@ bool Game::initGame(HWND hwnd)
 //initialize the players sprite pointer
 	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
-	/*
 	//PROBLEMS IN THESE FUCTIONS//
 	/*if(!soundManager::getInstance()->initSound(hwnd))
 		return false;
 	if(!soundManager::getInstance()->loadAllSounds())
 		return false;*/
-	*/
+
 	return true;
 }
 

@@ -23,7 +23,6 @@ private:
 
 	//direct sound vars
 	LPDIRECTSOUND8			g_pDS;		//DirectSound Device
-	//LPDIRECTSOUNDBUFFER		DSBuffer;	//DirectSound Buffer (make separate container)
 
 	int curVolume;
 	int volChange;

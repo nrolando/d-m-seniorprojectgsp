@@ -7,7 +7,7 @@ soundFile*  soundContainer::getSound(char *soundName)
 	
 	for(unsigned int i = 0; i < soundCont.size(); i++)
 	{
-		if(strcmp(soundName, soundCont[i].soundName))
+		if(!strcmp(soundName, soundCont[i].soundName))
 			found = i;
 	}
 
