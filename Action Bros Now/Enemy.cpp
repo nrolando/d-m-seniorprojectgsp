@@ -34,8 +34,12 @@ void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 			if(anim < IDLEFRAME-1)
 				anim++;
 			else
-				anim = 1;
+				anim = 0;
+
+			aniFStart = now;
 		}
+		break;
+	case E_WALK:
 		if(now - aniFStart >= CSWALKFRAMETIME)
 		{
 			if(anim < CSWALKFRAME-1)

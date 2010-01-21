@@ -19,8 +19,4 @@
 ./lvlSprites/lvl0sprites/grass3.jpg#]
 ./lvlSprites/lvl0sprites/grass4.jpg#{
 ./lvlSprites/lvl0sprites/flower.png#v
-./lvlSprites/lvl0sprites/tree1.png#`
-./lvlSprites/lvl0sprites/tree2.png#~
-./lvlSprites/lvl0sprites/tree3.png#h
-./lvlSprites/lvl0sprites/tree4.png#!
 ./lvlSprites/lvl0sprites/treestump1.png#;
