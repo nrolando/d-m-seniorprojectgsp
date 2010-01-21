@@ -33,11 +33,11 @@ bool soundManager::initSound(HWND hwnd)
 
 void soundManager::shutDown()
 {
-	//if(g_pDS)
-	//{
-	//	g_pDS->Release();
-	//	g_pDS = NULL;
-	//}
+	if(g_pDS)
+	{
+		g_pDS->Release();
+		g_pDS = NULL;
+	}
 }
 
 //called once to get everything out of files and into the container
@@ -52,7 +52,8 @@ bool soundManager::loadAllSounds()
 
 	inFile.open(fName);
 	
-	//add check for file open
+	if(!inFile.is_open())
+		return false;
 
 	inFile.getline(fName, MAXCHARSIZE, '\n');
 	while(!inFile.eof())
@@ -61,7 +62,7 @@ bool soundManager::loadAllSounds()
 		if(!loadWAV(fName))
 			return false;
 		//get the next sound name
-		inFile.getline(fName, MAXCHARSIZE, 'n');
+		inFile.getline(fName, MAXCHARSIZE, '\n');
 	}
 	inFile.close();
 
@@ -75,7 +76,6 @@ bool soundManager::loadAllSounds()
 bool soundManager::loadWAV(char *sName)
 {
 	soundFile tempSF;
-
 	char fName[MAXCHARSIZE];
 	//LPDIRECTSOUNDBUFFER apDSBuffer = NULL;
 	CWaveFile *wavFile;
@@ -90,10 +90,7 @@ bool soundManager::loadWAV(char *sName)
 	wavFile = new CWaveFile();
 	wavFile->Open(fName, NULL, WAVEFILE_READ );
 	if( wavFile->GetSize() == 0 )
-	{
-	//	MessageBox(wndHandle, "invalid file", "ERROR", MB_OK);
 		return false;
-	}
 
 	DSBUFFERDESC dsbd;
     ZeroMemory( &dsbd, sizeof(DSBUFFERDESC) );
@@ -160,5 +157,5 @@ bool soundManager::loadWAV(char *sName)
 //the good stuff
 void soundManager::playSoundLoop(char* sound)
 {
-	//sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
+	sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
 }
