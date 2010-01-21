@@ -52,12 +52,19 @@ bool Game::initGame(HWND hwnd)
 //initialize the players sprite pointer
 	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
+	//PROBLEMS IN THESE FUCTIONS//
+	if(!soundManager::getInstance()->initSound(hwnd))
+		return false;
+	if(!soundManager::getInstance()->loadAllSounds())
+		return false;
+
 	return true;
 }
 
 void Game::_shutdown()
 {
-	
+	//PROBLEMS
+	soundManager::getInstance()->shutDown();
 }
 
 bool Game::loadLvl()
@@ -104,9 +111,15 @@ bool Game::update(clock_t ct)
 	bool flag1 = true;
 	bool newGame = true;
 
+	//something is wrong
+	
+
 	//get user input
 	inputMan->setInput();
 	input = inputMan->getInput(screen);
+	
+	if(input == 'p')
+		playBGM();
 
 	switch(screen)
 	{

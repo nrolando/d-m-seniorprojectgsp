@@ -6,6 +6,7 @@
 #include "inputManager.h"
 #include "inputManager2.h"
 #include "Level.h"
+#include "soundManager.h"
 #include <windows.h>
 
 //12-2
@@ -37,6 +38,14 @@ private:
 	void endRender()		{ graphics->EndRender(); }
 	void drawLvl();
 
+	//sound playing functions
+	//PROBLEMS IN THESE FUNCTIONS//
+	//make this play a song based on the lvl number
+	void playBGM()			{soundManager::getInstance()->playSoundLoop(BGMlist);}
+	
+	//load sounds
+	bool loadSounds()			{soundManager::getInstance()->loadAllSounds();}
+
 	//figures figures out what to do about collisions
 	//void handleInteractions();
 	//bool actionPossible(char input)   {return player->actionPossible(input);}
@@ -60,6 +69,7 @@ public:
 
 	//load level
 	bool loadLvl();
+	
 
 	//player to enemy collision detection
 	bool actionPossible(char);

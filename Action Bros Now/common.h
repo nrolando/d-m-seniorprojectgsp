@@ -104,10 +104,14 @@
 #define BOSS_SPECIAL_POSY SCREEN_HEIGHT-34
 #define BOSS_SPECIAL_POSZ 0.30f
 
+
+//change to an array when more songs added
+static char* BGMlist = "Aluminia";
 //struct for containing sounds
 //bgm & sfx
 struct soundFile
 {
+	//make this a string???
 	char soundName[MAXCHARSIZE];
 	LPDIRECTSOUNDBUFFER sound;
 };
