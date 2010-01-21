@@ -6,7 +6,7 @@
 #include "Status.h"
 
 #define STUNTIME			500
-#define IDLEANIMATION		5000
+#define IDLEANIMATION		180
 #define ATTACKFRAME			4
 #define CSWALKFRAME			6	//number of walking frames
 #define IDLEFRAME           6
