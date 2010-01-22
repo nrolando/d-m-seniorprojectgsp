@@ -21,7 +21,6 @@ class Enemy : public BaseGameEntity
 	protected:
 		State<Enemy> *CurrentState;
 		bool rotated;
-		int state_frame;
 		
 		/* Attributes */
 		int power,stat,val;

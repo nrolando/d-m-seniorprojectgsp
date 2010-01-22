@@ -82,7 +82,7 @@ bool soundManager::loadWAV(char *sName)
 	HRESULT hr;
 
 	//tempSF.soundName = sName;
-	strcpy(tempSF.soundName, sName);
+	strcpy_s(tempSF.soundName, (size_t)MAXCHARSIZE, sName);
 
 	//need
 	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Sounds/%s.wav", sName);

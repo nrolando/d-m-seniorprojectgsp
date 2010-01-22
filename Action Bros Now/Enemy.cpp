@@ -7,8 +7,6 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
 {
-
-	state_frame = 0;
 	rotated = false;
 }
 
@@ -16,8 +14,10 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr) 
 :BaseGameEntity(ID, KEY, pos, ptr), status(InRange), CurrentState(Idle::Instance())
 {
-	state_frame = 0;
-	rotated = false;
+	if(KEY == SOLDIER1)
+		rotated = true;
+	else
+		rotated = false;
 }
 
 void Enemy::UpdateState(D3DXVECTOR3 playerPos)
@@ -110,10 +110,24 @@ bool Enemy::isAlive()
 
 void Enemy::calcDrawRECT()
 {
+	int state_frame;
+
+	switch(this->key)
+	{
+	case SOLDIER1:
+		if(rotated)
+			state_frame = state;
+		else
+			state_frame = state + SOLDIER1STATES;
+		break;
+	default:
+		state_frame = state;
+	};
+
 //**copied from player, will need adjustments**
 	sprInfo.drawRect.left = anim * sprInfo.width;
 	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
-	sprInfo.drawRect.top = state * sprInfo.height;
+	sprInfo.drawRect.top = state_frame * sprInfo.height;
 	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
 
 	//Enemy's hitBox for dmg verification
@@ -153,6 +167,7 @@ void Enemy::movement(char dir)
 	switch(dir)
 	{
 		case 'l':
+			rotated = false;
 			vel.x = -speed;
 			vel.y = vel.z = 0;
 			break;
@@ -161,6 +176,7 @@ void Enemy::movement(char dir)
 			vel.x = vel.z = 0;
 			break;
 		case 'r':
+			rotated = true;
 			vel.x = speed;
 			vel.y = vel.z = 0;
 			break;
