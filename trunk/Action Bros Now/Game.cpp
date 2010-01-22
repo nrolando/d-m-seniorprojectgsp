@@ -121,6 +121,8 @@ bool Game::update(clock_t ct)
 	{
 	case 0:		//splash
 		this->splashScreen();
+		if(input == 'p')
+			screen++;
 		break;
 	case 1:		//title/menu
 		num = this->titleScreen(input);
