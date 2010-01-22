@@ -155,7 +155,18 @@ bool soundManager::loadWAV(char *sName)
 
 
 //the good stuff
+//for playing bgm
 void soundManager::playSoundLoop(char* sound)
 {
 	sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
+}
+//for playing sfx
+void soundManager::playSound(char *sound)
+{
+	sCont.getSound(sound)->sound->Play(0,0,0);
+}
+//for stopping bgm
+void soundManager::stopSound(char *sound)
+{
+	sCont.getSound(sound)->sound->Stop();
 }

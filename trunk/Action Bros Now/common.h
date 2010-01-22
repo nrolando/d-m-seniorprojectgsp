@@ -71,8 +71,8 @@
 ////////////////////////////////
 #define DEBUGMODE   0
 
-#define SCREEN_WIDTH			640
-#define SCREEN_HEIGHT			480
+#define SCREEN_WIDTH			1024//640
+#define SCREEN_HEIGHT			768//480
 
 //Macros for Enemy and Bosses visual ranges
 #define RANGE_OFFSET 10
