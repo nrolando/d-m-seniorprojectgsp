@@ -49,9 +49,9 @@ public:
 
 	//these will need to be given a string wavName
 	//need to code
-	void playSound();
+	void playSound(char* sound);
 	void playSoundLoop(char* sound);
-	void stopSound(); 
+	void stopSound(char* sound); 
 };
 
 #endif 
