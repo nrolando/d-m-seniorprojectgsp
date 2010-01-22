@@ -108,6 +108,10 @@ char InputManager2::getInput(int screen)
 
 	switch(screen)
 	{
+	case 0:
+		if(downflag & INPUT_Z)
+			return 'p';
+		break;
 	case 1:
 		if(downflag & INPUT_UP)
 			return 'u';
