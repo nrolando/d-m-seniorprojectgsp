@@ -17,7 +17,8 @@
 #define NUM_STATES		7	//current number of player states in spritesheet for one direction
 //these are for animation and stun length
 #define STUNTIME		500
-//frame number count starts at 0
+
+//number of frames per animation
 #define MAXIDLEFRAME	9
 #define MAXWALKFRAME	13
 #define MAXRUNFRAME		6
@@ -26,6 +27,7 @@
 #define MAXSTUNFRAME	1
 #define MAXCOMBO1FRAME	21
 
+//animation times
 #define MAXKICKANIMATION		50
 #define MAXPUNCHANIMATION		30
 #define MAXCOMBO1ANIMATION		60
@@ -46,9 +48,9 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME		1000
+#define COMBO_TIME		800
 #define NUM_COMBOS		3		//number of different combos in comboDefintion
-#define COMBO_HITS		3		//number of hits it takes to complete a combo
+#define COMBO_HITS		4		//number of hits it takes to complete a combo
 
 /////////////////////////////
 //end input manager defines//
@@ -187,6 +189,11 @@ enum PlayerStates
 
 //THIS IS NICKS TEMP STATES FOR THE ENEMY SO I CAN GET HIM TO WALK, AND STUN TO TEST COLLISION
 //IDRK HOW ENEMYOWNEDSTATES WORK YET
+/**ENEMY TYPES (defined in ./enemySprites/load.txt)**/
+#define SOLDIER1				'1'
+/**ENEMY TYPE STATES**/
+#define SOLDIER1STATES			7
+/**ENEMY STATES**/
 enum EnemyStates
 {
 	//CS = clawSoldier
@@ -194,8 +201,8 @@ enum EnemyStates
 };
 
 //predefined combo inputs for the inputmanager
-static char comboDefinitions[3][3] = {'p','p','p',		//uppercut combo
-									  'r','r','r',		//run right
-									  'l','l','l',};	//run left
+static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','p','p','\0',		//uppercut combo
+														  'r','r','r','\0',		//run right
+															 'l','l','l','\0'};	//run left
 
 #endif

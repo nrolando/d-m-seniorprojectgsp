@@ -22,9 +22,9 @@ class BaseGameEntity
 private:
 	int entity_ID;
 	static int entity_NextID;
-	char key;
 //----------------------------------------------------------
 protected:
+	char key;
 	//sprites info: pos, RECTs, image w/h, ss ptr,
 	eSprInfo sprInfo;
 	//set by getnameofentity(ID);
@@ -73,7 +73,6 @@ public:
 		vel.z = 0.0f;
 		stunStart = 0;
 		aniFStart = clock();
-		faceRight = false;
 	}
 	//the constructor for the player
 	BaseGameEntity(std::string n)
