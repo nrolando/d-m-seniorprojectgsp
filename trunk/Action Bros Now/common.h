@@ -69,10 +69,10 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   0
+#define DEBUGMODE   1
 
-#define SCREEN_WIDTH			1024//640
-#define SCREEN_HEIGHT			768//480
+#define SCREEN_WIDTH			1024
+#define SCREEN_HEIGHT			768
 
 //Macros for Enemy and Bosses visual ranges
 #define RANGE_OFFSET 10
@@ -201,7 +201,7 @@ enum EnemyStates
 };
 
 //predefined combo inputs for the inputmanager
-static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','p','p','\0',		//uppercut combo
+static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','p','d','p',		//uppercut combo
 														  'r','r','r','\0',		//run right
 															 'l','l','l','\0'};	//run left
 

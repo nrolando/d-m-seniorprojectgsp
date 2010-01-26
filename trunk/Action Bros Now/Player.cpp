@@ -288,6 +288,21 @@ PlayerStates Player::DoAction(char input)
 
 			return WALK;
 		}
+		else if(state == RUN)
+		{
+			vel.x = -speed * 2.0f;
+			vel.y = -(speed * 2.0f);
+			vel.z = 0.0f;
+			faceRight = false;
+			//set hit frames
+			hitFrames[0] = -1;
+			hitFrames[1] = -1;
+			hitFrames[2] = -1;
+
+			state = RUN;
+
+			return RUN;
+		}
 	}
 	//this should make him run to the right
 	else if(input == 'R')
@@ -475,7 +490,7 @@ int Player::UpdatePlayerState()
 		break;
 	case STUN:
 		//if has been long enough
-		if(now - stunStart >= STUNTIME)
+		if(now - stunStart >= stunTime)
 		{
 			//switch to first fram of idle state
 			state = IDLE;
@@ -544,26 +559,65 @@ void Player::calcDrawRECT()
 	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
 
 	//Player's hitBox for dmg verification
-	sprInfo.hitBox.top  = long(sprInfo.POS.y);
-	sprInfo.hitBox.left = long(sprInfo.POS.x);
-	sprInfo.hitBox.right = sprInfo.hitBox.left + 41;
-	sprInfo.hitBox.bottom  = sprInfo.hitBox.top + 80;
+	sprInfo.hitBox.top  = long(sprInfo.POS.y - 48);
+	sprInfo.hitBox.left = long(sprInfo.POS.x + 45);
+	sprInfo.hitBox.right = sprInfo.hitBox.left + 45;
+	sprInfo.hitBox.bottom  = sprInfo.hitBox.top - 80;
 
 	//Player's threatBox for dmg verification
 	//while in DEBUG this will be shown
-	if(state == PUNCH || state == COMBO1)
+	//PLEASE NOTE: THIS IS ALL FOR RIGHT FACING ONLY! LEFT FACE IS NOT SET UP YET
+	if(state == PUNCH)
 	{
-		sprInfo.threatBox.top  = long(sprInfo.POS.y);
-		sprInfo.threatBox.left = long(sprInfo.POS.x);
-		sprInfo.threatBox.right = sprInfo.threatBox.left + 75;
-		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
+		if(faceRight)
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 45);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 78);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 35;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
+		}
+		else
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 45);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 15);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 35;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
+		}
 	}
 	else if(state == KICK)
 	{
-		sprInfo.threatBox.top  = long(sprInfo.POS.y);
-		sprInfo.threatBox.left = long(sprInfo.POS.x);
-		sprInfo.threatBox.right = sprInfo.threatBox.left + 90;
-		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
+		if(faceRight)
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 55);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 80);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 48;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 30;
+		}
+		else
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 55);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 5);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 48;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 30;
+		}
+	}
+	else if(state == COMBO1)
+	{
+		if(faceRight)
+		{
+			//can add individual threat boxes for each hitFrame[] if needed!
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 78);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+		}
+		else
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 18);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+		}
 	}
 	else
 	{
@@ -580,4 +634,14 @@ bool Player::isAlive()
 		return true;
 	else
 		return false;
+}
+
+void Player::stun()
+{
+	//min + rand() % max - min + 1
+	stunTime = 200 + rand() % 500 - 200 + 1;
+	stunStart = clock();
+	state = STUN;
+	anim = 0;
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }

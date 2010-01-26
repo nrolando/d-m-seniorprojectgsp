@@ -239,29 +239,70 @@ int Game::checkAttacks()
 	const int depthRange = 10;	//collision range for distance
 	std::vector<BaseGameEntity*> E = EntMgr->getEntVec();
 
-	if(player->checkFrames())
+//check player hit enemy collision
+	if(player->checkFrames())//makes sure its the first frame only of an attack frame
 	{
 		for(unsigned int i = 0; i < E.size(); ++i)
 		{
+			//get enemy's info
 			e_SprInfo = E[i]->getDrawInfo();
+			//check x axis collision boxes
 			if(pSprInfo.threatBox.right >= e_SprInfo.hitBox.left && pSprInfo.threatBox.left <= e_SprInfo.hitBox.right)
 			{
-				distance = pSprInfo.threatBox.top - e_SprInfo.hitBox.top;
-				if(distance < 0)
-					distance *= -1;	//get absolute value
-				if(distance < depthRange)
+				//check y axis collision boxes
+				if(pSprInfo.threatBox.top >= e_SprInfo.hitBox.bottom && pSprInfo.threatBox.bottom <= e_SprInfo.hitBox.top)
 				{
-				//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
-				//one enemy function - takeDmg();
-					//enemyTakeDme(player->GetDmg());
-					E[i]->setState(E_DIE);
-					E[i]->resetTimes();
-					E[i]->setAnim(0);
-					player->setLAF(player->getAnimFrame());
-					index = i;
+					//check depth collision (z illusion)
+					distance = pSprInfo.POS.y - e_SprInfo.POS.y;
+					if(distance < 0)
+						distance *= -1;	//get absolute value
+					if(distance < depthRange)
+					{
+					//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
+					//one enemy function - takeDmg();
+						Sleep(0);	//debug statement
+						E[i]->stun();
+						/*
+						//enemyTakeDmg(player->GetDmg());
+						E[i]->setState(E_DIE);
+						E[i]->resetTimes();
+						E[i]->setAnim(0);
+						player->setLAF(player->getAnimFrame());
+						index = i;
+						*/
+					}
 				}
 			}
 		}
+	}
+
+	//check enemies -> player collision
+	for(int i = 0; i < E.size(); ++i)
+	{
+		if(E[i]->checkFrames())
+		{
+			e_SprInfo = E[i]->getDrawInfo();
+			//check x axis collision boxes
+			if(e_SprInfo.threatBox.right >= pSprInfo.hitBox.left && e_SprInfo.threatBox.left <= pSprInfo.hitBox.right)
+			{
+				//check y axis collision boxes
+				if(e_SprInfo.threatBox.top >= pSprInfo.hitBox.bottom && e_SprInfo.threatBox.bottom <= pSprInfo.hitBox.top)
+				{
+					//check depth collision (z illusion)
+					distance = e_SprInfo.POS.y - pSprInfo.POS.y;
+					if(distance < 0)
+						distance *= -1;	//get absolute value
+					if(distance < depthRange)
+					{
+						Sleep(0);	//debug statement
+					//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
+					//one enemy function - takeDmg();
+						player->stun();
+					}
+				}
+			}
+		}
+
 	}
 	return index;
 }

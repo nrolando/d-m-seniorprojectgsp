@@ -62,9 +62,7 @@ void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 			aniFStart = now;
 		}
 		break;
-	case E_DIE:		//this is playing for stun atm
-		vel.x = vel.y = vel.z = 0.0f;
-
+	case E_DIE:
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
 			if(anim < CSWALKFRAME-1)
@@ -74,6 +72,27 @@ void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 		}
 		if(now - aniFStart >= STUNTIME)
 			state = E_IDLE;
+		break;
+	case E_STUN:
+		//if has been long enough
+		if(now - stunStart >= stunTime)
+		{
+			//switch to first fram of idle state
+			state = E_IDLE;
+			anim = 0;
+			aniFStart = now;
+		}
+		//if still stunned and time to switch frame of animation
+		else if(now - aniFStart >= ANIMATIONGAP)
+		{
+			//loop to the beginning of the animation
+			if(anim >= STUNFRAME-1)
+				anim = 0;
+			//advance 1 frame
+			else
+				anim++;
+			aniFStart = now;
+		}
 		break;
 	}
 
@@ -130,35 +149,45 @@ void Enemy::calcDrawRECT()
 	sprInfo.drawRect.top = state_frame * sprInfo.height;
 	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
 
-	//Enemy's hitBox for dmg verification
-	sprInfo.hitBox.top  = long(sprInfo.POS.y);
-	sprInfo.hitBox.left = long(sprInfo.POS.x + 60);
-	sprInfo.hitBox.right = sprInfo.hitBox.left + 68;
-	sprInfo.hitBox.bottom  = sprInfo.hitBox.top + 88;
+//ENEMY HITBOX FOR DAMAGE VERIFICATION
+	switch(this->key)
+	{
+	case SOLDIER1:
+		sprInfo.hitBox.top  = long(sprInfo.POS.y - 66);
+		sprInfo.hitBox.left = long(sprInfo.POS.x + 40);
+		sprInfo.hitBox.right = sprInfo.hitBox.left + 43;
+		sprInfo.hitBox.bottom  = sprInfo.hitBox.top - 62;
+		break;
+	default:
+		break;
+	};
 
 	//Enemy's threatBox for dmg verification
 	//while in DEBUG this will be shown
-	if(state == PUNCH)
+	//PLEASE NOTE: THIS IS ALL FOR RIGHT FACING ONLY! LEFT FACE IS NOT SET UP YET. ALSO, IM NOT SURE
+	//IF DONNIE PLANS ON SHARING THE CURRENT ENEMY STATES BETWEEN ALL ENEMY TYPES, OR EACH ENEMY HAVING ITS
+	//OWN SET OF STATES, SO IM PUTTING THIS INSIDE A SWITCH TO BE SAFE
+	switch(this->key)
 	{
-		sprInfo.threatBox.top  = long(sprInfo.POS.y);
-		sprInfo.threatBox.left = long(sprInfo.POS.x);
-		sprInfo.threatBox.right = sprInfo.threatBox.left + 75;
-		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
-	}
-	else if(state == KICK)
-	{
-		sprInfo.threatBox.top  = long(sprInfo.POS.y);
-		sprInfo.threatBox.left = long(sprInfo.POS.x);
-		sprInfo.threatBox.right = sprInfo.threatBox.left + 90;
-		sprInfo.threatBox.bottom  = sprInfo.threatBox.top + 80;
-	}
-	else
-	{
-		sprInfo.threatBox.top  = -8880;
-		sprInfo.threatBox.left = -8880;
-		sprInfo.threatBox.right = -8880;
-		sprInfo.threatBox.bottom = -8880;
-	}
+	case SOLDIER1:
+		if(state == E_ATTACK1)
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 79);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 1);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+		}
+		else
+		{	//make threatbox off world
+			sprInfo.threatBox.top  = -8880;
+			sprInfo.threatBox.left = -8880;
+			sprInfo.threatBox.right = -8880;
+			sprInfo.threatBox.bottom = -8880;
+		}
+		break;
+	default:
+		break;
+	};
 }
 
 void Enemy::movement(char dir)
@@ -188,4 +217,14 @@ void Enemy::movement(char dir)
 			vel.x = vel.y = vel.z = 0;
 			break;
 	}
+}
+
+void Enemy::stun()
+{
+	//min + rand() % max - min + 1
+	stunTime = 200 + rand() % 500 - 200 + 1;
+	stunStart = clock();
+	anim = 0;
+	state = E_STUN;
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }

@@ -144,6 +144,7 @@ void Attack::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 	{	
 			enemy->movement('n');
 			enemy->setState(E_ATTACK1);
+			enemy->setHitFrames(2, -1, -1);
 	}
 	else if(enemy->getDistance(enemy->getPos(),playerPos) < ATTACK_RANGE/2)
 	{

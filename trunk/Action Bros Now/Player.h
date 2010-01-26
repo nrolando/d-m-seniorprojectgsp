@@ -29,5 +29,6 @@ public:
 	virtual void calcDrawRECT();
 	virtual void UpdateStat(int stat,int val);
 	virtual void UpdateState(D3DXVECTOR3 pPos) {};
+	virtual void stun();
 };
 #endif

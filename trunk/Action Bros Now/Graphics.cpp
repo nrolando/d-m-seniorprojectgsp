@@ -447,8 +447,12 @@ bool Graphics::loadSpriteCont(int prog)
 void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo playerSprite,
 					   std::vector<Tile> bTiles, std::vector<Tile> fTiles, int sublvl)
 {
+	//initialize local variables
+	D3DXVECTOR3 b_pos;
+	RECT b_src;
 	RECT src;
 	D3DXVECTOR3 l_pos;
+	eSprInfo e_SprInfo;
 
 	//draw lvl
 	src.left = LONG((camPos.x - SCREEN_WIDTH/2.0f) + 1500.0f);
@@ -512,30 +516,79 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
     //Draw for Debug mode here
 	if(DEBUGMODE)
 	{
-		D3DXVECTOR3 b_pos;
-		b_pos.x = l_pos.x;  
-		b_pos.y = l_pos.y + 48; //offset y position so that the hitbox is with sprite
-		b_pos.z = l_pos.z;
+		//first setup and draw hitbox
+	//b_src == size of hitbox 45x80
+		b_src.left = 0;
+		b_src.right = 45;
+		b_src.top = 0;
+		b_src.bottom = 80;
 
-		gSprite->Draw(hBoxTexture, &playerSprite.hitBox, NULL, &b_pos, 0xFFFFFFFF);
-		gSprite->Draw(tBoxTexture, &playerSprite.threatBox, NULL, &b_pos, 0xFFFFFFFF);
+		b_pos.x = l_pos.x + (playerSprite.hitBox.left - playerSprite.POS.x); 
+		b_pos.y = l_pos.y + (playerSprite.POS.y - playerSprite.hitBox.top);
+		b_pos.z = l_pos.z + 0.1f;
+		gSprite->Draw(hBoxTexture, &b_src, NULL, &b_pos, 0xFFFFFFFF);
+
+		//setup and draw threatbox
+		b_src.left = 0;
+		b_src.right = playerSprite.threatBox.right - playerSprite.threatBox.left;
+		b_src.top = 0;
+		b_src.bottom = playerSprite.threatBox.top - playerSprite.threatBox.bottom;
+
+		b_pos.x = l_pos.x + (playerSprite.threatBox.left - playerSprite.POS.x); 
+		b_pos.y = l_pos.y + (playerSprite.POS.y - playerSprite.threatBox.top);
+		b_pos.z = l_pos.z + 0.1f;
+		gSprite->Draw(tBoxTexture, &b_src, NULL, &b_pos, 0xFFFFFFFF);
 	}
 
 	//draw the entities
 	//TEST IF SPRITE IS WITHIN VIEWPORT, IF NOT, DON'T DRAW!
 	for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
 	{
-		if(enemyEntSprites[i]->getPos().x < (camPos.x + SCREEN_WIDTH/2.0f) &&
-			(enemyEntSprites[i]->getPos().x + enemyEntSprites[i]->getWidth()) > (camPos.x - SCREEN_WIDTH/2.0f))
+		e_SprInfo = enemyEntSprites[i]->getDrawInfo();
+		if(e_SprInfo.POS.x < (camPos.x + SCREEN_WIDTH/2.0f) &&
+			(e_SprInfo.POS.x + e_SprInfo.width) > (camPos.x - SCREEN_WIDTH/2.0f))
 		{
-			if(enemyEntSprites[i]->getPos().y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
-				(enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()) < (camPos.y + SCREEN_HEIGHT/2.0f))
+			if(e_SprInfo.POS.y > (camPos.y - SCREEN_HEIGHT/2.0f) &&
+				(e_SprInfo.POS.y - e_SprInfo.height) < (camPos.y + SCREEN_HEIGHT/2.0f))
 			{
-				l_pos.x = float(enemyEntSprites[i]->getPos().x - (camPos.x - SCREEN_WIDTH/2.0f));
-				l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - enemyEntSprites[i]->getPos().y);
-				l_pos.z = ((enemyEntSprites[i]->getPos().y - enemyEntSprites[i]->getHeight()) + 500.0f)/1000.0f;;
-				gSprite->Draw(enemyEntSprites[i]->getSSPtr()->gTexture, &enemyEntSprites[i]->getSrc(), NULL, &l_pos, 0xFFFFFFFF);
+				l_pos.x = float(e_SprInfo.POS.x - (camPos.x - SCREEN_WIDTH/2.0f));
+				l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - e_SprInfo.POS.y);
+				l_pos.z = ((e_SprInfo.POS.y - e_SprInfo.height) + 500.0f)/1000.0f;
+				gSprite->Draw(e_SprInfo.ss_ptr->gTexture, &e_SprInfo.drawRect, NULL, &l_pos, 0xFFFFFFFF);
 			}
+		}
+	}
+
+	//Draw for Debug mode here
+	if(DEBUGMODE)
+	{
+		for(unsigned int i = 0; i < enemyEntSprites.size(); i++)
+		{
+			e_SprInfo = enemyEntSprites[i]->getDrawInfo();
+			l_pos.x = float(e_SprInfo.POS.x - (camPos.x - SCREEN_WIDTH/2.0f));
+			l_pos.y = float((camPos.y + SCREEN_HEIGHT/2.0f) - e_SprInfo.POS.y);
+			l_pos.z = ((e_SprInfo.POS.y - e_SprInfo.height) + 500.0f)/1000.0f;
+		//b_src == size of hitbox
+			b_src.left = 0;
+			b_src.right = e_SprInfo.hitBox.right - e_SprInfo.hitBox.left;
+			b_src.top = 0;
+			b_src.bottom = e_SprInfo.hitBox.top - e_SprInfo.hitBox.bottom;
+		//get position
+			b_pos.x = l_pos.x + (e_SprInfo.hitBox.left - e_SprInfo.POS.x); 
+			b_pos.y = l_pos.y + (e_SprInfo.POS.y - e_SprInfo.hitBox.top);
+			b_pos.z = l_pos.z + 0.1f;
+			gSprite->Draw(hBoxTexture, &b_src, NULL, &b_pos, 0xFFFFFFFF);
+
+			//setup and draw threatbox
+			b_src.left = 0;
+			b_src.right = e_SprInfo.threatBox.right - e_SprInfo.threatBox.left;
+			b_src.top = 0;
+			b_src.bottom = e_SprInfo.threatBox.top - e_SprInfo.threatBox.bottom;
+
+			b_pos.x = l_pos.x + (e_SprInfo.threatBox.left - e_SprInfo.POS.x); 
+			b_pos.y = l_pos.y + (e_SprInfo.POS.y - e_SprInfo.threatBox.top);
+			b_pos.z = l_pos.z + 0.1f;
+			gSprite->Draw(tBoxTexture, &b_src, NULL, &b_pos, 0xFFFFFFFF);
 		}
 	}
 }

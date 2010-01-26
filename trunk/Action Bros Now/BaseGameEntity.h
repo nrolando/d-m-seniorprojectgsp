@@ -24,13 +24,15 @@ private:
 	static int entity_NextID;
 //----------------------------------------------------------
 protected:
+	//stat variables
+	int health,maxHealth;
+
 	char key;
 	//sprites info: pos, RECTs, image w/h, ss ptr,
 	eSprInfo sprInfo;
 	//set by getnameofentity(ID);
 	std::string name;
 	bool alive;
-	int health,maxHealth;
 	//entity velocity
 	float speed;
 	D3DXVECTOR3 vel;
@@ -39,7 +41,7 @@ protected:
 	int dmg;
 
 //animations varibales
-	clock_t stunStart, aniFStart;
+	clock_t stunStart, stunTime, aniFStart;
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
 	bool faceRight;		//keeps track of which direction the entity is facing
@@ -112,6 +114,7 @@ public:
 
 	
 	void setID(int val);
+	virtual void stun() = 0;
 
 	//get methods
 	std::string		getName()		{ return name; }
@@ -139,6 +142,7 @@ public:
 	void setState(int s)			{ state = s; }
 	void setLAF(int f)				{ lastAttFrame = f; }
 	void setAnim(int a)				{ anim = a; }
+	void setHitFrames(int n1, int n2, int n3)	{ hitFrames[0] = n1; hitFrames[1] = n2; hitFrames[2] = n3; }
 	
 	//check if the current animation frame is an aggressive frame and not equal to the last aggressive frame
 	bool checkFrames()
