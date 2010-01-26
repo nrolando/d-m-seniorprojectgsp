@@ -7,9 +7,6 @@ Player::Player(std::string n):BaseGameEntity(n)
 	maxHealth = 100;
 	special = 100;
 	maxSpecial = 100;
-	pPower = 20;
-	kPower = 10;
-	sPower = 80;
 	lives = 3;
 	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	state = IDLE;
@@ -21,6 +18,8 @@ void Player::UpdateStat(int stat, int val)
 	{
 		case 0:
 			health += val;
+			if(health < 1)
+				alive = false;
 			break;
 		case 1:
 			special += val;
@@ -31,7 +30,7 @@ void Player::UpdateStat(int stat, int val)
 	}
 }
 
-PlayerStates Player::DoAction(char input)
+void Player::DoAction(char input)
 {
 	clock_t now = clock();
 
@@ -53,8 +52,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		else if(state == RUN)
 		{
@@ -68,8 +65,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	else if(input == 'r')
@@ -90,8 +85,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		//if player is running, keep running
 		else if(state == RUN)
@@ -106,8 +99,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	else if(input == 'd')
@@ -127,8 +118,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 	}
 	else if(input == 'u')
@@ -148,8 +137,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 	}
 	//up & right
@@ -171,8 +158,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		else if(state == RUN)
 		{
@@ -186,8 +171,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	//up & left
@@ -209,8 +192,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		else if(state == RUN)
 		{
@@ -224,8 +205,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	//down & right
@@ -247,8 +226,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		else if(state == RUN)
 		{
@@ -262,8 +239,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	//down & left
@@ -285,8 +260,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = WALK;
-
-			return WALK;
 		}
 		else if(state == RUN)
 		{
@@ -300,8 +273,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[2] = -1;
 
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	//this should make him run to the right
@@ -323,8 +294,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	else if(input == 'L')
@@ -345,8 +314,6 @@ PlayerStates Player::DoAction(char input)
 				anim = 0;
 			}
 			state = RUN;
-
-			return RUN;
 		}
 	}
 	else if(input == 'p')
@@ -366,16 +333,26 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 		}
-		return ATTACK;
 	}
 	else if(input == 'k')
 	{
-		//the player stops to kick
-		vel.x = vel.y = vel.z = 0.0f;
 //this checks if the animation is done, if not, nothing happens
 //note: all player input action should be done inside this if statement
-		if(state == IDLE || state == WALK || state == RUN)
+		if(state == RUN)
 		{
+			anim = 0;
+			aniFStart = now;
+			state = KICK2;
+			lastAttFrame = -1;
+			//set hit frames
+			hitFrames[0] = 2;
+			hitFrames[1] = 4;
+			hitFrames[2] = -1;
+		}
+		else if(state == IDLE || state == WALK)
+		{
+			//the player stops to kick
+			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
 			aniFStart = now;
 			state = KICK;
@@ -385,7 +362,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
 		}
-		return ATTACK;
 	}
 	else if(input == '1')
 	{
@@ -405,7 +381,6 @@ PlayerStates Player::DoAction(char input)
 			hitFrames[1] = 11;
 			hitFrames[2] = 17;
 		}
-		return ATTACK;
 	}
 	else
 	{
@@ -422,8 +397,6 @@ PlayerStates Player::DoAction(char input)
 			lastAttFrame = -1;		//reset
 		}
 	}
-
-	return IDLE;
 }
 
 int Player::UpdatePlayerState()
@@ -478,6 +451,20 @@ int Player::UpdatePlayerState()
 		if(now - aniFStart >= MAXKICKANIMATION)
 		{
 			if(anim < MAXKICKFRAME-1)
+				anim++;
+			else
+			{
+				anim = 0;
+				state = IDLE;
+			}
+
+			aniFStart = now;
+		}
+		break;
+	case KICK2:
+		if(now - aniFStart >= MAXKICKANIMATION)
+		{
+			if(anim < MAXKICK2FRAME-1)
 				anim++;
 			else
 			{
@@ -603,20 +590,58 @@ void Player::calcDrawRECT()
 	}
 	else if(state == COMBO1)
 	{
-		if(faceRight)
+		if(anim >= 16)	//flame hitFrame
 		{
-			//can add individual threat boxes for each hitFrame[] if needed!
-			sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
-			sprInfo.threatBox.left = long(sprInfo.POS.x + 78);
-			sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
-			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+			if(faceRight)
+			{
+				//can add individual threat boxes for each hitFrame[] if needed!
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 25);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 68);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 42;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 75;
+			}
+			else
+			{
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 25);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 18);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 42;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 75;
+			}
 		}
 		else
 		{
-			sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
-			sprInfo.threatBox.left = long(sprInfo.POS.x + 18);
-			sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
-			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+			if(faceRight)
+			{
+				//can add individual threat boxes for each hitFrame[] if needed!
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 78);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+			}
+			else
+			{
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 40);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 18);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 32;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 50;
+			}
+		}
+	}
+	else if(state == KICK2)
+	{
+		if(faceRight)
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 68);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 75);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 52;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
+		}
+		else
+		{
+			sprInfo.threatBox.top  = long(sprInfo.POS.y - 68);
+			sprInfo.threatBox.left = long(sprInfo.POS.x + 1);
+			sprInfo.threatBox.right = sprInfo.threatBox.left + 52;
+			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
 		}
 	}
 	else
@@ -628,20 +653,35 @@ void Player::calcDrawRECT()
 	}
 }
 
-bool Player::isAlive()
-{
-	if(health > 0 && health <= 200)
-		return true;
-	else
-		return false;
-}
-
 void Player::stun()
 {
 	//min + rand() % max - min + 1
-	stunTime = 200 + rand() % 500 - 200 + 1;
+	stunTime = 100 + rand() % 201;
 	stunStart = clock();
 	state = STUN;
-	anim = 0;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
+int Player::getDmg()
+{
+	switch(state)
+	{
+	case PUNCH:
+		return P_POWER;
+		break;
+	case KICK:
+	case KICK2:
+		return K_POWER;
+		break;
+	case COMBO1:
+		if(anim == hitFrames[0])
+			return P_POWER;
+		else if(anim == hitFrames[1])
+			return K_POWER;
+		else if(anim == hitFrames[2])
+			return C1_POWER;
+		break;
+	default:
+		return 0;
+	};
 }

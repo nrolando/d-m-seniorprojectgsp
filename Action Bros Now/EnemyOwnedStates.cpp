@@ -143,8 +143,10 @@ void Attack::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 	   enemy->getDistance(enemy->getPos(),playerPos) >= (ATTACK_RANGE/2))
 	{	
 			enemy->movement('n');
+			//this is for SOLDIER1/E_ATTACK1 only
 			enemy->setState(E_ATTACK1);
 			enemy->setHitFrames(2, -1, -1);
+			enemy->setPower(10);
 	}
 	else if(enemy->getDistance(enemy->getPos(),playerPos) < ATTACK_RANGE/2)
 	{

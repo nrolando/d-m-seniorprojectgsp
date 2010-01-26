@@ -1,20 +1,25 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
 #include <d3d9.h>
 #include <d3dx9tex.h>
-
-//includes for sound
+#include <d3d9.h>
+#include <d3dx9tex.h>
+#include <iostream>
+#include <math.h>
+#include <assert.h>
 #include <dsound.h>
 #include "dsutil.h"
-
-//using namespace std;
 
 //////////////////
 //player defines//
 //////////////////
-#define NUM_STATES		7	//current number of player states in spritesheet for one direction
+//player's attack power
+#define P_POWER			10	//punch power
+#define K_POWER			20	//kick power
+#define C1_POWER		60	//flame hit of combo1
+//current number of player states in spritesheet for one direction
+#define NUM_STATES		8
 //these are for animation and stun length
 #define STUNTIME		500
 
@@ -26,6 +31,7 @@
 #define MAXKICKFRAME	8
 #define MAXSTUNFRAME	1
 #define MAXCOMBO1FRAME	21
+#define MAXKICK2FRAME	7
 
 //animation times
 #define MAXKICKANIMATION		50
@@ -56,12 +62,6 @@
 //end input manager defines//
 /////////////////////////////
 
-#include <d3d9.h>
-#include <d3dx9tex.h>
-#include <iostream>
-#include <math.h>
-#include <assert.h>
-
 #define MAXCHARSIZE			50
 ///////////DEBUGMODE////////////
 //   Used for Bug Testing	  //
@@ -71,17 +71,14 @@
 ////////////////////////////////
 #define DEBUGMODE   1
 
-#define SCREEN_WIDTH			1024
-#define SCREEN_HEIGHT			768
+#define SCREEN_WIDTH			880
+#define SCREEN_HEIGHT			720
 
 //Macros for Enemy and Bosses visual ranges
 #define RANGE_OFFSET 10
 #define CHASE_RANGE 100
 #define ATTACK_RANGE 30
 #define PATROL_RANGE 50
-
-//General Sprite Information
-
 
 //Player Macros for player stat screen position//
 //Health
@@ -185,7 +182,7 @@ enum SCREENS
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, ATTACK
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
 };
 
 //THIS IS NICKS TEMP STATES FOR THE ENEMY SO I CAN GET HIM TO WALK, AND STUN TO TEST COLLISION

@@ -26,6 +26,8 @@ private:
 protected:
 	//stat variables
 	int health,maxHealth;
+	//power for Enemy class
+	int power;
 
 	char key;
 	//sprites info: pos, RECTs, image w/h, ss ptr,
@@ -36,9 +38,6 @@ protected:
 	//entity velocity
 	float speed;
 	D3DXVECTOR3 vel;
-	//damage being dealt, determine by attack performed, along with any other desired factors
-	//grabbed by game to be passed to the EntityManager to deal the dmg to enemies
-	int dmg;
 
 //animations varibales
 	clock_t stunStart, stunTime, aniFStart;
@@ -75,12 +74,22 @@ public:
 		vel.z = 0.0f;
 		stunStart = 0;
 		aniFStart = clock();
+		switch(key)
+		{
+		case SOLDIER1:
+			maxHealth = health = 60;
+			break;
+		default:
+			maxHealth = health = 50;
+			break;
+		};
 	}
 	//the constructor for the player
 	BaseGameEntity(std::string n)
 	{
 		//player position will be initiated in game:initGame
 		name = n;
+		maxHealth = health = 100;
 		state = anim = 0;
 		speed = 3.0f;
 		vel.x = 0.0f;
@@ -123,17 +132,19 @@ public:
 	D3DXVECTOR3		getPos()		{ return sprInfo.POS; }
 	int				getHealth()		{ return health;}
 	int				getMaxHealth()	{ return maxHealth;}
+	int				getPower()		{ return power; }
 	int				getWidth()		{ return sprInfo.width; }
 	int				getHeight()		{ return sprInfo.height; }
 	const int		ID()			{ return entity_ID;}
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
-	int getDmg()					{ return dmg; }
 	int getAnimFrame()				{ return anim; }
 	int getLastAttFrame()			{ return lastAttFrame; }
 	int getDistance(D3DXVECTOR3,D3DXVECTOR3);		
 
 
 	//set methods
+	bool isAlive()					{ return alive; }
+	void setPower(int p)			{ power = p; }
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
 	void setVel(D3DXVECTOR3 v)		{ vel = v; }

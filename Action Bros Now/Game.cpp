@@ -34,6 +34,7 @@ Game::~Game()
 
 bool Game::initGame(HWND hwnd)
 {
+	srand(unsigned(time(0)));
 
 	if(!graphics->initD3D(hwnd))
 		return false;
@@ -98,11 +99,6 @@ bool Game::loadLvl()
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
-	if(soundManager::getInstance()->isBGMplaying())
-		soundManager::getInstance()->stopSound();
-
-	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()%3]);
-
 	return true;
 }
 
@@ -110,7 +106,8 @@ bool Game::update(clock_t ct)
 {
 	char input = ' ';
 	int num;
-	int hitEnemy;
+	static int hitEnemy = -1;
+	static int lastHitEnemy = -1;
 	static bool flag = true;
 	bool flag1 = true;
 	bool newGame = true;
@@ -144,14 +141,13 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:		//gameplay!
-
 		//checks movement collision
 		if(flag1 = actionPossible(input))
 		{
 			player->DoAction(input);
+			flag = true;
 			if(input == 'p')
 				soundManager::getInstance()->playSound("Punch");
-			flag = true;
 		}
 		if(flag && !flag1)
 		{
@@ -163,11 +159,8 @@ bool Game::update(clock_t ct)
 
 		//check for collision (needs to be moved/adjusted)
 		hitEnemy = checkAttacks();
-		
 		if(hitEnemy >= 0)
-		{
-			//drawHealthBars(EntMgr->getEnt(hitEnemy), player);
-		}
+			lastHitEnemy = hitEnemy;
 
 	//update player state, enemies state
 	player->UpdatePlayerState();
@@ -206,7 +199,10 @@ bool Game::update(clock_t ct)
 
 		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
 		//graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		graphics->DisplayEnemyHealth(EntMgr->getEntVec(0)->getHealth(),EntMgr->getEntVec(0)->getMaxHealth());
+		if(lastHitEnemy >= 0)
+		{
+			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
+		}
 		graphics->EndRender();
 		break;
 	case 3:		//gameover/win
@@ -233,11 +229,12 @@ bool Game::actionPossible(char input)
 
 int Game::checkAttacks()
 {
+	//index gets either the last enemy you hit, or the last enemy to hit you..return -1 if nothing
 	int index = -1;
 	eSprInfo pSprInfo = player->getDrawInfo();
 	eSprInfo e_SprInfo;
 	int distance = 0;	//distance from players threat.top to enemys hit.top
-	const int depthRange = 10;	//collision range for distance
+	const int depthRange = 15;	//collision range for distance
 	std::vector<BaseGameEntity*> E = EntMgr->getEntVec();
 
 //check player hit enemy collision
@@ -254,23 +251,26 @@ int Game::checkAttacks()
 				if(pSprInfo.threatBox.top >= e_SprInfo.hitBox.bottom && pSprInfo.threatBox.bottom <= e_SprInfo.hitBox.top)
 				{
 					//check depth collision (z illusion)
-					distance = pSprInfo.POS.y - e_SprInfo.POS.y;
+					distance = int(pSprInfo.POS.y - e_SprInfo.POS.y);
 					if(distance < 0)
 						distance *= -1;	//get absolute value
 					if(distance < depthRange)
 					{
-					//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
-					//one enemy function - takeDmg();
-						Sleep(0);	//debug statement
-						E[i]->stun();
-						/*
-						//enemyTakeDmg(player->GetDmg());
-						E[i]->setState(E_DIE);
-						E[i]->resetTimes();
+						//take damage and check if dead
+						E[i]->UpdateStat(0, -(player->getDmg()));
 						E[i]->setAnim(0);
 						player->setLAF(player->getAnimFrame());
-						index = i;
-						*/
+						if(!E[i]->isAlive())
+						{
+							//KILL ENEMY
+							Sleep(0);
+						}
+						else
+						{
+							E[i]->stun();
+						}
+						index = i;	//last enemy hit
+					
 					}
 				}
 			}
@@ -278,7 +278,7 @@ int Game::checkAttacks()
 	}
 
 	//check enemies -> player collision
-	for(int i = 0; i < E.size(); ++i)
+	for(unsigned int i = 0; i < E.size(); ++i)
 	{
 		if(E[i]->checkFrames())
 		{
@@ -290,15 +290,17 @@ int Game::checkAttacks()
 				if(e_SprInfo.threatBox.top >= pSprInfo.hitBox.bottom && e_SprInfo.threatBox.bottom <= pSprInfo.hitBox.top)
 				{
 					//check depth collision (z illusion)
-					distance = e_SprInfo.POS.y - pSprInfo.POS.y;
+					distance = int(e_SprInfo.POS.y - pSprInfo.POS.y);
 					if(distance < 0)
 						distance *= -1;	//get absolute value
 					if(distance < depthRange)
 					{
-						Sleep(0);	//debug statement
-					//we have a collision: //no stun animation yet, so enemy just dies instead. can all be done in
-					//one enemy function - takeDmg();
+						player->UpdateStat(0, -(E[i]->getPower()));
+						//set last attack frame
+						E[i]->setLAF(E[i]->getAnimFrame());
+						player->setAnim(0);
 						player->stun();
+						index = i;		//last enemy that hit you
 					}
 				}
 			}
@@ -308,6 +310,33 @@ int Game::checkAttacks()
 	return index;
 }
 
+/*
+void Game::handleInteractions()
+{
+	//write size()
+	for(int i = 0; i <= EntMgr->Size(); i++)
+	{
+		//bool returning collision function
+		if()
+		{
+			switch(player->getState())
+			{
+			case ATTACK:
+				EntMgr->getEnt(i)->takeDMG(player->getDMG());
+				EntMgr->getEnt(i)->Setstate(STUN);
+				break;
+			case STUN:IDLE:WALK:
+				if(EntMgr->getEnt(i)->getState() != STUN)
+				{
+					player->takeDMG(EntMgr->getEnt(i)->getDMG());
+					player->setState(STUN);
+				}
+				break;
+			}
+		}
+	}
+}
+*/
 
 int Game::titleScreen(char input)
 {
