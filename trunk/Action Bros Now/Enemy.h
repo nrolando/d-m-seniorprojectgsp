@@ -17,44 +17,36 @@
 
 class Enemy : public BaseGameEntity
 {
-	private:
-		status_type status;
-	protected:
-		State<Enemy> *CurrentState;
-		bool rotated;
-		
-		/* Attributes */
-		int power,stat,val;
+private:
+	status_type status;
+protected:
+	State<Enemy> *CurrentState;
+	
+	/* Attributes - power moved to BGE*/
+	int stat,val;
 
-	public:
-		Enemy(int ID);
-		Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
-		~Enemy() {}
+public:
+	Enemy(int ID);
+	Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
+	~Enemy() {}
 
-		bool isAlive();
+	/* Updates for HP/MP and States*/
+	virtual void calcDrawRECT();
+	virtual void UpdateStat(int stat, int val);
+	virtual void UpdateState(D3DXVECTOR3);
+	virtual void stun();
 
-		/* Updates for HP/MP and States*/
-		virtual void calcDrawRECT();
-		virtual void UpdateStat(int stat, int val);
-		virtual void UpdateState(D3DXVECTOR3);
-		virtual void stun();
+	bool update();
 
-		bool update();
+	/*   Attribute related functions   */
+	void setHealth(int hp) {health = hp;}
+	int getHealth() {return health;}
 
-		/*   Attribute related functions   */
-		int setHealth(int hp) {health = hp;}
-		int getHealth() {return health;}
-
-		int setPower(int p) {power = p;}
-		int getPower() {return power;}
-		bool isRotated() {return rotated;}
-
-		/* Enemy State Updates */
-		void ChangeState(State<Enemy>* pNewState);
-		void ChangeStatus(status_type sts) {status = sts;}
-		void movement(char);
-		void rotate()			{rotated = !rotated;}
-		status_type getStatus() {return status;}
+	/* Enemy State Updates */
+	void ChangeState(State<Enemy>* pNewState);
+	void ChangeStatus(status_type sts) {status = sts;}
+	void movement(char);
+	status_type getStatus() {return status;}
 };
 
 #endif

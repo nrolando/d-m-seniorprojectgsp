@@ -630,7 +630,8 @@ void Graphics::drawTitle(int cursor)
 	//screen position
 	D3DXVECTOR3 l_pos;
 
-	l_pos.x = l_pos.y = 0.0f;
+	l_pos.x = (float)SCREEN_WIDTH/2 - 320;
+	l_pos.y = (float)SCREEN_HEIGHT/2 - 240;
 	l_pos.z = 0.9f;
 	//draw title screen
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey(',')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);

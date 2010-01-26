@@ -7,7 +7,7 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 status(InRange),
 					 CurrentState(Idle::Instance())
 {
-	rotated = false;
+	faceRight = false;
 }
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
@@ -15,14 +15,15 @@ Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr)
 :BaseGameEntity(ID, KEY, pos, ptr), status(InRange), CurrentState(Idle::Instance())
 {
 	if(KEY == SOLDIER1)
-		rotated = true;
+		faceRight = false;
 	else
-		rotated = false;
+		faceRight = false;
 }
 
 void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 {
-	CurrentState->Execute(this,playerPos);
+	if(state != E_STUN)
+		CurrentState->Execute(this,playerPos);
 
 	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
 	clock_t now = clock();
@@ -51,13 +52,15 @@ void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 		}
 		break;
 	case E_ATTACK1:
-
 		if(now - aniFStart >= ANIMATIONGAP)
 		{
 			if(anim < ATTACKFRAME-1)
 				anim++;
 			else
-				anim = 1;
+			{
+				anim = 0;
+				lastAttFrame = -1;
+			}
 
 			aniFStart = now;
 		}
@@ -112,19 +115,13 @@ void Enemy::UpdateStat(int stat, int val)
 	{
 		case 0:
 			health += val;
+			if(health < 1)
+				alive = false;
 			break;
 		default:
 			printf("Sorry incorrect stat addition");
 			break;
 	}
-}
-
-bool Enemy::isAlive()
-{
-	if(health > 0 && health <= 200)
-		return true;
-	else
-		return false;
 }
 
 void Enemy::calcDrawRECT()
@@ -134,7 +131,7 @@ void Enemy::calcDrawRECT()
 	switch(this->key)
 	{
 	case SOLDIER1:
-		if(rotated)
+		if(faceRight)
 			state_frame = state;
 		else
 			state_frame = state + SOLDIER1STATES;
@@ -143,7 +140,7 @@ void Enemy::calcDrawRECT()
 		state_frame = state;
 	};
 
-//**copied from player, will need adjustments**
+	//source rect to be drawn
 	sprInfo.drawRect.left = anim * sprInfo.width;
 	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
 	sprInfo.drawRect.top = state_frame * sprInfo.height;
@@ -172,10 +169,20 @@ void Enemy::calcDrawRECT()
 	case SOLDIER1:
 		if(state == E_ATTACK1)
 		{
-			sprInfo.threatBox.top  = long(sprInfo.POS.y - 79);
-			sprInfo.threatBox.left = long(sprInfo.POS.x + 1);
-			sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
-			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+			if(faceRight)
+			{
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 79);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 71);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+			}
+			else
+			{
+				sprInfo.threatBox.top  = long(sprInfo.POS.y - 79);
+				sprInfo.threatBox.left = long(sprInfo.POS.x + 1);
+				sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
+				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+			}
 		}
 		else
 		{	//make threatbox off world
@@ -196,7 +203,7 @@ void Enemy::movement(char dir)
 	switch(dir)
 	{
 		case 'l':
-			rotated = false;
+			faceRight = false;
 			vel.x = -speed;
 			vel.y = vel.z = 0;
 			break;
@@ -205,7 +212,7 @@ void Enemy::movement(char dir)
 			vel.x = vel.z = 0;
 			break;
 		case 'r':
-			rotated = true;
+			faceRight = true;
 			vel.x = speed;
 			vel.y = vel.z = 0;
 			break;
@@ -222,9 +229,8 @@ void Enemy::movement(char dir)
 void Enemy::stun()
 {
 	//min + rand() % max - min + 1
-	stunTime = 200 + rand() % 500 - 200 + 1;
+	stunTime = 200 + rand() % 301;
 	stunStart = clock();
-	anim = 0;
 	state = E_STUN;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
