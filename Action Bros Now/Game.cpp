@@ -98,6 +98,11 @@ bool Game::loadLvl()
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
+	if(soundManager::getInstance()->isBGMplaying())
+		soundManager::getInstance()->stopSound();
+
+	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()%3]);
+
 	return true;
 }
 
@@ -139,18 +144,14 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:		//gameplay!
-		
-		//sound tester:
-		if(input == 'p')
-			playBGM();
 
 		//checks movement collision
 		if(flag1 = actionPossible(input))
 		{
 			player->DoAction(input);
+			if(input == 'p')
+				soundManager::getInstance()->playSound("Punch");
 			flag = true;
-			//write this
-			//handleInteractions();
 		}
 		if(flag && !flag1)
 		{
@@ -307,33 +308,6 @@ int Game::checkAttacks()
 	return index;
 }
 
-/*
-void Game::handleInteractions()
-{
-	//write size()
-	for(int i = 0; i <= EntMgr->Size(); i++)
-	{
-		//bool returning collision function
-		if()
-		{
-			switch(player->getState())
-			{
-			case ATTACK:
-				EntMgr->getEnt(i)->takeDMG(player->getDMG());
-				EntMgr->getEnt(i)->Setstate(STUN);
-				break;
-			case STUN:IDLE:WALK:
-				if(EntMgr->getEnt(i)->getState() != STUN)
-				{
-					player->takeDMG(EntMgr->getEnt(i)->getDMG());
-					player->setState(STUN);
-				}
-				break;
-			}
-		}
-	}
-}
-*/
 
 int Game::titleScreen(char input)
 {

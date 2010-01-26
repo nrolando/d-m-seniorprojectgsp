@@ -6,6 +6,8 @@ soundManager::soundManager()
 {
 	curVolume = 50;
 	volChange = 10;
+	BGMplaying = false;
+	currBGM = NULL;
 }
 
 soundManager* soundManager::getInstance()
@@ -48,7 +50,7 @@ bool soundManager::loadAllSounds()
 
 	//add stuff to check for emty vector and clear vector
 
-	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Sounds/soundlist.txt"); //add txt file to file
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Sounds/soundlist.txt"); 
 
 	inFile.open(fName);
 	
@@ -159,14 +161,19 @@ bool soundManager::loadWAV(char *sName)
 void soundManager::playSoundLoop(char* sound)
 {
 	sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
+	BGMplaying = true;
+	currBGM = sound;
 }
 //for playing sfx
 void soundManager::playSound(char *sound)
 {
+	sCont.getSound(sound)->sound->SetVolume((long)10);
 	sCont.getSound(sound)->sound->Play(0,0,0);
 }
 //for stopping bgm
-void soundManager::stopSound(char *sound)
+void soundManager::stopSound()
 {
-	sCont.getSound(sound)->sound->Stop();
+	sCont.getSound(currBGM)->sound->Stop();
+	BGMplaying = false;
+	currBGM = NULL;
 }

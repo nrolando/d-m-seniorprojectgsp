@@ -41,7 +41,7 @@ private:
 	//sound playing functions
 	//PROBLEMS IN THESE FUNCTIONS//
 	//make this play a song based on the lvl number
-	void playBGM()			{soundManager::getInstance()->playSoundLoop(BGMlist);}
+	//void playBGM()			{soundManager::getInstance()->playSoundLoop(BGMlist);}
 	
 	//load sounds
 	bool loadSounds()			{soundManager::getInstance()->loadAllSounds();}

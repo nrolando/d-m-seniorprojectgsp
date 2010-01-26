@@ -27,6 +27,10 @@ private:
 	int curVolume;
 	int volChange;
 
+	//if BGM is playing
+	bool BGMplaying;
+	char* currBGM;
+
 	//the container
 	soundContainer sCont;
 
@@ -47,11 +51,14 @@ public:
 	//load sNames as strings
 	bool loadAllSounds();
 
+	//check if BGM is plaing
+	bool isBGMplaying()				{return BGMplaying;}
+
 	//these will need to be given a string wavName
 	//need to code
 	void playSound(char* sound);
 	void playSoundLoop(char* sound);
-	void stopSound(char* sound); 
+	void stopSound(); 
 };
 
 #endif 
