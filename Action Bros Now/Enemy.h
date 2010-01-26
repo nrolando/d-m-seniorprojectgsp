@@ -11,6 +11,7 @@
 #define CSWALKFRAME			6	//number of walking frames
 #define IDLEFRAME           6
 #define CSDIEFRAME			6
+#define STUNFRAME			1
 
 #define CSWALKFRAMETIME		150
 
@@ -36,6 +37,7 @@ class Enemy : public BaseGameEntity
 		virtual void calcDrawRECT();
 		virtual void UpdateStat(int stat, int val);
 		virtual void UpdateState(D3DXVECTOR3);
+		virtual void stun();
 
 		bool update();
 
