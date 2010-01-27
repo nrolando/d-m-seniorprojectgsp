@@ -1,1 +1,2 @@
 ./enemySprites/Soldier1.png#1
+./enemySprites/SoldierBoss.png#2

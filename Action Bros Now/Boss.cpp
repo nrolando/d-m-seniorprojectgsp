@@ -35,6 +35,26 @@ void Boss::UpdateStat(int stat, int val)
 void Boss::UpdateState(Player *p)
 {
 	CurrentState->Execute(this,p);
+
+	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
+	clock_t now = clock();
+	switch(state)
+	{
+		case SB_IDLE:
+			if(now - aniFStart >= SBANIMATION)
+			{
+				if(anim < SB_IDLE_FRAME-1)
+					anim++;
+				else
+					anim = 0;
+
+				aniFStart = now;
+			}
+			break;
+		
+	};
+
+	calcDrawRECT();
 }
 /*
 void Boss::ChangeState(State<Boss>* pNewState)

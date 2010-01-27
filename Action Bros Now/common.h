@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <dsound.h>
 #include "dsutil.h"
+#include "EnemyInformation.h"
 
 //////////////////
 //player defines//
@@ -74,7 +75,7 @@
 #define SCREEN_WIDTH			880
 #define SCREEN_HEIGHT			720
 
-//Macros for Enemy and Bosses visual ranges
+//Macros for Enemy visual ranges
 #define RANGE_OFFSET 10
 #define CHASE_RANGE 100
 #define ATTACK_RANGE 30
@@ -185,24 +186,9 @@ enum PlayerStates
 	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
 };
 
-
-/**ENEMY TYPES (defined in ./enemySprites/load.txt)**/
-#define SOLDIER1				'1'
-/**ENEMY TYPE STATES**/
-#define SOLDIER1STATES			 7
-/**ENEMY STATES**/
-enum SOLDIER1_STATES
-{
-	E_IDLE, E_WALK, E_RUN, E_ATTACK1, E_ATTACK2, E_STUN, E_DIE
-};
-enum SOLDIER_BOSS_STATES
-{
-	SB_IDLE, SB_WALK, SB_RUN, SB_KICK, SB_SLASH, SB_STUN, SB_DIE, SB_TAUNT
-};
-
 //predefined combo inputs for the inputmanager
 static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','p','d','p',		//uppercut combo
-														  'r','r','r','\0',		//run right
-															 'l','l','l','\0'};	//run left
+														'r','r','r','\0',		//run right
+														'l','l','l','\0'};		//run left
 
 #endif
