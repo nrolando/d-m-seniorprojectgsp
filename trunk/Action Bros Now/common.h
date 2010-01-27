@@ -12,6 +12,11 @@
 #include "dsutil.h"
 #include "EnemyInformation.h"
 
+//level boundaries
+//remember the pos is at the upper left corner of the sprite
+#define YLIMIT_TOP		20
+#define YLIMIT_BOTTOM	-162
+
 //////////////////
 //player defines//
 //////////////////
@@ -55,7 +60,7 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME		800
+#define COMBO_TIME		500
 #define NUM_COMBOS		3		//number of different combos in comboDefintion
 #define COMBO_HITS		4		//number of hits it takes to complete a combo
 
@@ -70,12 +75,12 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   1
+#define DEBUGMODE   0
 
 #define SCREEN_WIDTH			880
 #define SCREEN_HEIGHT			720
 
-//Macros for Enemy visual ranges
+//Macros for Enemy and Bosses visual ranges
 #define RANGE_OFFSET 10
 #define CHASE_RANGE 100
 #define ATTACK_RANGE 30
@@ -122,7 +127,7 @@
 
 
 //change to an array when more songs added
-static char* BGMlist[3] = {"I like it a lot","Days to Come","Collarbone",};
+static char* BGMlist[4] = {"I like it a lot","Days to Come","Collarbone",};
 
 //struct for containing sounds
 //bgm & sfx
@@ -187,8 +192,8 @@ enum PlayerStates
 };
 
 //predefined combo inputs for the inputmanager
-static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','p','d','p',		//uppercut combo
-														'r','r','r','\0',		//run right
-														'l','l','l','\0'};		//run left
+static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',		//uppercut combo
+														  'r','r','\0','\0',		//run right
+															 'l','l','\0','\0'};	//run left
 
 #endif

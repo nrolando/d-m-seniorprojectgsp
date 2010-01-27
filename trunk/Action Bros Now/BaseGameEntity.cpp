@@ -12,7 +12,8 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	sprInfo.width = FRAME_WIDTH;
 	sprInfo.height = FRAME_HEIGHT;
 	state = anim = 0;
-	speed = 1.0f;
+	speed = 2.0f;
+	health = maxHealth = 100;
 	vel.x = 0.0f;
 	vel.y = 0.0f;
 	vel.z = 0.0f;
@@ -57,6 +58,34 @@ void BaseGameEntity::setID(int val)
   //entity_ID = val;
   //  
   //entity_NextID = entity_ID + 1;	
+}
+
+void BaseGameEntity::move(clock_t TIME)
+{
+	TIME = TIME/CLOCKS_PER_SEC;		//convert to seconds
+	if(TIME < 1)
+		TIME = 1;
+
+	sprInfo.POS.x += vel.x*TIME;
+	sprInfo.POS.y += vel.y*TIME;
+	sprInfo.POS.z += vel.z*TIME;
+
+	//keep player within boundaries
+	if(sprInfo.POS.y >= YLIMIT_TOP)
+	{
+		sprInfo.POS.y = YLIMIT_TOP;
+		vel.x = vel.y = vel.z = 0.0f;
+	}
+	if(sprInfo.POS.y <= YLIMIT_BOTTOM)
+	{
+		sprInfo.POS.y = YLIMIT_BOTTOM;
+		vel.x = vel.y = vel.z = 0.0f;
+	}
+	if(sprInfo.POS.x <= -1500.0f)
+	{
+		sprInfo.POS.x = -1500.0f;
+		vel.x = vel.y = vel.z = 0.0f;
+	}
 }
 
 int BaseGameEntity::getDistance(D3DXVECTOR3 ePos,D3DXVECTOR3 pPos)

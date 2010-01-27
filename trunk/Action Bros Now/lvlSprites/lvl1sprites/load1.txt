@@ -2,3 +2,4 @@
 ./lvlSprites/lvl1sprites/lvl1-1.png#P
 ./lvlSprites/lvl1sprites/lvl1-2.png#I
 ./lvlSprites/lvl1sprites/fingerCactus.png#c
+./lvlSprites/lvl1sprites/cactus_bottom.png#g

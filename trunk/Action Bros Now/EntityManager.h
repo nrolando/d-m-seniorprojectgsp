@@ -35,6 +35,7 @@ public:
 	void loadFromFile(char* fileName);
 	void setImgPtrs();
 
+	bool isVectorEmpty()	{return entityVector.empty();}
 	int getVecSize()		{ return entityVector.size(); }
 
 	//update the entities

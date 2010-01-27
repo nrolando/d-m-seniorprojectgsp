@@ -10,20 +10,18 @@ Player::Player(std::string n):BaseGameEntity(n)
 	lives = 3;
 	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	state = IDLE;
+	score = 0;
 }
 
 void Player::UpdateStat(int stat, int val)
 {
 	switch(stat)
-	{
+	{//dont change alive to false until death animation has finished, not currently being implemented,
+	//waiting for death animation
 		case 0:
-			if(health > 0)
-				health += val;
-			else
-			{
+			health += val;
+			if(health < 0)
 				health = 0;
-				alive = false;
-			}
 			break;
 		case 1:
 			special += val;
@@ -326,6 +324,7 @@ void Player::DoAction(char input)
 //note: all player input action should be done inside this if statement
 		if(state == IDLE || state == WALK || state == RUN)
 		{
+			soundManager::getInstance()->playSound("sword_swing");
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
@@ -355,6 +354,7 @@ void Player::DoAction(char input)
 		}
 		else if(state == IDLE || state == WALK)
 		{
+			soundManager::getInstance()->playSound("sword_swing");
 			//the player stops to kick
 			vel.x = vel.y = vel.z = 0.0f;
 			anim = 0;
@@ -666,27 +666,31 @@ void Player::stun()
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
+void Player::die()
+{
+}
+
 int Player::getDmg()
 {
 	switch(state)
 	{
-		case PUNCH:
+	case PUNCH:
+		return P_POWER;
+		break;
+	case KICK:
+	case KICK2:
+		return K_POWER;
+		break;
+	case COMBO1:
+		if(anim == hitFrames[0])
 			return P_POWER;
-			break;
-		case KICK:
-		case KICK2:
+		else if(anim == hitFrames[1])
 			return K_POWER;
-			break;
-		case COMBO1:
-			if(anim == hitFrames[0])
-				return P_POWER;
-			else if(anim == hitFrames[1])
-				return K_POWER;
-			else if(anim == hitFrames[2])
-				return C1_POWER;
-			break;
-		default:
-			return 0;
+		else if(anim == hitFrames[2])
+			return C1_POWER;
+		break;
+	default:
+		return 0;
 	};
 	return 0;
 }

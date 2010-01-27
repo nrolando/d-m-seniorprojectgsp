@@ -6,10 +6,6 @@
 #include <vector>
 #include <fstream>
 
-//remember the pos is at the upper left corner of the sprite
-#define YLIMIT_TOP		20
-#define YLIMIT_BOTTOM	-162
-
 class Level
 {
 private:
