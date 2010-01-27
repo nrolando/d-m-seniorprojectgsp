@@ -13,7 +13,6 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	sprInfo.height = FRAME_HEIGHT;
 	state = anim = 0;
 	speed = 1.0f;
-	health = maxHealth = 100;
 	vel.x = 0.0f;
 	vel.y = 0.0f;
 	vel.z = 0.0f;
@@ -23,6 +22,9 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	{
 	case SOLDIER1:
 		maxHealth = health = 60;
+		break;
+	case SOLDIER_BOSS:
+		maxHealth = health = 400;
 		break;
 	default:
 		maxHealth = health = 50;

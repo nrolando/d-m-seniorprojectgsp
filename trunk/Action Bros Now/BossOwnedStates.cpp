@@ -1,24 +1,74 @@
 #include <iostream>
 #include "BossOwnedStates.h"
-#include "EnemyOwnedStates.h"
+#include "Player.h"
 #include "Boss.h"
 #include "Status.h"
 
 
-//-------------------------methods for LessThanFifty-------------------------------//
-LessThanFifty* LessThanFifty::Instance()
+//-------------------------methods for Aggressive-------------------------------//
+Aggressive* Aggressive::Instance()
 {
-  static LessThanFifty instance;
+  static Aggressive instance;
 
   return &instance;
 }
 
-void LessThanFifty::Enter(Boss *boss)
+void Aggressive::Enter(Boss *boss)
+{
+	printf("Commencing Battle\n");
+}
+
+void Aggressive::Execute(Boss* boss, Player* player)
+{
+	if(boss->getDistance(boss->getPos(),player->getPos()) < SB_ATTACK_RANGE)
+	{
+		boss->setState(SB_RUN);
+
+		if(boss->getPos().y > player->getPos().y+SB_RANGE_OFFSET)
+		{
+			boss->setState(SB_WALK);
+			boss->movement('d');
+		}
+		if(boss->getPos().y < player->getPos().y-SB_RANGE_OFFSET) 
+		{
+			boss->setState(SB_WALK);
+			boss->movement('u');
+		}
+		if(boss->getPos().x > player->getPos().x+SB_RANGE_OFFSET)
+		{
+			boss->setState(SB_WALK);
+			boss->movement('l');
+		}
+		if(boss->getPos().x < player->getPos().x+SB_RANGE_OFFSET) 
+		{
+			boss->setState(SB_WALK);
+			boss->movement('r');
+		}
+	}
+	printf("I am currently <50% Health!\n");
+}
+
+
+void Aggressive::Exit(Boss *boss)
+{
+	printf("Leaving Defensive State\n");
+}
+
+
+//-------------------------methods for Defensive-------------------------------//
+Defensive* Defensive::Instance()
+{
+  static Defensive instance;
+
+  return &instance;
+}
+
+void Defensive::Enter(Boss *boss)
 {
 	printf("<50% Health...\n");
 }
 
-void LessThanFifty::Execute(Boss* boss, Player* player)
+void Defensive::Execute(Boss* boss, Player* player)
 {
 	if(boss->getStatus() == EnemyDead)
 	{
@@ -28,31 +78,31 @@ void LessThanFifty::Execute(Boss* boss, Player* player)
 	if(boss->getStatus() == InRange)
 	{
 		printf("Going for attack!\n");
-		//boss->ChangeState(LessThanTwentyFive::Instance());
+		//boss->ChangeState(Beserk::Instance());
 	}
 	printf("I am currently <50% Health!\n");
 }
 
 
-void LessThanFifty::Exit(Boss *boss)
+void Defensive::Exit(Boss *boss)
 {
-	printf("Leaving LessThanFifty State\n");
+	printf("Leaving Defensive State\n");
 }
 
-//-------------------------methods for LessThanTwentyFive-------------------------------//
-LessThanTwentyFive* LessThanTwentyFive::Instance()
+//-------------------------methods for Beserk-------------------------------//
+Beserk* Beserk::Instance()
 {
-  static LessThanTwentyFive instance;
+  static Beserk instance;
 
   return &instance;
 }
 
-void LessThanTwentyFive::Enter(Boss *boss)
+void Beserk::Enter(Boss *boss)
 {
 	printf("<25% Health...\n");
 }
 
-void LessThanTwentyFive::Execute(Boss* boss, Player* player)
+void Beserk::Execute(Boss* boss, Player* player)
 {
 	if(boss->getStatus() == EnemyDead)
 	{
@@ -67,8 +117,8 @@ void LessThanTwentyFive::Execute(Boss* boss, Player* player)
 	printf("I am currently <25% Health!\n");
 }
 
-void LessThanTwentyFive::Exit(Boss *boss)
+void Beserk::Exit(Boss *boss)
 {
-	printf("Leaving LessThanTwentyFive State\n");
+	printf("Leaving Beserk State\n");
 }
 

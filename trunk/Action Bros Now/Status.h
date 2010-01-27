@@ -40,8 +40,8 @@ enum status_type
   InFace,
   EnemyDead,
   WeakerThanEnemy,
-  LessThanFiftyHealth,
-  LessThanTwentyFiveHealth
+  DefensiveHealth,
+  BeserkHealth
 };
 
 #endif

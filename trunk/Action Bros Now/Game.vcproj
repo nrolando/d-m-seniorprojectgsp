@@ -185,6 +185,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EnemyInformation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Game.h"
 				>
 			</File>

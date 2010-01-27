@@ -4,40 +4,58 @@ class Boss;
 class Player;
 class Enemy;
 
-//Boss LessThanFifty State
-class LessThanFifty : public State<Boss,Player>
+//Boss Aggresive State
+class Aggressive : public State<Boss,Player>
 {
 private:
-	LessThanFifty() {}
+	Aggressive() {}
 
 	//copy ctor and assignment should be private
-	LessThanFifty(const LessThanFifty&);
-	LessThanFifty& operator=(const LessThanFifty&);
+	Aggressive(const Aggressive&);
+	Aggressive& operator=(const Aggressive&);
 public:
 	virtual void Enter(Boss* boss);
 	virtual void Exit(Boss* boss);
 	virtual void Execute(Boss* boss, Player* player);
 
 	//this is a singleton
-	static LessThanFifty* Instance();
+	static Aggressive* Instance();
 };
 
-//Boss LessThanTwentyFive State
-class LessThanTwentyFive : public State<Boss,Player>
+//Boss Defensive State
+class Defensive : public State<Boss,Player>
 {
 private:
-	LessThanTwentyFive() {}
+	Defensive() {}
 
 	//copy ctor and assignment should be private
-	LessThanTwentyFive(const LessThanTwentyFive&);
-	LessThanTwentyFive& operator=(const LessThanTwentyFive&);
+	Defensive(const Defensive&);
+	Defensive& operator=(const Defensive&);
 public:
 	virtual void Enter(Boss* boss);
 	virtual void Exit(Boss* boss);
 	virtual void Execute(Boss* boss, Player* player);
 
 	//this is a singleton
-	static LessThanTwentyFive* Instance();
+	static Defensive* Instance();
+};
+
+//Boss Beserk State
+class Beserk : public State<Boss,Player>
+{
+private:
+	Beserk() {}
+
+	//copy ctor and assignment should be private
+	Beserk(const Beserk&);
+	Beserk& operator=(const Beserk&);
+public:
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, Player* player);
+
+	//this is a singleton
+	static Beserk* Instance();
 };
 
 ////Boss RunAway State
