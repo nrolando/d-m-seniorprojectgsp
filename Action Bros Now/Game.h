@@ -30,6 +30,10 @@ private:
 
 	Level *level;
 
+	//used to display enemy health bar
+	int hitEnemy;
+	int lastHitEnemy;
+
 	//Graphics Engine
 	Graphics *graphics;
 

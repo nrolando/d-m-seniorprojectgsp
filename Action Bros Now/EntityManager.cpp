@@ -64,7 +64,7 @@ bool EntityManager::loadFromFile(int prog)
 	return true;
 }
 
-void EntityManager::UpdateEnemyState(Player* p)
+void EntityManager::UpdateEnemyState(Player *p)
 {
 	for(unsigned int i = 0; i < entityVector.size(); i++)
 	{
@@ -82,29 +82,18 @@ void EntityManager::moveEnemies(clock_t et)
 
 bool EntityManager::update()
 {
+	if(entityVector.empty())
+		return true;
 	//iterate through the vector list
-	/*std::vector<BaseGameEntity*>::size_type vsz = entityVector.size();
-	for(int i = 0; i < vsz; ++i)
-	{*/
-		/*if(player.hitbox collide with entityVector[i].hitbox)
-		{
-			switch(player.getstate())
-			{
-			case attack:
-				entityVector[i].takedmg(player.dealdmg());
-				entityVector[i].setStun();
-				break;
-			case stun:
-				if(entityVector[i].getstate() == attacking)
-					player.takedmg(entityVector[i].dealdmg());
-					player.setstun();
-				break;
-			default:
-				if(entityVector[i].getstate() == attacking)
-					player.takedmg(entityVector[i].dealdmg());
-					player.setstun();
-				break;
-			}
-		}*/
+	std::vector<BaseGameEntity*>::iterator iter = entityVector.begin();
+
+	/*
+	//check if any enemies are dead and erase them
+	for(; iter != entityVector.end(); ++iter)
+	{
+		if(!(*iter)->isAlive())
+			iter = entityVector.erase(iter);
+	}
+	*/
 	return true;
 }

@@ -22,6 +22,8 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	input = ' ';
 	inputMan = new InputManager2(HI, hWnd);
 	screen = 0;	//start at 1 until we get splash
+	hitEnemy = -1;
+	lastHitEnemy = -1;
 }
 
 Game::~Game()
@@ -31,10 +33,6 @@ Game::~Game()
 	delete level;
 	delete player;
 }
-
-//ASSET LOADING NEEDS TO BE DONE IN IT"S OWN FUNCTION
-//ONLY THE SCREEN ASSETS SHOULD BE LOADED
-//THE GAME PLAY ASSETS SHOULD BE LOADED AFTER NEW IS SELECTED
 
 bool Game::initGame(HWND hwnd)
 {
@@ -73,10 +71,6 @@ void Game::_shutdown()
 
 bool Game::loadLvl()
 {
-
-	if(soundManager::getInstance()->isBGMplaying())
-		soundManager::getInstance()->stopSound();
-
 	static int lastLvl = 0;
 
 //only call if its a new level, not sublevel. and dont call it first time around :)
@@ -103,10 +97,14 @@ bool Game::loadLvl()
 		MessageBox(NULL, "Unable to load enemies", "ERROR", MB_OK);
 		return false;
 	}
+	hitEnemy = lastHitEnemy = -1;
 
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
+	//new song per level
+	if(soundManager::getInstance()->isBGMplaying())
+		soundManager::getInstance()->stopSound();
 	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);
 
 	return true;
@@ -116,12 +114,11 @@ bool Game::update(clock_t ct)
 {
 	char input = ' ';
 	int num;
-	static int hitEnemy = -1;
-	static int lastHitEnemy = -1;
 	static bool flag = true;
 	bool flag1 = true;
 	bool newGame = true;
 
+	//something is wrong
 	
 
 	//get user input
@@ -153,9 +150,8 @@ bool Game::update(clock_t ct)
 		//checks movement collision
 		if(flag1 = actionPossible(input))
 		{
-			if(input == 'p' || input == 'k')
-				soundManager::getInstance()->playSound("sword_swing");
 			player->DoAction(input);
+			flag = true;
 		}
 		if(flag && !flag1)
 		{
@@ -173,7 +169,10 @@ bool Game::update(clock_t ct)
 	//update player state, enemies state
 	player->UpdatePlayerState();
 	EntMgr->UpdateEnemyState(player);
-	//move entities
+	//update entities
+	if(!EntMgr->update())
+		return false;
+	//move player here
 	player->move(ct);
 	for(int i = 0; i<EntMgr->getVecSize();++i)
 		EntMgr->getEntVec(i)->move(ct);
@@ -207,7 +206,7 @@ bool Game::update(clock_t ct)
 
 		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
 		//graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		if(lastHitEnemy >= 0)
+		if(!EntMgr->isVectorEmpty() && lastHitEnemy >= 0)
 		{
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}
@@ -235,10 +234,6 @@ bool Game::actionPossible(char input)
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////
-//DO NOT USE A TEMP VECTOR OF ENEMIES QUERY THE ENEMY CONTAINER//
-/////////////////////////////////////////////////////////////////
-
 int Game::checkAttacks()
 {
 	//index gets either the last enemy you hit, or the last enemy to hit you..return -1 if nothing
@@ -254,38 +249,50 @@ int Game::checkAttacks()
 	{
 		for(unsigned int i = 0; i < E.size(); ++i)
 		{
-			//get enemy's info
-			e_SprInfo = E[i]->getDrawInfo();
-			//check x axis collision boxes
-			if(pSprInfo.threatBox.right >= e_SprInfo.hitBox.left && pSprInfo.threatBox.left <= e_SprInfo.hitBox.right)
+			if(E[i]->isAlive())
 			{
-				//check y axis collision boxes
-				if(pSprInfo.threatBox.top >= e_SprInfo.hitBox.bottom && pSprInfo.threatBox.bottom <= e_SprInfo.hitBox.top)
+				//get enemy's info
+				e_SprInfo = E[i]->getDrawInfo();
+				//check x axis collision boxes
+				if(pSprInfo.threatBox.right >= e_SprInfo.hitBox.left && pSprInfo.threatBox.left <= e_SprInfo.hitBox.right)
 				{
-					//check depth collision (z illusion)
-					distance = int(pSprInfo.POS.y - e_SprInfo.POS.y);
-					if(distance < 0)
-						distance *= -1;	//get absolute value
-					if(distance < depthRange)
+					//check y axis collision boxes
+					if(pSprInfo.threatBox.top >= e_SprInfo.hitBox.bottom && pSprInfo.threatBox.bottom <= e_SprInfo.hitBox.top)
 					{
-						//play the hit sfx
-						//shorten the sfx
-						soundManager::getInstance()->playSound("punch_kick_impact");
-						//take damage and check if dead
-						E[i]->UpdateStat(0, -(player->getDmg()));
-						E[i]->setAnim(0);
-						player->setLAF(player->getAnimFrame());
-						if(!E[i]->isAlive())
+						//check depth collision (z illusion)
+						distance = int(pSprInfo.POS.y - e_SprInfo.POS.y);
+						if(distance < 0)
+							distance *= -1;	//get absolute value
+						if(distance < depthRange)
 						{
-							//KILL ENEMY
-							Sleep(0);
+							//play the hit sfx
+							//shorten the sfx
+							if(player->getState() == PUNCH || player->getState() == KICK)
+								soundManager::getInstance()->playSound("punch_kick_impact");
+
+							//take damage and check if dead
+							E[i]->UpdateStat(0, -(player->getDmg()));
+							//set the players lastAttackFrame
+							player->setLAF(player->getAnimFrame());
+							//check if the hit killed the enemy
+							if(E[i]->getHealth() < 1)
+							{
+								E[i]->die();
+
+								//add to player's score
+								switch(E[i]->getKey())
+								{
+								case SOLDIER1:
+									player->addScore(50);
+									break;
+								};
+							}
+							else
+							{
+								E[i]->stun();
+								index = i;	//last enemy hit
+							}
 						}
-						else
-						{
-							E[i]->stun();
-						}
-						index = i;	//last enemy hit
-					
 					}
 				}
 			}
@@ -312,7 +319,13 @@ int Game::checkAttacks()
 					{
 						//play the sword sfx
 						//need to shorten the sound
-						soundManager::getInstance()->playSound("sword_impact");
+						switch(E[i]->getKey())
+						{
+						case SOLDIER1:
+							if(E[i]->getState() == E_ATTACK1)
+								soundManager::getInstance()->playSound("sword_impact");
+							break;
+						};
 						player->UpdateStat(0, -(E[i]->getPower()));
 						//set last attack frame
 						E[i]->setLAF(E[i]->getAnimFrame());

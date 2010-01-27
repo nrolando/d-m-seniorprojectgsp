@@ -8,6 +8,7 @@ Enemy::Enemy(int ID):BaseGameEntity(ID),
 					 CurrentState(Idle::Instance())
 {
 	faceRight = false;
+	rotated = false;
 }
 
 //possible bug: idk if passing a char array will get the c-str that its supposed to
@@ -18,11 +19,25 @@ Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr)
 		faceRight = false;
 	else
 		faceRight = false;
+	rotated = false;
+}
+
+void Enemy::UpdateStat(int stat, int val)
+{
+	switch(stat)
+	{
+		case 0:
+			health += val;
+			break;
+		default:
+			printf("Sorry incorrect stat addition");
+			break;
+	}
 }
 
 void Enemy::UpdateState(Player *p)
 {
-	if(state != E_STUN)
+	if(state != E_STUN && state != E_FALL)
 		CurrentState->Execute(this,p);
 
 	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
@@ -41,7 +56,7 @@ void Enemy::UpdateState(Player *p)
 		}
 		break;
 	case E_WALK:
-		if(now - aniFStart >= CSWALKFRAMETIME)
+		if(now - aniFStart >= WALKFRAMETIME)
 		{
 			if(anim < CSWALKFRAME-1)
 				anim++;
@@ -65,16 +80,28 @@ void Enemy::UpdateState(Player *p)
 			aniFStart = now;
 		}
 		break;
-	case E_DIE:
-		if(now - aniFStart >= ANIMATIONGAP)
+	case E_FALL:
+		if(now - aniFStart >= DEATHFRAMETIME)
 		{
-			if(anim < CSWALKFRAME-1)
-				anim++;
-
+			if(health > 0)
+			{
+				if(anim < FALLFRAME-1)
+					anim++;
+				else
+				{
+					state = E_IDLE;
+					anim = 0;
+				}
+			}
+			else
+			{
+				if(anim < FALLFRAME-2)
+					anim++;
+				else
+					alive = false;
+			}
 			aniFStart = now;
 		}
-		if(now - aniFStart >= STUNTIME)
-			state = E_IDLE;
 		break;
 	case E_STUN:
 		//if has been long enough
@@ -102,26 +129,11 @@ void Enemy::UpdateState(Player *p)
 	calcDrawRECT();
 }
 
-void Enemy::ChangeState(State<Enemy,Player>* pNewState)
+void Enemy::ChangeState(State<Enemy, Player>* pNewState)
 {
 	CurrentState->Exit(this);
 	CurrentState = pNewState;
 	CurrentState->Enter(this);
-}
-
-void Enemy::UpdateStat(int stat, int val)
-{
-	switch(stat)
-	{
-		case 0:
-			health += val;
-			if(health < 1)
-				alive = false;
-			break;
-		default:
-			printf("Sorry incorrect stat addition");
-			break;
-	}
 }
 
 void Enemy::calcDrawRECT()
@@ -232,5 +244,16 @@ void Enemy::stun()
 	stunTime = 200 + rand() % 301;
 	stunStart = clock();
 	state = E_STUN;
+	anim = 0;
+	aniFStart = clock();
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
+void Enemy::die()
+{
+//note the alive variable doesn't get set until animation is over, then enemy gets deleted in EntMgr->update()
+	state = E_FALL;
+	anim = 0;
+	aniFStart = clock();
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }

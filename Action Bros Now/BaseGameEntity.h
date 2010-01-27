@@ -67,22 +67,12 @@ public:
 	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
 	virtual void UpdateState(Player*) = 0;
+	virtual void stun() = 0;
+	virtual void die() = 0;
 
 	//move player according to velocity
-	void move(clock_t TIME)
-	{
-		TIME = TIME/CLOCKS_PER_SEC;		//convert to seconds
-		if(TIME < 1)
-			TIME = 1;
-
-		sprInfo.POS.x += vel.x*TIME;
-		sprInfo.POS.y += vel.y*TIME;
-		sprInfo.POS.z += vel.z*TIME;
-	}
-
-	
+	void move(clock_t TIME);	
 	void setID(int val);
-	virtual void stun() = 0;
 
 	//get methods
 	std::string		getName()		{ return name; }
@@ -97,7 +87,9 @@ public:
 	const int		ID()			{ return entity_ID;}
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
 	int getAnimFrame()				{ return anim; }
+	int getState()					{ return state; }
 	int getLastAttFrame()			{ return lastAttFrame; }
+	char getKey()					{ return key; }
 	int getDistance(D3DXVECTOR3,D3DXVECTOR3);		
 
 
