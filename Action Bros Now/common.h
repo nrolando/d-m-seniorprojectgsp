@@ -189,7 +189,7 @@ enum PlayerStates
 /**ENEMY TYPES (defined in ./enemySprites/load.txt)**/
 #define SOLDIER1				'1'
 /**ENEMY TYPE STATES**/
-#define SOLDIER1STATES			7
+#define SOLDIER1STATES			 7
 /**ENEMY STATES**/
 enum SOLDIER1_STATES
 {
@@ -197,6 +197,7 @@ enum SOLDIER1_STATES
 };
 enum SOLDIER_BOSS_STATES
 {
+	SB_IDLE, SB_WALK, SB_RUN, SB_KICK, SB_SLASH, SB_STUN, SB_DIE, SB_TAUNT
 };
 
 //predefined combo inputs for the inputmanager
