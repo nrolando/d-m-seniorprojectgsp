@@ -32,6 +32,10 @@ Game::~Game()
 	delete player;
 }
 
+//ASSET LOADING NEEDS TO BE DONE IN IT"S OWN FUNCTION
+//ONLY THE SCREEN ASSETS SHOULD BE LOADED
+//THE GAME PLAY ASSETS SHOULD BE LOADED AFTER NEW IS SELECTED
+
 bool Game::initGame(HWND hwnd)
 {
 	srand(unsigned(time(0)));
@@ -69,6 +73,10 @@ void Game::_shutdown()
 
 bool Game::loadLvl()
 {
+
+	if(soundManager::getInstance()->isBGMplaying())
+		soundManager::getInstance()->stopSound();
+
 	static int lastLvl = 0;
 
 //only call if its a new level, not sublevel. and dont call it first time around :)
@@ -99,6 +107,8 @@ bool Game::loadLvl()
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
+	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);
+
 	return true;
 }
 
@@ -112,7 +122,6 @@ bool Game::update(clock_t ct)
 	bool flag1 = true;
 	bool newGame = true;
 
-	//something is wrong
 	
 
 	//get user input
@@ -144,10 +153,9 @@ bool Game::update(clock_t ct)
 		//checks movement collision
 		if(flag1 = actionPossible(input))
 		{
+			if(input == 'p' || input == 'k')
+				soundManager::getInstance()->playSound("sword_swing");
 			player->DoAction(input);
-			flag = true;
-			if(input == 'p')
-				soundManager::getInstance()->playSound("Punch");
 		}
 		if(flag && !flag1)
 		{
@@ -227,6 +235,10 @@ bool Game::actionPossible(char input)
 	return true;
 }
 
+/////////////////////////////////////////////////////////////////
+//DO NOT USE A TEMP VECTOR OF ENEMIES QUERY THE ENEMY CONTAINER//
+/////////////////////////////////////////////////////////////////
+
 int Game::checkAttacks()
 {
 	//index gets either the last enemy you hit, or the last enemy to hit you..return -1 if nothing
@@ -256,6 +268,9 @@ int Game::checkAttacks()
 						distance *= -1;	//get absolute value
 					if(distance < depthRange)
 					{
+						//play the hit sfx
+						//shorten the sfx
+						soundManager::getInstance()->playSound("punch_kick_impact");
 						//take damage and check if dead
 						E[i]->UpdateStat(0, -(player->getDmg()));
 						E[i]->setAnim(0);
@@ -295,6 +310,9 @@ int Game::checkAttacks()
 						distance *= -1;	//get absolute value
 					if(distance < depthRange)
 					{
+						//play the sword sfx
+						//need to shorten the sound
+						soundManager::getInstance()->playSound("sword_impact");
 						player->UpdateStat(0, -(E[i]->getPower()));
 						//set last attack frame
 						E[i]->setLAF(E[i]->getAnimFrame());

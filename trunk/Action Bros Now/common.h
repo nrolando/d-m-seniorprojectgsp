@@ -121,7 +121,7 @@
 
 
 //change to an array when more songs added
-static char* BGMlist[4] = {"I like it a lot","Days to Come","Collarbone",};
+static char* BGMlist[3] = {"I like it a lot","Days to Come","Collarbone",};
 
 //struct for containing sounds
 //bgm & sfx

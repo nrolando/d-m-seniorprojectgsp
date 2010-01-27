@@ -674,7 +674,6 @@ int Player::getDmg()
 			return P_POWER;
 			break;
 		case KICK:
-			break;
 		case KICK2:
 			return K_POWER;
 			break;
@@ -689,4 +688,5 @@ int Player::getDmg()
 		default:
 			return 0;
 	};
+	return 0;
 }
