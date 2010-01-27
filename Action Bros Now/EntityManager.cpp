@@ -64,11 +64,11 @@ bool EntityManager::loadFromFile(int prog)
 	return true;
 }
 
-void EntityManager::UpdateEnemyState(D3DXVECTOR3 temp)
+void EntityManager::UpdateEnemyState(Player* p)
 {
 	for(unsigned int i = 0; i < entityVector.size(); i++)
 	{
-		entityVector[i]->UpdateState(temp);
+		entityVector[i]->UpdateState(p);
 	}
 }
 

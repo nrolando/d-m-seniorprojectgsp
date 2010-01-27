@@ -17,9 +17,13 @@ void Player::UpdateStat(int stat, int val)
 	switch(stat)
 	{
 		case 0:
-			health += val;
-			if(health < 1)
+			if(health > 0)
+				health += val;
+			else
+			{
+				health = 0;
 				alive = false;
+			}
 			break;
 		case 1:
 			special += val;
@@ -666,22 +670,23 @@ int Player::getDmg()
 {
 	switch(state)
 	{
-	case PUNCH:
-		return P_POWER;
-		break;
-	case KICK:
-	case KICK2:
-		return K_POWER;
-		break;
-	case COMBO1:
-		if(anim == hitFrames[0])
+		case PUNCH:
 			return P_POWER;
-		else if(anim == hitFrames[1])
+			break;
+		case KICK:
+			break;
+		case KICK2:
 			return K_POWER;
-		else if(anim == hitFrames[2])
-			return C1_POWER;
-		break;
-	default:
-		return 0;
+			break;
+		case COMBO1:
+			if(anim == hitFrames[0])
+				return P_POWER;
+			else if(anim == hitFrames[1])
+				return K_POWER;
+			else if(anim == hitFrames[2])
+				return C1_POWER;
+			break;
+		default:
+			return 0;
 	};
 }

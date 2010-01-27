@@ -15,25 +15,29 @@
 
 #define CSWALKFRAMETIME		150
 
+class Player;
+
 class Enemy : public BaseGameEntity
 {
-private:
-	status_type status;
-protected:
-	State<Enemy> *CurrentState;
-	
-	/* Attributes - power moved to BGE*/
-	int stat,val;
+	private:
+		status_type status;
+	protected:
+		State<Enemy,Player> *CurrentState;
+		bool rotated;
+		
+		/* Attributes */
+		int stat,val;
 
 public:
 	Enemy(int ID);
 	Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
 	~Enemy() {}
 
+
 	/* Updates for HP/MP and States*/
 	virtual void calcDrawRECT();
 	virtual void UpdateStat(int stat, int val);
-	virtual void UpdateState(D3DXVECTOR3);
+	virtual void UpdateState(Player*);
 	virtual void stun();
 
 	bool update();
@@ -41,12 +45,14 @@ public:
 	/*   Attribute related functions   */
 	void setHealth(int hp) {health = hp;}
 	int getHealth() {return health;}
+	void setPower(int p) {power = p;}
+	int getPower() {return power;}
 
 	/* Enemy State Updates */
-	void ChangeState(State<Enemy>* pNewState);
+	void ChangeState(State<Enemy,Player>* pNewState);
 	void ChangeStatus(status_type sts) {status = sts;}
+	int getStatus() {return status;}
 	void movement(char);
-	status_type getStatus() {return status;}
 };
 
 #endif

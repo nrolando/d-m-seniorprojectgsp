@@ -1,5 +1,6 @@
 #include "EnemyOwnedStates.h"
 #include "Enemy.h"
+#include "Player.h"
 #include "Status.h"
 
 //-------------------------methods for Idle-------------------------------//
@@ -15,16 +16,16 @@ void Idle::Enter(Enemy *enemy)
 	printf("Idling the area...\n");
 }
 
-void Idle::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
+void Idle::Execute(Enemy* enemy, Player* player)
 {
 	printf("Idling...\n");
 
-	if(enemy->getDistance(enemy->getPos(),playerPos) <= CHASE_RANGE)
+	if(enemy->getDistance(enemy->getPos(),player->getPos()) <= CHASE_RANGE)
 	{
 		printf("Within Range...changing state");
 		enemy->ChangeState(Chase::Instance());
 	}
-	else if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE)
+	else if(enemy->getDistance(enemy->getPos(),player->getPos()) <= ATTACK_RANGE)
 	{
 		printf("Within Attack Range...changing state");
 		enemy->ChangeState(Attack::Instance());
@@ -52,7 +53,7 @@ void Patrol::Enter(Enemy *enemy)
 }
 
 //template<entity_type>
-void Patrol::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
+void Patrol::Execute(Enemy* enemy, Player* player)
 {
 	if(enemy->getStatus() == OutOfRange)
 	{
@@ -85,27 +86,27 @@ void Chase::Enter(Enemy *enemy)
 	printf("Chasing after player...\n");
 }
 
-void Chase::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
+void Chase::Execute(Enemy* enemy, Player* player)
 {
 	//If player is within attack range then switch to Attack state
-	if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE)
+	if(enemy->getDistance(enemy->getPos(),player->getPos()) <= ATTACK_RANGE)
 			enemy->ChangeState(Attack::Instance());
-	else if(enemy->getPos().y > playerPos.y+RANGE_OFFSET)
+	else if(enemy->getPos().y > player->getPos().y+RANGE_OFFSET)
 	{
 		enemy->setState(E_WALK);
 		enemy->movement('d');
 	}
-	else if(enemy->getPos().y < playerPos.y-RANGE_OFFSET) 
+	else if(enemy->getPos().y < player->getPos().y-RANGE_OFFSET) 
 	{
 		enemy->setState(E_WALK);
 		enemy->movement('u');
 	}
-	else if(enemy->getPos().x > playerPos.x)
+	else if(enemy->getPos().x > player->getPos().x)
 	{
 		enemy->setState(E_WALK);
 		enemy->movement('l');
 	}
-	else if(enemy->getPos().x < playerPos.x) 
+	else if(enemy->getPos().x < player->getPos().x) 
 	{
 		enemy->setState(E_WALK);
 		enemy->movement('r');
@@ -137,10 +138,10 @@ void Attack::Enter(Enemy *enemy)
 	printf("Attacking player...\n");
 }
 
-void Attack::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
+void Attack::Execute(Enemy* enemy, Player* player)
 {
-	if(enemy->getDistance(enemy->getPos(),playerPos) <= ATTACK_RANGE &&
-	   enemy->getDistance(enemy->getPos(),playerPos) >= (ATTACK_RANGE/2))
+	if(enemy->getDistance(enemy->getPos(),player->getPos()) <= ATTACK_RANGE &&
+	   enemy->getDistance(enemy->getPos(),player->getPos()) >= (ATTACK_RANGE/2))
 	{	
 			enemy->movement('n');
 			//this is for SOLDIER1/E_ATTACK1 only
@@ -148,20 +149,20 @@ void Attack::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
 			enemy->setHitFrames(2, -1, -1);
 			enemy->setPower(10);
 	}
-	else if(enemy->getDistance(enemy->getPos(),playerPos) < ATTACK_RANGE/2)
+	else if(enemy->getDistance(enemy->getPos(),player->getPos()) < ATTACK_RANGE/2)
 	{
-		if(playerPos.x < enemy->getPos().x)
+		if(player->getPos().x < enemy->getPos().x)
 		{
 			enemy->setState(E_WALK);
 			enemy->movement('r');
 		}
-		else if(playerPos.x < enemy->getPos().x)
+		else if(player->getPos().x < enemy->getPos().x)
 		{
 			enemy->setState(E_WALK);
 			enemy->movement('l');
 		}
 	}
-	else if(enemy->getDistance(enemy->getPos(),playerPos) > ATTACK_RANGE)
+	else if(enemy->getDistance(enemy->getPos(),player->getPos()) > ATTACK_RANGE)
 	{
 		enemy->movement('n');
 		enemy->ChangeState(Chase::Instance());
@@ -192,7 +193,7 @@ void RunAway::Enter(Enemy *enemy)
 	printf("Running from player...\n");
 }
 
-void RunAway::Execute(Enemy* enemy, D3DXVECTOR3 playerPos)
+void RunAway::Execute(Enemy* enemy, Player* player)
 {
 	
 	printf("Running away from player still!\n");

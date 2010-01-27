@@ -4,7 +4,7 @@ class Enemy;
 class Player;
 
 //Enemy Idle State
-class Idle : public State<Enemy>
+class Idle : public State<Enemy,Player>
 {
 private:
 	Idle() {}
@@ -15,14 +15,14 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
+	virtual void Execute(Enemy* enemy, Player* player);
 
 	//this is a singleton
 	static Idle* Instance();
 };
 
 //Enemy Patrol State
-class Patrol : public State<Enemy>
+class Patrol : public State<Enemy,Player>
 {
 private:
 	Patrol() {}
@@ -33,14 +33,14 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
+	virtual void Execute(Enemy* enemy, Player* player);
 
 	//this is a singleton
 	static Patrol* Instance();
 };
 
 //Enemy Chase State
-class Chase : public State<Enemy>
+class Chase : public State<Enemy,Player>
 {
 private:
 	Chase() {}
@@ -51,14 +51,14 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
+	virtual void Execute(Enemy* enemy, Player* player);
 
 	//this is a singleton
 	static Chase* Instance();
 };
 
 //Enemy Attack State
-class Attack : public State<Enemy>
+class Attack : public State<Enemy,Player>
 {
 private:
 	Attack() {}
@@ -69,14 +69,14 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
+	virtual void Execute(Enemy* enemy, Player* player);
 
 	//this is a singleton
 	static Attack* Instance();
 };
 
 //Enemy RunAway State
-class RunAway : public State<Enemy>
+class RunAway : public State<Enemy,Player>
 {
 private:
 	RunAway() {}
@@ -87,7 +87,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, D3DXVECTOR3 playerPos);
+	virtual void Execute(Enemy* enemy, Player* player);
 
 	//this is a singleton
 	static RunAway* Instance();
