@@ -185,17 +185,18 @@ enum PlayerStates
 	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
 };
 
-//THIS IS NICKS TEMP STATES FOR THE ENEMY SO I CAN GET HIM TO WALK, AND STUN TO TEST COLLISION
-//IDRK HOW ENEMYOWNEDSTATES WORK YET
+
 /**ENEMY TYPES (defined in ./enemySprites/load.txt)**/
 #define SOLDIER1				'1'
 /**ENEMY TYPE STATES**/
 #define SOLDIER1STATES			7
 /**ENEMY STATES**/
-enum EnemyStates
+enum SOLDIER1_STATES
 {
-	//CS = clawSoldier
 	E_IDLE, E_WALK, E_RUN, E_ATTACK1, E_ATTACK2, E_STUN, E_DIE
+};
+enum SOLDIER_BOSS_STATES
+{
 };
 
 //predefined combo inputs for the inputmanager

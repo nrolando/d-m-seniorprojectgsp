@@ -20,10 +20,10 @@ Enemy::Enemy(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr)
 		faceRight = false;
 }
 
-void Enemy::UpdateState(D3DXVECTOR3 playerPos)
+void Enemy::UpdateState(Player *p)
 {
 	if(state != E_STUN)
-		CurrentState->Execute(this,playerPos);
+		CurrentState->Execute(this,p);
 
 	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
 	clock_t now = clock();
@@ -102,7 +102,7 @@ void Enemy::UpdateState(D3DXVECTOR3 playerPos)
 	calcDrawRECT();
 }
 
-void Enemy::ChangeState(State<Enemy>* pNewState)
+void Enemy::ChangeState(State<Enemy,Player>* pNewState)
 {
 	CurrentState->Exit(this);
 	CurrentState = pNewState;

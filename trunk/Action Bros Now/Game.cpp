@@ -164,7 +164,7 @@ bool Game::update(clock_t ct)
 
 	//update player state, enemies state
 	player->UpdatePlayerState();
-	EntMgr->UpdateEnemyState(player->getPos());
+	EntMgr->UpdateEnemyState(player);
 	//move entities
 	player->move(ct);
 	for(int i = 0; i<EntMgr->getVecSize();++i)

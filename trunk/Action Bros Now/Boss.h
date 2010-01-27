@@ -6,11 +6,13 @@
 #include "Enemy.h"
 #include <string>
 
+class Player;
+
 //changed from protected to public cuz of error c2243
 class Boss : public Enemy
 {
 private:
-	State<Boss> *CurrentState;
+	State<Boss,Player> *CurrentState;
 	int health,special,sPower;
 public:
 
@@ -24,9 +26,11 @@ public:
 	bool isAlive();
 
 	virtual void UpdateStat(int stat, int val);
-	virtual void UpdateState(D3DXVECTOR3);
+	virtual void UpdateState(Player*);
+
 	
-	void ChangeState(State<Boss>* pNewState);
+	void ChangeState(State<Boss,Player>* pNewState);
+	int getStatus() {return state;}
 };
 
 #endif

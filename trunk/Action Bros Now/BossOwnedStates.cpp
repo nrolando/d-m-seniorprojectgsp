@@ -18,7 +18,7 @@ void LessThanFifty::Enter(Boss *boss)
 	printf("<50% Health...\n");
 }
 
-void LessThanFifty::Execute(Boss* boss, D3DXVECTOR3 playerPos)
+void LessThanFifty::Execute(Boss* boss, Player* player)
 {
 	if(boss->getStatus() == EnemyDead)
 	{
@@ -52,7 +52,7 @@ void LessThanTwentyFive::Enter(Boss *boss)
 	printf("<25% Health...\n");
 }
 
-void LessThanTwentyFive::Execute(Boss* boss, D3DXVECTOR3 playerPos)
+void LessThanTwentyFive::Execute(Boss* boss, Player* player)
 {
 	if(boss->getStatus() == EnemyDead)
 	{
