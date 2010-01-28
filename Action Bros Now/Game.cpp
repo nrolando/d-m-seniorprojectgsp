@@ -1,5 +1,8 @@
 #include "Game.h"
 
+//////////TO DO: rEMOVE ALL STATIC VARIAbLES//////////
+
+
 Game::Game()
 {
 //default constructor shouldn't be called
@@ -41,34 +44,27 @@ bool Game::initGame(HWND hwnd)
 	if(!graphics->initD3D(hwnd))
 		return false;
 
+	if(!graphics->loadSplashTitle())
+		return false;
+
 	//set the player's starting level
 	level->setProg(0);
-
-//FILL THE Entity CONTAINER - players sprites are the first one loaded into the container (see player
-//initialization down below) the sprite container will be loaded in loadlvl()
-	if(!graphics->loadEntityCont())
-		return false;
-//called first here, then called by load level every new level
-	if(!graphics->loadSpriteCont(level->getProg()))
-		return false;
-
-//initialize the players sprite pointer
-	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
 	//initlialize direct sound and load all sounds
 	if(!soundManager::getInstance()->initSound(hwnd))
 		return false;
-	if(!soundManager::getInstance()->loadAllSounds())
-		return false;
 
 	return true;
 }
+
 
 void Game::_shutdown()
 {
 	soundManager::getInstance()->shutDown();
 }
 
+
+//MIKE"S CHAnGE: need to figure out how to combine with asset lload function
 bool Game::loadLvl()
 {
 	static int lastLvl = 0;
@@ -77,7 +73,7 @@ bool Game::loadLvl()
 	if(lastLvl != (level->getProg()/3))
 	{
 	//reload the sprite container for the tiles and enemies for the next level
-		if(!graphics->loadSpriteCont(level->getProg()))
+		if(!graphics->loadSpriteCont(level->getProg()) || !graphics->loadMeters())
 		{
 			MessageBox(NULL, "Unable to load sprite container", "ERROR", MB_OK);
 			return false;
@@ -110,16 +106,31 @@ bool Game::loadLvl()
 	return true;
 }
 
+//MIKE"S CHANGE: this loads the initial assets for first lvl after new game is selected
+bool Game::loadAssets()
+{
+	//FILL THE Entity CONTAINER - players sprites are the first one loaded into the container (see player
+	//initialization down below) the sprite container will be loaded in loadlvl()
+	if(!graphics->loadEntityCont())
+		return false;
+	if(!graphics->loadSpriteCont(level->getProg()))
+		return false;
+	if(!graphics->loadMeters())
+		return false;
+	if(!soundManager::getInstance()->loadAllSounds())
+		return false;
+
+	//initialize the players sprite pointer
+	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
+
+		return true;
+}
+
 bool Game::update(clock_t ct)
 {
 	char input = ' ';
 	int num;
-	static bool flag = true;
-	bool flag1 = true;
 	bool newGame = true;
-
-	//something is wrong
-	
 
 	//get user input
 	inputMan->setInput();
@@ -139,6 +150,8 @@ bool Game::update(clock_t ct)
 			screen++;
 			level->setProg(num);
 			//load that level
+			//initial load for art & sound assets
+			loadAssets();
 			if(!this->loadLvl())
 			{
 				MessageBox(NULL, "Unable to load lvl", "ERROR", MB_OK);
@@ -146,19 +159,19 @@ bool Game::update(clock_t ct)
 			}
 		}
 		break;
-	case 2:		//gameplay!
+	case 2:
+
+		//gameplay!
 		//checks movement collision
-		if(flag1 = actionPossible(input))
+		//MIKE"S CHANGE: removed the static flags
+		if(actionPossible(input))
 		{
 			player->DoAction(input);
-			flag = true;
 		}
-		if(flag && !flag1)
+		else
 		{
 			player->setState(IDLE);
 			player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-			player->setAnim(0);
-			flag = false;
 		}
 
 		//check for collision (needs to be moved/adjusted)
@@ -249,7 +262,7 @@ int Game::checkAttacks()
 	{
 		for(unsigned int i = 0; i < E.size(); ++i)
 		{
-			if(E[i]->isAlive())
+			if(E[i]->isAlive() || E[i]->getHealth() < 1)
 			{
 				//get enemy's info
 				e_SprInfo = E[i]->getDrawInfo();
@@ -371,6 +384,8 @@ void Game::handleInteractions()
 
 int Game::titleScreen(char input)
 {
+
+	//NEEDS WORK
 	static SCREENS current_screen = TITLE;
 	//title: 0 - new game; 1 - load game; 2 - options
 	static int selection = 0;

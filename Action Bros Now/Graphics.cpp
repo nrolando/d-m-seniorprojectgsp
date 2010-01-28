@@ -319,6 +319,43 @@ void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int 
 	}
 }
 
+
+//MIKE"S CHANGE: added fuction loads the art for the splash & title screens
+bool Graphics::loadSplashTitle()
+{
+	char fName[MAXCHARSIZE];
+	std::ifstream inFile;
+	spriteSheet tempSS;
+
+	if(!spriteContainer::getInstance()->isEmpty())
+		spriteContainer::getInstance()->clearVec();
+
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Screen Sprites/load_splash_title.txt");
+
+	
+	inFile.open(fName);
+	if(!inFile.is_open())
+		return false;
+
+	/*	READ IN .TXT ASCII TILES AND POSITION		*/
+	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!inFile.eof())
+	{
+		inFile.get(tempSS.key);
+		inFile.ignore();
+		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
+									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
+									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
+									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
+									0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
+		spriteContainer::getInstance()->push(tempSS);
+		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	}
+	inFile.close();
+	return true;
+
+}
+
 //this loads the entity (player and enemy) spritesheet continer. this is called once
 bool Graphics::loadEntityCont()
 {
@@ -419,28 +456,41 @@ bool Graphics::loadSpriteCont(int prog)
 	}
 	fin.close();
 
-	//load the screen sprites
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./Screen Sprites/load.txt");
+	return true;
+}
 
-	FIN.open(fname);
-	if(!FIN.is_open())
+//this loads the health meters
+bool Graphics::loadMeters()
+{
+	char fName[MAXCHARSIZE];
+	std::ifstream inFile;
+	spriteSheet tempSS;
+
+	//if(!spriteContainer::getInstance()->isEmpty())
+	//	spriteContainer::getInstance()->clearVec();
+
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Screen Sprites/load_meters.txt");
+
+	
+	inFile.open(fName);
+	if(!inFile.is_open())
 		return false;
 
 	/*	READ IN .TXT ASCII TILES AND POSITION		*/
-	FIN.getline(tempSS.sheetName, MAXCHARSIZE, '#');
-	while(!FIN.eof())
+	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!inFile.eof())
 	{
-		FIN.get(tempSS.key);
-		FIN.ignore();
+		inFile.get(tempSS.key);
+		inFile.ignore();
 		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
 									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
 									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
 									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
 									0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
 		spriteContainer::getInstance()->push(tempSS);
-		FIN.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
-	FIN.close();
+	inFile.close();
 	return true;
 }
 
@@ -463,9 +513,21 @@ void Graphics::drawLvl(std::vector<BaseGameEntity*> enemyEntSprites, eSprInfo pl
 	l_pos.y = 0.0f;
 	l_pos.z = 0.9f;	//.9 is the farthest away, sprite doesn't draw at > 1.0
 	//the spriteCont must always have the first 3 elements the 3 sublvls for that level
-	gSprite->Draw(spriteContainer::getInstance()->getElem(sublvl)->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
-	
 
+	//MIKE"S CHANGE: use the elem key to grab the correct backgrounds rather than 
+	//their postion within the container
+	switch(sublvl)
+	{
+	case 0:
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('L')->gTexture,&src,NULL,&l_pos,0xFFFFFFFF);
+		break;
+	case 1:
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('P')->gTexture,&src,NULL,&l_pos,0xFFFFFFFF);
+		break;
+	case 2:
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey('I')->gTexture,&src,NULL,&l_pos,0xFFFFFFFF);
+		break;
+	}
 	//draw the background tiles
 	for(unsigned int i = 0; i < bTiles.size(); i++)
 	{
