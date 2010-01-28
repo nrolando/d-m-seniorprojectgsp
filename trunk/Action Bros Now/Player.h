@@ -14,7 +14,8 @@ public:
 	
 	/* Attribute Related functions */
 	void setScore(int s)			{ score = s; }
-	void setState(int s)			{ state=s;}
+	//MIKE"S CHANGE: the if statement stops idle animation from constanly restarting when a wall is hit
+	void setState(int s)			{ if(state != s){state=s; anim = 0;}}
 	void takeDMG(int DMG)			{ health -= DMG;}
 	void setSheetPtr(spriteSheet*);
 	void DoAction(char);

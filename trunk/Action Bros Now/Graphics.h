@@ -72,9 +72,13 @@ public:
 //loads the player's current level//will be used at start of main and in update()
 	//bool loadLvlFromFile(int);
 	void drawLvl(std::vector<BaseGameEntity*>, eSprInfo, std::vector<Tile>,std::vector<Tile>, int);		//draw lvl surfaces
+
 	//load the sprite containers
+	bool loadSplashTitle();
+	bool loadMeters();
 	bool loadEntityCont();
 	bool loadSpriteCont(int);
+	
 	//Entities health and special guage
 	void DisplayBossStat(int,int,int,int);   //Displays Boss Health Bar
 	void DisplayEnemyHealth(int,int);  //Displays Enemy Health Bar

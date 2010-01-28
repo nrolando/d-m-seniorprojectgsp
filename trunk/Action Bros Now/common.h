@@ -12,6 +12,9 @@
 #include "dsutil.h"
 #include "EnemyInformation.h"
 
+
+#define MAXCHARSIZE			50
+
 //level boundaries
 //remember the pos is at the upper left corner of the sprite
 #define YLIMIT_TOP		20
@@ -20,10 +23,20 @@
 //////////////////
 //player defines//
 //////////////////
+
 //player's attack power
 #define P_POWER			10	//punch power
 #define K_POWER			20	//kick power
 #define C1_POWER		60	//flame hit of combo1
+
+//////////////////////
+//end player defines//
+//////////////////////
+
+/////////////////////
+//animation defines//
+/////////////////////
+
 //current number of player states in spritesheet for one direction
 #define NUM_STATES		8
 //these are for animation and stun length
@@ -43,13 +56,15 @@
 #define MAXKICKANIMATION		50
 #define MAXPUNCHANIMATION		30
 #define MAXCOMBO1ANIMATION		60
-//////////////////////
-//end player defines//
-//////////////////////
+
+/////////////////////////
+//end animation defines//
+/////////////////////////
 
 /////////////////////////////
 //defines for input manager//
 /////////////////////////////
+
 #define INPUT_UP	0x0001
 #define INPUT_DOWN  0x0002
 #define INPUT_LEFT	0x0004
@@ -68,7 +83,7 @@
 //end input manager defines//
 /////////////////////////////
 
-#define MAXCHARSIZE			50
+
 ///////////DEBUGMODE////////////
 //   Used for Bug Testing	  //
 //When enabled CPU clock speed//
@@ -77,8 +92,16 @@
 ////////////////////////////////
 #define DEBUGMODE   0
 
+///////////////////////
+//screen size defines//
+///////////////////////
+
 #define SCREEN_WIDTH			880
 #define SCREEN_HEIGHT			720
+
+///////////////////
+//end screen size//
+///////////////////
 
 //Macros for Enemy and Bosses visual ranges
 #define RANGE_OFFSET 10
@@ -125,9 +148,51 @@
 #define BOSS_SPECIAL_POSY SCREEN_HEIGHT-34
 #define BOSS_SPECIAL_POSZ 0.30f
 
+/////////
+//enums//
+/////////
 
-//change to an array when more songs added
+//Different Entity Types
+enum EntityTypes
+{
+	PLAYER, ENEMY, BOSS
+};
+
+//for the title/menu screen
+enum SCREENS
+{
+	TITLE, LOAD, OPTIONS
+};
+
+//for the player states
+enum PlayerStates
+{
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
+};
+
+/////////////
+//end enums//
+/////////////
+
+/////////////////
+//static arrays//
+/////////////////
+
+//bgm list
 static char* BGMlist[4] = {"I like it a lot","Days to Come","Collarbone",};
+
+//predefined combo inputs for the inputmanager
+static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',	//uppercut combo
+														'r','r','\0','\0',	//run right
+														'l','l','\0','\0'};	//run left
+
+/////////////////////
+//end static arrays//
+/////////////////////
+
+///////////
+//structs//
+///////////
 
 //struct for containing sounds
 //bgm & sfx
@@ -173,27 +238,9 @@ struct eSprInfo
 		 threatBox, hitBox;
 };
 
-//Different Entity Types
-enum EntityTypes
-{
-	PLAYER, ENEMY, BOSS
-};
+///////////////
+//end structs//
+///////////////
 
-//for the title/menu screen
-enum SCREENS
-{
-	TITLE, LOAD, OPTIONS
-};
-
-//for the player states
-enum PlayerStates
-{
-	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
-};
-
-//predefined combo inputs for the inputmanager
-static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',		//uppercut combo
-														  'r','r','\0','\0',		//run right
-															 'l','l','\0','\0'};	//run left
 
 #endif

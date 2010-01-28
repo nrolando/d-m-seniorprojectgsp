@@ -335,6 +335,8 @@ void Player::DoAction(char input)
 			hitFrames[0] = 1;
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
+			//play sfx
+			soundManager::getInstance()->playSound("sword_swing");
 		}
 	}
 	else if(input == 'k')
@@ -351,6 +353,8 @@ void Player::DoAction(char input)
 			hitFrames[0] = 2;
 			hitFrames[1] = 4;
 			hitFrames[2] = -1;
+			//play sfx
+			soundManager::getInstance()->playSound("sword_swing");
 		}
 		else if(state == IDLE || state == WALK)
 		{
@@ -365,6 +369,8 @@ void Player::DoAction(char input)
 			hitFrames[0] = 3;
 			hitFrames[1] = -1;
 			hitFrames[2] = -1;
+			//play sfx
+			soundManager::getInstance()->playSound("sword_swing");
 		}
 	}
 	else if(input == '1')

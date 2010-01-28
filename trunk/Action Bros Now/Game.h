@@ -42,13 +42,10 @@ private:
 	void endRender()		{ graphics->EndRender(); }
 	void drawLvl();
 
-	//sound playing functions
-	//PROBLEMS IN THESE FUNCTIONS//
-	//make this play a song based on the lvl number
-	//void playBGM()			{soundManager::getInstance()->playSoundLoop(BGMlist);}
 	
-	//load sounds
-	bool loadSounds()			{soundManager::getInstance()->loadAllSounds();}
+	
+	//load assets
+	bool loadAssets();
 
 	//figures figures out what to do about collisions
 	//void handleInteractions();
