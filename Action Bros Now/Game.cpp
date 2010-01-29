@@ -47,9 +47,6 @@ bool Game::initGame(HWND hwnd)
 	if(!graphics->loadSplashTitle())
 		return false;
 
-	//set the player's starting level
-	level->setProg(0);
-
 	//initlialize direct sound and load all sounds
 	if(!soundManager::getInstance()->initSound(hwnd))
 		return false;
@@ -63,13 +60,12 @@ void Game::_shutdown()
 	soundManager::getInstance()->shutDown();
 }
 
-
 //MIKE"S CHAnGE: need to figure out how to combine with asset lload function
 bool Game::loadLvl()
 {
-	static int lastLvl = 0;
+	static int lastLvl = -1;
 
-//only call if its a new level, not sublevel. and dont call it first time around :)
+//only call if its a new level, not sublevel
 	if(lastLvl != (level->getProg()/3))
 	{
 	//reload the sprite container for the tiles and enemies for the next level
@@ -109,17 +105,12 @@ bool Game::loadLvl()
 //MIKE"S CHANGE: this loads the initial assets for first lvl after new game is selected
 bool Game::loadAssets()
 {
-	//FILL THE Entity CONTAINER - players sprites are the first one loaded into the container (see player
+	//FILL THE Entity CONTAINER once throughout whole game - players sprites are the first one loaded into the container (see player
 	//initialization down below) the sprite container will be loaded in loadlvl()
 	if(!graphics->loadEntityCont())
 		return false;
-	if(!graphics->loadSpriteCont(level->getProg()))
-		return false;
-	if(!graphics->loadMeters())
-		return false;
 	if(!soundManager::getInstance()->loadAllSounds())
 		return false;
-
 	//initialize the players sprite pointer
 	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
@@ -136,6 +127,10 @@ bool Game::update(clock_t ct)
 	inputMan->setInput();
 	input = inputMan->getInput(screen);
 
+	//temporary save spot for testing
+	if(input == ' ')
+		this->save();
+
 	switch(screen)
 	{
 	case 0:		//splash
@@ -149,9 +144,9 @@ bool Game::update(clock_t ct)
 		{
 			screen++;
 			level->setProg(num);
-			//load that level
-			//initial load for art & sound assets
+			//load assets for game (sounds, fill entity container, set player SS ptr)
 			loadAssets();
+			//load level retrieved from titleScreen()
 			if(!this->loadLvl())
 			{
 				MessageBox(NULL, "Unable to load lvl", "ERROR", MB_OK);
@@ -179,16 +174,16 @@ bool Game::update(clock_t ct)
 		if(hitEnemy >= 0)
 			lastHitEnemy = hitEnemy;
 
-	//update player state, enemies state
-	player->UpdatePlayerState();
-	EntMgr->UpdateEnemyState(player);
-	//update entities
-	if(!EntMgr->update())
-		return false;
-	//move player here
-	player->move(ct);
-	for(int i = 0; i<EntMgr->getVecSize();++i)
-		EntMgr->getEntVec(i)->move(ct);
+		//update player state, enemies state
+		player->UpdatePlayerState();
+		EntMgr->UpdateEnemyState(player);
+		//update entities
+		if(!EntMgr->update())
+			return false;
+		//move player here
+		player->move(ct);
+		for(int i = 0; i<EntMgr->getVecSize();++i)
+			EntMgr->getEntVec(i)->move(ct);
 
 		//checks if player beat the level
 		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
@@ -205,12 +200,12 @@ bool Game::update(clock_t ct)
 			}
 		}
 
-	//EntMgr->moveEnemies(ct);
-	//update camera
-	graphics->updateCamera(player->getDrawInfo());
+		//EntMgr->moveEnemies(ct);
+		//update camera
+		graphics->updateCamera(player->getDrawInfo());
 
-	//RENDER :D we can put this inside if statements and check to see if anything has changed
-	//that way we dont render when not necessary
+		//RENDER :D we can put this inside if statements and check to see if anything has changed
+		//that way we dont render when not necessary
 		graphics->BeginRender();
 		graphics->drawLvl(EntMgr->getEntVec(), player->getDrawInfo(), level->getBackTiles(),
 			level->getFrontTiles(), (level->getProg()%3));
@@ -354,34 +349,6 @@ int Game::checkAttacks()
 	return index;
 }
 
-/*
-void Game::handleInteractions()
-{
-	//write size()
-	for(int i = 0; i <= EntMgr->Size(); i++)
-	{
-		//bool returning collision function
-		if()
-		{
-			switch(player->getState())
-			{
-			case ATTACK:
-				EntMgr->getEnt(i)->takeDMG(player->getDMG());
-				EntMgr->getEnt(i)->Setstate(STUN);
-				break;
-			case STUN:IDLE:WALK:
-				if(EntMgr->getEnt(i)->getState() != STUN)
-				{
-					player->takeDMG(EntMgr->getEnt(i)->getDMG());
-					player->setState(STUN);
-				}
-				break;
-			}
-		}
-	}
-}
-*/
-
 int Game::titleScreen(char input)
 {
 
@@ -428,7 +395,10 @@ int Game::titleScreen(char input)
 		}
 		if(current_screen == LOAD)
 		{
-			//return loadGame();
+			if(this->load())
+				return level->getProg();
+			else
+				MessageBox(NULL, "No load data is available!", "ERROR", MB_OK);
 		}
 		break;
 	case 'k':		//the back button
@@ -493,4 +463,48 @@ void Game::splashScreen()
 		graphics->drawSplash(splashRow, splashCol, width, height);
 		graphics->EndRender();
 	}
+}
+
+bool Game::save()
+{
+	ofstream fout;
+	fout.open("saved_game.txt");
+
+	if(!fout.is_open())
+		return false;
+
+	fout << level->getProg();
+	fout << ' ';
+	fout << player->getScore();
+	fout << ' ';
+	fout << player->getLives();
+
+	fout.close();
+	return true;
+}
+
+//if false is return then there's no saved data
+bool Game::load()
+{
+	int prog;
+	int score;
+	int lives;
+	ifstream fin;
+
+	//open file
+	fin.open("saved_game.txt");
+
+	if(!fin.is_open())
+		return false;
+	//read from file
+	fin >> prog;
+	fin >> score;
+	fin >> lives;
+	//set data
+	level->setProg(prog);
+	player->setScore(score);
+	player->setLives(lives);
+	//close file
+	fin.close();
+	return true;
 }
