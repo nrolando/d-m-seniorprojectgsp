@@ -98,6 +98,13 @@ void InputManager2::setInput()
 	else
 		inputflag = inputflag &(~INPUT_C);
 
+	if(KEYDOWN(buffer, DIK_SPACE))
+	{
+		inputflag |= INPUT_SPACE;
+	}
+	else
+		inputflag = inputflag &(~INPUT_SPACE);
+
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
@@ -252,6 +259,11 @@ char InputManager2::getInput(int screen)
 
 			//move camera right
 			return 's';
+		}
+		
+		if(downflag & INPUT_SPACE)
+		{
+			return ' ';
 		}
 		break;
 	};

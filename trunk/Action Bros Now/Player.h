@@ -14,6 +14,7 @@ public:
 	
 	/* Attribute Related functions */
 	void setScore(int s)			{ score = s; }
+	void setLives(int l)			{ lives = l; }
 	//MIKE"S CHANGE: the if statement stops idle animation from constanly restarting when a wall is hit
 	void setState(int s)			{ if(state != s){state=s; anim = 0;}}
 	void takeDMG(int DMG)			{ health -= DMG;}
@@ -22,6 +23,7 @@ public:
 
 	/*Get Functions for Attributes*/
 	int getScore()			{ return score; }
+	int getLives()			{ return lives; }
 	int getSpecial()		{ return special;}
 	int getMaxSpecial()     { return maxSpecial;}
 	int getDmg();

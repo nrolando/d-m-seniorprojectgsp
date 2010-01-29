@@ -72,6 +72,7 @@
 #define INPUT_Z		0x0010
 #define INPUT_X		0x0020
 #define INPUT_C		0x0040
+#define INPUT_SPACE	0x0080
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 

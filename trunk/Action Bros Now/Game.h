@@ -47,9 +47,9 @@ private:
 	//load assets
 	bool loadAssets();
 
-	//figures figures out what to do about collisions
-	//void handleInteractions();
-	//bool actionPossible(char input)   {return player->actionPossible(input);}
+	//save/load
+	bool save();
+	bool load();
 
 	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
 
