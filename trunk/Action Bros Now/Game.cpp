@@ -18,15 +18,20 @@ Game::Game()
 //this
 Game::Game(HINSTANCE HI, HWND hWnd)
 {
-	graphics = new Graphics();
-	EntMgr = new EntityManager();
-	player = new Player("Baek");
-	level = new Level();
-	input = ' ';
-	inputMan = new InputManager2(HI, hWnd);
-	screen = 0;	//start at 1 until we get splash
-	hitEnemy = -1;
-	lastHitEnemy = -1;
+	//MIKE"S CHANGE
+	graphics		= new Graphics();
+	EntMgr			= new EntityManager();
+	player			= new Player("Baek");
+	level			= new Level();
+	inputMan		= new InputManager2(HI, hWnd);
+	input			= ' ';
+	screen			= 0;	//start at 1 until we get splash
+	hitEnemy		= -1;
+	lastHitEnemy	= -1;
+	lastLvl			= -1;
+	//MIKE"S CHANGE: are these redundant? there is already a screen var...
+	currentScreen	= TITLE;
+	selection		= 0;
 }
 
 Game::~Game()
@@ -63,8 +68,6 @@ void Game::_shutdown()
 //MIKE"S CHAnGE: need to figure out how to combine with asset lload function
 bool Game::loadLvl()
 {
-	static int lastLvl = -1;
-
 //only call if its a new level, not sublevel
 	if(lastLvl != (level->getProg()/3))
 	{
@@ -351,23 +354,17 @@ int Game::checkAttacks()
 
 int Game::titleScreen(char input)
 {
-
-	//NEEDS WORK
-	static SCREENS current_screen = TITLE;
-	//title: 0 - new game; 1 - load game; 2 - options
-	static int selection = 0;
-
 	switch(input)
 	{
 	case 'r':
-		if(current_screen == TITLE)
+		if(currentScreen == TITLE)
 		{
 			if(selection < 2)
 				selection++;
 		}
 		break;
 	case 'l':
-		if(current_screen == TITLE)
+		if(currentScreen == TITLE)
 		{
 			if(selection > 0)
 				selection--;
@@ -378,22 +375,22 @@ int Game::titleScreen(char input)
 	case 'u':
 		break;
 	case 'p':	//the select button
-		if(current_screen == TITLE)
+		if(currentScreen == TITLE)
 		{
 			if(selection == 0)		//start new game
 				return 0;
 			else if(selection == 1)	//go to load screen
 			{
-				current_screen = LOAD;
+				currentScreen = LOAD;
 				selection = 0;
 			}
 			else if(selection == 2)	//go to options screen
 			{
-				current_screen = OPTIONS;
+				currentScreen = OPTIONS;
 				selection = 0;
 			}
 		}
-		if(current_screen == LOAD)
+		if(currentScreen == LOAD)
 		{
 			if(this->load())
 				return level->getProg();
@@ -402,9 +399,9 @@ int Game::titleScreen(char input)
 		}
 		break;
 	case 'k':		//the back button
-		if(current_screen == OPTIONS || current_screen == LOAD)
+		if(currentScreen == OPTIONS || currentScreen == LOAD)
 		{
-			current_screen = TITLE;
+			currentScreen = TITLE;
 			selection = 0;
 		}
 		break;
@@ -412,7 +409,7 @@ int Game::titleScreen(char input)
 
 //draw screen
 	graphics->BeginRender();
-	switch(current_screen)
+	switch(currentScreen)
 	{
 	case TITLE:
 		graphics->drawTitle(selection);

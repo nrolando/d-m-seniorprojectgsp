@@ -21,6 +21,9 @@ private:
 	int screen;
 	char input;
 	
+	//level tracker
+	Level *level;
+
 	//input Engine
 	InputManager2* inputMan;
 
@@ -28,11 +31,17 @@ private:
 	Player* player;
 	EntityManager *EntMgr;
 
-	Level *level;
-
 	//used to display enemy health bar
 	int hitEnemy;
 	int lastHitEnemy;
+	//MIKE"S CHANGES
+	//used for level transition
+	int lastLvl;
+
+	//MIKE"S CHANGE
+	//for the splash/title screen stuff
+	int currentScreen;
+	int selection;
 
 	//Graphics Engine
 	Graphics *graphics;
@@ -42,8 +51,6 @@ private:
 	void endRender()		{ graphics->EndRender(); }
 	void drawLvl();
 
-	
-	
 	//load assets
 	bool loadAssets();
 
@@ -71,7 +78,6 @@ public:
 	//load level
 	bool loadLvl();
 	
-
 	//player to enemy collision detection
 	bool actionPossible(char);
 	//checks threat boxes against hit boxes. returns index of last enemy to get hit
@@ -79,7 +85,6 @@ public:
 
 	//camera
 	void moveCamera(D3DXVECTOR3 vec)	{ graphics->moveCamera(vec); }
-
 	D3DXVECTOR3 getCamPos()				{ return graphics->getCameraPos(); }
 };
 
