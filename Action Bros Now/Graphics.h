@@ -55,17 +55,35 @@ private:
 //camera's position
 	D3DXVECTOR3 camPos;
 
+	//MIKE"S CHANGES
+	//the move range stuff for the camera
+	float xRange;
+	float yRange;
+
 public:
+	//constructor/destructor
 	Graphics();
 	~Graphics();
 
 	bool initD3D(HWND);
 	void _shutdown();
 
+	//MIKE"S CHANGE
+	//vars for loading the sprites
+	std::ifstream inFile;
+	char fName[MAXCHARSIZE];
+	spriteSheet tempSS;
+
+	//MIKE"S CHANGE
+	//error check var
+	HRESULT hr;
+
+	//render functions
 	void BeginRender();	//clears screen, begin scene
 	void BeginSplashRender();
 	void EndRender();	//end scene and present
 
+	//
 	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*);
 	LPDIRECT3DTEXTURE9 getTextureFromBitmap(char*, int&, int&);
 

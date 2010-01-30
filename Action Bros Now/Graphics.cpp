@@ -2,10 +2,13 @@
 
 Graphics::Graphics()
 {
-	pD3D = NULL;
-	pd3dDevice = NULL;
-	g_pVB = NULL;
-	m_font = NULL;
+	pD3D			= NULL;
+	pd3dDevice		= NULL;
+	g_pVB			= NULL;
+	m_font			= NULL;
+	//MIKE"S CHANGE
+	xRange			= (SCREEN_WIDTH/6.0f);
+	yRange			= (SCREEN_HEIGHT/6.0f);
 }
 
 Graphics::~Graphics()
@@ -15,9 +18,6 @@ Graphics::~Graphics()
 
 bool Graphics::initD3D(HWND hwnd)
 {
-
-	HRESULT hr;
-
 	//create direct3D object
 	if( NULL == ( pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
 	{
@@ -141,13 +141,13 @@ LPDIRECT3DTEXTURE9 Graphics::getTextureFromBitmap(char *filename)
 //load sprite vector with the bitmap and set dimensions
 LPDIRECT3DTEXTURE9 Graphics::getTextureFromBitmap(char *filename, int &w, int &h)
 {
-	HRESULT hResult;
+	
 	LPDIRECT3DTEXTURE9 texture;
 	D3DXIMAGE_INFO imageInfo;
 
 	// Get the width and height info from this bitmap
-	hResult = D3DXGetImageInfoFromFile(filename, &imageInfo);
-	if FAILED (hResult)
+	hr = D3DXGetImageInfoFromFile(filename, &imageInfo);
+	if FAILED (hr)
 		return NULL;
 //should always be a 50x50, but not using magic #'s
 	w = imageInfo.Width;
@@ -161,8 +161,6 @@ LPDIRECT3DTEXTURE9 Graphics::getTextureFromBitmap(char *filename, int &w, int &h
 
 void Graphics::DisplayPlayerStat(int currhealth,int maxhealth,int currspecial,int maxspecial)
 {
-	HRESULT hr;
-
 	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(HEALTHBAR_POSX,HEALTHBAR_POSY,HEALTHBAR_POSZ),
 				healPos  = D3DXVECTOR3(HEALTH_POSX,HEALTH_POSY,HEALTH_POSZ),
 				sBarPos  = D3DXVECTOR3(SPECIALBAR_POSX,SPECIALBAR_POSY,SPECIALBAR_POSZ),
@@ -227,8 +225,6 @@ void Graphics::DisplayPlayerStat(int currhealth,int maxhealth,int currspecial,in
 
 void Graphics::DisplayEnemyHealth(int currhealth,int maxhealth)
 {
-	HRESULT hr;
-
 	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(ENEMY_HEALTHBAR_POSX,ENEMY_HEALTHBAR_POSY,ENEMY_HEALTHBAR_POSZ),
 				healPos  = D3DXVECTOR3(ENEMY_HEALTH_POSX,ENEMY_HEALTH_POSY,ENEMY_HEALTH_POSZ);
 	
@@ -268,8 +264,6 @@ void Graphics::DisplayEnemyHealth(int currhealth,int maxhealth)
 
 void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int maxspecial)
 {
-	HRESULT hr;
-
 	D3DXVECTOR3 hBarPos  = D3DXVECTOR3(BOSS_HEALTHBAR_POSX,BOSS_HEALTHBAR_POSY,BOSS_HEALTHBAR_POSZ),
 				healPos  = D3DXVECTOR3(BOSS_HEALTH_POSX,BOSS_HEALTH_POSY,BOSS_HEALTH_POSZ),
 				specPos	 = D3DXVECTOR3(BOSS_SPECIAL_POSX,BOSS_SPECIAL_POSY,BOSS_SPECIAL_POSZ);
@@ -323,9 +317,9 @@ void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int 
 //MIKE"S CHANGE: added fuction loads the art for the splash & title screens
 bool Graphics::loadSplashTitle()
 {
-	char fName[MAXCHARSIZE];
-	std::ifstream inFile;
-	spriteSheet tempSS;
+	//char fName[MAXCHARSIZE];
+	//std::ifstream inFile;
+	//spriteSheet tempSS;
 
 	if(!spriteContainer::getInstance()->isEmpty())
 		spriteContainer::getInstance()->clearVec();
@@ -359,18 +353,17 @@ bool Graphics::loadSplashTitle()
 //this loads the entity (player and enemy) spritesheet continer. this is called once
 bool Graphics::loadEntityCont()
 {
-	std::ifstream fin;
-	std::ifstream inFile;
-	char fname[MAXCHARSIZE];
-	spriteSheet SS;
+	//std::ifstream inFile;
+	//char fname[MAXCHARSIZE];
+	//spriteSheet SS;
 
 	if(!spriteContainer::getInstance()->EC_isEmpty())
 		spriteContainer::getInstance()->EC_clearVec();
 
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./playerSS/loadSpr.txt");
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./playerSS/loadSpr.txt");
 
-	fin.open(fname);
-	if(!fin.is_open())
+	inFile.open(fName);
+	if(!inFile.is_open())
 		return false;
 //If in DEBUG MODE then load HIT/THREAT boxes
 	if(DEBUGMODE)
@@ -380,43 +373,43 @@ bool Graphics::loadEntityCont()
 	}
 
 //load the player sheets
-	fin.getline(SS.sheetName, MAXCHARSIZE, '\n');
-	while(!fin.eof())
+	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
+	while(!inFile.eof())
 	{
 
-		D3DXCreateTextureFromFileEx(pd3dDevice,SS.sheetName,
+		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
 										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
 										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
 										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
-										0xFFFFFFFF,NULL,NULL,&SS.gTexture);
+										0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
 
-		spriteContainer::getInstance()->EC_push(SS);
+		spriteContainer::getInstance()->EC_push(tempSS);
 
-		fin.getline(SS.sheetName, MAXCHARSIZE, '\n');
+		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
 	}
-	fin.close();
+	inFile.close();
 
 //get ready to load the enemy sheets
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./enemySprites/load.txt");
-	inFile.open(fname);
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./enemySprites/load.txt");
+	inFile.open(fName);
 	if(!inFile.is_open())
 		return false;
 
 	//load the enemy sheets
-	inFile.getline(SS.sheetName, MAXCHARSIZE, '#');
+	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	while(!inFile.eof())
 	{
-		inFile >> SS.key;
+		inFile >> tempSS.key;
 		inFile.ignore();
 
-		D3DXCreateTextureFromFileEx(pd3dDevice,SS.sheetName,
+		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
 										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
 										D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
 										D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
-										0xFFFFFFFF,NULL,NULL,&SS.gTexture);
-		spriteContainer::getInstance()->EC_push(SS);
+										0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
+		spriteContainer::getInstance()->EC_push(tempSS);
 
-		inFile.getline(SS.sheetName, MAXCHARSIZE, '#');
+		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
 	inFile.close();
 	return true;
@@ -427,34 +420,34 @@ bool Graphics::loadEntityCont()
 bool Graphics::loadSpriteCont(int prog)
 {
 	int lvl = prog/3;
-	char fname[MAXCHARSIZE];
-	std::ifstream fin, FIN;
-	spriteSheet tempSS;
+	//char fName[MAXCHARSIZE];
+	//std::ifstream inFile;
+	//spriteSheet tempSS;
 
 	if(!spriteContainer::getInstance()->isEmpty())
 		spriteContainer::getInstance()->clearVec();
 
-	sprintf_s(fname, (size_t)MAXCHARSIZE, "./lvlSprites/lvl%isprites/load%i.txt", lvl, lvl);
+	sprintf_s(fName, (size_t)MAXCHARSIZE, "./lvlSprites/lvl%isprites/load%i.txt", lvl, lvl);
 
-	fin.open(fname);
-	if(!fin.is_open())
+	inFile.open(fName);
+	if(!inFile.is_open())
 		return false;
 
 	/*	READ IN .TXT ASCII TILES AND POSITION		*/
-	fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
-	while(!fin.eof())
+	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!inFile.eof())
 	{
-		fin.get(tempSS.key);
-		fin.ignore();
+		inFile.get(tempSS.key);
+		inFile.ignore();
 		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
 									D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
 									D3DX_DEFAULT, 0,D3DFMT_UNKNOWN,
 									D3DPOOL_DEFAULT, D3DX_FILTER_NONE,D3DX_FILTER_NONE,
 									0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
 		spriteContainer::getInstance()->push(tempSS);
-		fin.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
-	fin.close();
+	inFile.close();
 
 	return true;
 }
@@ -462,9 +455,9 @@ bool Graphics::loadSpriteCont(int prog)
 //this loads the health meters
 bool Graphics::loadMeters()
 {
-	char fName[MAXCHARSIZE];
-	std::ifstream inFile;
-	spriteSheet tempSS;
+	//char fName[MAXCHARSIZE];
+	//std::ifstream inFile;
+	//spriteSheet tempSS;
 
 	//if(!spriteContainer::getInstance()->isEmpty())
 	//	spriteContainer::getInstance()->clearVec();
@@ -756,8 +749,7 @@ void Graphics::moveCamera(D3DXVECTOR3 vec)
 
 void Graphics::updateCamera(eSprInfo si)
 {
-	static float xRange = (SCREEN_WIDTH/6.0f);
-	static float yRange = (SCREEN_HEIGHT/6.0f);
+	//MIKE"S CHANGE: removed static vars
 
 	if(si.POS.x + si.width/2.0f < camPos.x - xRange)
 		camPos.x = si.POS.x + si.width/2.0f + xRange;
