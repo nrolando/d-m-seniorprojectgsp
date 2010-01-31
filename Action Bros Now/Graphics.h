@@ -70,9 +70,8 @@ public:
 
 	//MIKE"S CHANGE
 	//vars for loading the sprites
-	std::ifstream inFile;
-	char fName[MAXCHARSIZE];
-	spriteSheet tempSS;
+	//char fName[MAXCHARSIZE];
+	//spriteSheet tempSS;
 
 	//MIKE"S CHANGE
 	//error check var
