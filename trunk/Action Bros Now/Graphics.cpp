@@ -317,9 +317,9 @@ void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int 
 //MIKE"S CHANGE: added fuction loads the art for the splash & title screens
 bool Graphics::loadSplashTitle()
 {
-	//char fName[MAXCHARSIZE];
-	//std::ifstream inFile;
-	//spriteSheet tempSS;
+	std::ifstream inFile;
+	char fName[MAXCHARSIZE];
+	spriteSheet tempSS;
 
 	if(!spriteContainer::getInstance()->isEmpty())
 		spriteContainer::getInstance()->clearVec();
@@ -353,17 +353,17 @@ bool Graphics::loadSplashTitle()
 //this loads the entity (player and enemy) spritesheet continer. this is called once
 bool Graphics::loadEntityCont()
 {
-	//std::ifstream inFile;
-	//char fname[MAXCHARSIZE];
-	//spriteSheet SS;
-
+	std::ifstream inFile1, inFile2 ;
+	char fName[MAXCHARSIZE];
+	spriteSheet tempSS;
+	
 	if(!spriteContainer::getInstance()->EC_isEmpty())
 		spriteContainer::getInstance()->EC_clearVec();
 
 	sprintf_s(fName, (size_t)MAXCHARSIZE, "./playerSS/loadSpr.txt");
 
-	inFile.open(fName);
-	if(!inFile.is_open())
+	inFile1.open(fName);
+	if(!inFile1.is_open())
 		return false;
 //If in DEBUG MODE then load HIT/THREAT boxes
 	if(DEBUGMODE)
@@ -373,8 +373,9 @@ bool Graphics::loadEntityCont()
 	}
 
 //load the player sheets
-	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
-	while(!inFile.eof())
+	//PROBLEM HERE SHEETNAME STAYS EMPTY AND WHILE LOOP IS NEVER ENTERED
+	inFile1.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
+	while(!inFile1.eof())
 	{
 
 		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
@@ -385,22 +386,22 @@ bool Graphics::loadEntityCont()
 
 		spriteContainer::getInstance()->EC_push(tempSS);
 
-		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
+		inFile1.getline(tempSS.sheetName, MAXCHARSIZE, '\n');
 	}
-	inFile.close();
+	inFile1.close();
 
 //get ready to load the enemy sheets
 	sprintf_s(fName, (size_t)MAXCHARSIZE, "./enemySprites/load.txt");
-	inFile.open(fName);
-	if(!inFile.is_open())
+	inFile2.open(fName);
+	if(!inFile2.is_open())
 		return false;
 
 	//load the enemy sheets
-	inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
-	while(!inFile.eof())
+	inFile2.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+	while(!inFile2.eof())
 	{
-		inFile >> tempSS.key;
-		inFile.ignore();
+		inFile2 >> tempSS.key;
+		inFile2.ignore();
 
 		D3DXCreateTextureFromFileEx(pd3dDevice,tempSS.sheetName,
 										D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2,
@@ -409,9 +410,9 @@ bool Graphics::loadEntityCont()
 										0xFFFFFFFF,NULL,NULL,&tempSS.gTexture);
 		spriteContainer::getInstance()->EC_push(tempSS);
 
-		inFile.getline(tempSS.sheetName, MAXCHARSIZE, '#');
+		inFile2.getline(tempSS.sheetName, MAXCHARSIZE, '#');
 	}
-	inFile.close();
+	inFile2.close();
 	return true;
 }
 
@@ -420,9 +421,9 @@ bool Graphics::loadEntityCont()
 bool Graphics::loadSpriteCont(int prog)
 {
 	int lvl = prog/3;
-	//char fName[MAXCHARSIZE];
-	//std::ifstream inFile;
-	//spriteSheet tempSS;
+	std::ifstream inFile;
+	char fName[MAXCHARSIZE];
+	spriteSheet tempSS;
 
 	if(!spriteContainer::getInstance()->isEmpty())
 		spriteContainer::getInstance()->clearVec();
@@ -455,9 +456,9 @@ bool Graphics::loadSpriteCont(int prog)
 //this loads the health meters
 bool Graphics::loadMeters()
 {
-	//char fName[MAXCHARSIZE];
-	//std::ifstream inFile;
-	//spriteSheet tempSS;
+	std::ifstream inFile;
+	char fName[MAXCHARSIZE];
+	spriteSheet tempSS;
 
 	//if(!spriteContainer::getInstance()->isEmpty())
 	//	spriteContainer::getInstance()->clearVec();
