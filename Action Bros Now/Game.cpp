@@ -29,9 +29,6 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	hitEnemy		= -1;
 	lastHitEnemy	= -1;
 	lastLvl			= -1;
-	//MIKE"S CHANGE: are these redundant? there is already a screen var...
-	currentScreen	= TITLE;
-	selection		= 0;
 }
 
 Game::~Game()
@@ -354,6 +351,8 @@ int Game::checkAttacks()
 
 int Game::titleScreen(char input)
 {
+	static SCREENS currentScreen = TITLE;
+	static int selection = 0;
 	switch(input)
 	{
 	case 'r':
