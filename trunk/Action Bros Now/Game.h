@@ -38,11 +38,6 @@ private:
 	//used for level transition
 	int lastLvl;
 
-	//MIKE"S CHANGE
-	//for the splash/title screen stuff
-	int currentScreen;
-	int selection;
-
 	//Graphics Engine
 	Graphics *graphics;
 
