@@ -6,8 +6,8 @@ InputManager2::InputManager2(HINSTANCE hInstance, HWND wndHandle)
 	downflag  = 0;
 	lastinput = 0;
 
-	comboStart = 0;
-	iter = 0;
+	comboStartTime = 0;
+	cbIter = 0;
 
 	//create the DI object
 	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION,
@@ -273,97 +273,64 @@ char InputManager2::getInput(int screen)
 
 char InputManager2::comboCheck(char input)
 {
-	bool flag = false;		//set to true when a combo's been completed
-	//an array of ints to keep track of combo index checking allows me to check multiple combos at one time
-	static int check[5] = {-1,-1,-1,-1,-1};
+	bool comboFlag = false;		//set to true when a combo's been completed
 	clock_t now = clock();
-	int i = 0;
+	int whichCombo = -1;
 
-	//resets variables to start checking for new combo initiation
-	if(now - comboStart > COMBO_TIME)
+	//if the time window is closed or the buffer is full
+	if(now - comboStartTime > COMBO_TIME || cbIter >= 4)
 	{
-		iter = 0;
-		check[0] = -1;
-		check[1] = -1;
-		check[2] = -1;
-		check[3] = -1;
-		check[4] = -1;
-	}
-
-	//if(iter == 0) look for the first input for any combo, then set combo checking and timer for that combo
-	if(iter == 0)
-	{
-		for(i = 0; i < NUM_COMBOS; ++i)
-		{
-			if(input == comboDefinitions[i][iter])
-			{
-				comboStart = now;
-				iter++;
-				if(check[0] < 0)
-					check[0] = i;
-				else if(check[1] < 0)
-					check[1] = i;
-				else if(check[2] < 0)
-					check[2] = i;
-				else if(check[3] < 0)
-					check[3] = i;
-				else if(check[4] < 0)
-					check[4] = i;
-			}
-		}
-		i = 0;
+		cbIter = 0;
+		for(int i = 0; i < 4; i++)
+			comboBuff[i] = '\0';
+		comboStartTime = now;
 	}
 	else
 	{
-		for(i = 0; i < 5; i++)
+		comboBuff[cbIter] = input;
+		cbIter++;
+		//if iterator is equal to or greater than the min combo size (2)
+		if(cbIter >= 2)
 		{
-			if(check[i] >= 0)
+			//step through each combo sequence
+			for(int j = 0; j < NUM_COMBOS; j++)
 			{
-				if(input == comboDefinitions[check[i]][iter])
+				//only go to the next combo if the previous one wasn't right
+				if(comboFlag == false)
 				{
-					iter++;
-					if(iter < COMBO_HITS)
+					//step through each key of the combo sequence
+					for(int i = 0; i < 4; i++)
 					{
-						if(comboDefinitions[check[i]][iter] == '\0')
-							iter++;
-						if(iter < COMBO_HITS)
+						//the != '\0' makes sure that any '\0' char is not checked
+						// if the keys match remeber which combo and set combo to true
+						if(comboBuff[i] == comboDefinitions[j][i] && comboBuff[i] != '\0')
 						{
-							if(comboDefinitions[check[i]][iter] == '\0')
-								iter++;
+							comboFlag = true;
+							whichCombo = j;
 						}
+						//if keys don't match set combo to false
+						else if(comboBuff[i] != '\0')
+							comboFlag = false;
 					}
-				}
-				else
-				{
-					check[i] = -1;
-				}
-				if(iter == COMBO_HITS)
-				{
-					flag = true;
-					break;
 				}
 			}
 		}
 	}
-	
-	if(flag)
+
+	//if one of the combos was a full match
+	if(comboFlag == true)
 	{
-		comboStart = 0;
-		switch(check[i])
+		switch(whichCombo)
 		{
 		case 0:
 			return '1';
-			break;
 		case 1:
 			return 'R';
-			break;
 		case 2:
 			return 'L';
-			break;
 		default:
 			return 'i';
-			break;
-		};
+		}
 	}
 	else
 		return 'i';
