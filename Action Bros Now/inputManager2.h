@@ -21,17 +21,16 @@ private:
 	int inputflag;
 	int downflag;
 	int lastinput;
+	//iterator for combos
+	int cbIter;
+	char comboBuff[4];
 
 	char buffer[256];		//for the DI stuff
-
-//COMBO MEMBERS***************
 	//for the combo window
-	clock_t comboStart;
-	//iterator for combos
-	int iter;
+	clock_t comboStartTime;
+	
+	//checks the 
 	char comboCheck(char);
-//COMBO MEMBERS***************
-
 	//makes getInput smaller 
 	char charReturn();
 

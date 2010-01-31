@@ -76,7 +76,7 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME		500
+#define COMBO_TIME		1000
 #define NUM_COMBOS		3		//number of different combos in comboDefintion
 #define COMBO_HITS		4		//number of hits it takes to complete a combo
 
