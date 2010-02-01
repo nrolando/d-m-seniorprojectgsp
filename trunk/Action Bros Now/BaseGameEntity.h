@@ -16,6 +16,7 @@
 #define FRAME_HEIGHT	128
 
 class Player;
+class EntityManager;
 
 class BaseGameEntity
 {
@@ -28,7 +29,6 @@ protected:
 	int health,maxHealth;
 	//power for Enemy class
 	int power;
-
 	char key;
 	//sprites info: pos, RECTs, image w/h, ss ptr,
 	eSprInfo sprInfo;
@@ -44,6 +44,7 @@ protected:
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
 	bool faceRight;		//keeps track of which direction the entity is facing
+	bool tagged;
 
 	//aggressive frames
 	int hitFrames[3];
@@ -66,7 +67,7 @@ public:
 	//Update Functions
 	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
-	virtual void UpdateState(Player*) = 0;
+	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) = 0;
 	virtual void stun() = 0;
 	virtual void die() = 0;
 
@@ -86,22 +87,27 @@ public:
 	int				getHeight()		{ return sprInfo.height; }
 	const int		ID()			{ return entity_ID;}
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
+	int getStatus()					{ return state;}
 	int getAnimFrame()				{ return anim; }
 	int getState()					{ return state; }
-	int getLastAttFrame()			{ return lastAttFrame; }
+	int getLastAttFrame()			{ return lastAttFrame;}
 	char getKey()					{ return key; }
 	int getDistance(D3DXVECTOR3,D3DXVECTOR3);		
 
 
 	//set methods
 	bool isAlive()					{ return alive; }
+	bool isTagged()					{ return tagged;} //Used to check enemy's neighbors to avoid
+	void tag()						{ tagged = true;} //Tags that entity to stop moving
+	void untag()					{ tagged = false;} //Untags them so the entities can move again
 	void setPower(int p)			{ power = p; }
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
 	void setVel(D3DXVECTOR3 v)		{ vel = v; }
 	void setSrc(RECT rect)			{ sprInfo.drawRect = rect; }
 	void setSSPtr(spriteSheet *p)   { sprInfo.ss_ptr = p; }
-	void setState(int s)			{ state = s; }
+	void setStatus(int s)			{ state = s;}
+	void resetHitFrames()			{ hitFrames[0] = hitFrames[1] = hitFrames[2] = 0;}
 	void setLAF(int f)				{ lastAttFrame = f; }
 	void setAnim(int a)				{ anim = a; }
 	void setHitFrames(int n1, int n2, int n3)	{ hitFrames[0] = n1; hitFrames[1] = n2; hitFrames[2] = n3; }

@@ -11,6 +11,7 @@ Player::Player(std::string n):BaseGameEntity(n)
 	vel = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	state = IDLE;
 	score = 0;
+	stunned = false;
 }
 
 void Player::UpdateStat(int stat, int val)
@@ -19,9 +20,13 @@ void Player::UpdateStat(int stat, int val)
 	{//dont change alive to false until death animation has finished, not currently being implemented,
 	//waiting for death animation
 		case 0:
-			health += val;
-			if(health < 0)
+			if(health > 0)
+				health += val;
+			else
+			{
 				health = 0;
+				alive = false;
+			}
 			break;
 		case 1:
 			special += val;
@@ -489,7 +494,8 @@ int Player::UpdatePlayerState()
 		//if has been long enough
 		if(now - stunStart >= stunTime)
 		{
-			//switch to first fram of idle state
+			//switch to first frame of idle state
+			stunned = false;
 			state = IDLE;
 			anim = 0;
 			aniFStart = now;
@@ -497,6 +503,7 @@ int Player::UpdatePlayerState()
 		//if still stunned and time to switch frame of animation
 		else if(now - aniFStart >= ANIMATIONGAP)
 		{
+			stunned = true;
 			//loop to the beginning of the animation
 			if(anim >= MAXSTUNFRAME-1)
 				anim = 0;
@@ -521,7 +528,7 @@ int Player::UpdatePlayerState()
 			aniFStart = now;
 		}
 		break;
-		case RUN:
+	case RUN:
 		//if time to switch frame of animation
 		if(now - aniFStart >= ANIMATIONGAP)
 		{

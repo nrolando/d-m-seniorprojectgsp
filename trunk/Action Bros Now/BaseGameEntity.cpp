@@ -19,16 +19,17 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	vel.z = 0.0f;
 	stunStart = 0;
 	aniFStart = clock();
+	tagged = false;
 	switch(key)
 	{
 	case SOLDIER1:
-		maxHealth = health = 60;
+		maxHealth = health = 120;
 		break;
 	case SOLDIER_BOSS:
 		maxHealth = health = 400;
 		break;
 	default:
-		maxHealth = health = 50;
+		maxHealth = health = 100;
 		break;
 	};
 }

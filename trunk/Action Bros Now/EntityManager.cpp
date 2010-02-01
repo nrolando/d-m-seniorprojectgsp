@@ -68,7 +68,7 @@ void EntityManager::UpdateEnemyState(Player *p)
 {
 	for(unsigned int i = 0; i < entityVector.size(); i++)
 	{
-		entityVector[i]->UpdateState(p);
+		entityVector[i]->UpdateState(p,this->getEntVec());
 	}
 }
 

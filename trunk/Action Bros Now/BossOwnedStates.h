@@ -2,7 +2,27 @@
 
 class Boss;
 class Player;
+class EntityManager;
 class Enemy;
+
+//Boss Aggresive State
+class Stationary: public State<Boss,Player>
+{
+private:
+	Stationary() {}
+
+	//copy ctor and assignment should be private
+	Stationary(const Stationary&);
+	Stationary& operator=(const Stationary&);
+public:
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
+
+	//this is a singleton
+	static Stationary* Instance();
+};
+
 
 //Boss Aggresive State
 class Aggressive : public State<Boss,Player>
@@ -16,10 +36,28 @@ private:
 public:
 	virtual void Enter(Boss* boss);
 	virtual void Exit(Boss* boss);
-	virtual void Execute(Boss* boss, Player* player);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Aggressive* Instance();
+};
+
+//Boss Rush State
+class Rush : public State<Boss, Player>
+{
+private:
+	Rush() {}
+
+	//copy ctor and assignment should be private
+	Rush(const Rush&);
+	Rush& operator=(const Rush&);
+public:
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
+
+	//this is a singleton
+	static Rush* Instance();
 };
 
 //Boss Defensive State
@@ -33,8 +71,8 @@ private:
 	Defensive& operator=(const Defensive&);
 public:
 	virtual void Enter(Boss* boss);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
 	virtual void Exit(Boss* boss);
-	virtual void Execute(Boss* boss, Player* player);
 
 	//this is a singleton
 	static Defensive* Instance();
@@ -52,26 +90,26 @@ private:
 public:
 	virtual void Enter(Boss* boss);
 	virtual void Exit(Boss* boss);
-	virtual void Execute(Boss* boss, Player* player);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Beserk* Instance();
 };
 
-////Boss RunAway State
-//class RunAway : public State<Boss>
-//{
-//private:
-//	RunAway() {}
-//
-//	//copy ctor and assignment should be private
-//	RunAway(const RunAway&);
-//	RunAway& operator=(const RunAway&);
-//public:
-//	virtual void Enter(Boss* boss);
-//	virtual void Exit(Boss* boss);
-//	virtual void Execute(Boss* boss);
-//
-//	//this is a singleton
-//	static RunAway* Instance();
-//};
+//Boss Attacking State
+class Attacking : public State<Boss,Player>
+{
+private:
+	Attacking() {}
+
+	//copy ctor and assignment should be private
+	Attacking(const Attacking&);
+	Attacking& operator=(const Attacking&);
+public:
+	virtual void Enter(Boss* boss);
+	virtual void Exit(Boss* boss);
+	virtual void Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr);
+
+	//this is a singleton
+	static Attacking* Instance();
+};
