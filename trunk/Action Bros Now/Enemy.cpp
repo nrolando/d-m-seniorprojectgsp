@@ -255,9 +255,9 @@ void Enemy::AvoidEntity(D3DXVECTOR3 pPos,std::vector<BaseGameEntity*> EMgr)
 	for(unsigned int i= 0;i<EMgr.size();++i)
 	{
 		//If the entity being checked is not itself, within sight range, and has not been tagged to stand still
-		if(this != EMgr[i] && getDistance(getPos(),EMgr[i]->getPos()) < AVOID_RANGE && !EMgr[i]->isTagged())
+		if(this != EMgr[i] && getDistance(getPos(),EMgr[i]->getPos()) < AVOID_RANGE && /*!EMgr[i]->isTagged()*/)
 		{
-			EMgr[i]->tag();
+			//EMgr[i]->tag();
 			if(getPos().x+getDrawInfo().hitBox.right >= EMgr[i]->getPos().x){
 				vel.y = speed; 
 				vel.x = -speed;
@@ -277,9 +277,9 @@ void Enemy::AvoidEntity(D3DXVECTOR3 pPos,std::vector<BaseGameEntity*> EMgr)
 				vel.y = speed;
 				vel.z = 0;}
 		}
-		else if(getDistance(getPos(),EMgr[i]->getPos()) >= AVOID_RANGE/5 && EMgr[i]->isTagged() ||
+		/*else if(getDistance(getPos(),EMgr[i]->getPos()) >= AVOID_RANGE/5 && EMgr[i]->isTagged() ||
 		!isAlive())
-		{EMgr[i]->untag();}
+		{EMgr[i]->untag();}*/
 	}
 }
 void Enemy::movement(char dir,D3DXVECTOR3 pPos,std::vector<BaseGameEntity*> EMgr)
