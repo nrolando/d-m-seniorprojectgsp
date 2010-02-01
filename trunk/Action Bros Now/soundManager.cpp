@@ -177,3 +177,9 @@ void soundManager::stopSound()
 	BGMplaying = false;
 	currBGM = NULL;
 }
+
+//for stoping any sound
+void soundManager::stopSound(char *sound)
+{
+	sCont.getSound(sound)->sound->Stop();
+}
