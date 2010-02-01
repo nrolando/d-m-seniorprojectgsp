@@ -9,6 +9,7 @@ private:
 	//character attributes
 	int special, maxSpecial, lives;
 	int score;
+	bool stunned;
 public:
 	Player(std::string);
 	
@@ -22,6 +23,7 @@ public:
 	void DoAction(char);
 
 	/*Get Functions for Attributes*/
+	bool isStunned()		{ return stunned;}
 	int getScore()			{ return score; }
 	int getLives()			{ return lives; }
 	int getSpecial()		{ return special;}
@@ -33,7 +35,7 @@ public:
 	void addScore(int s)			{ score += s; }
 	virtual void calcDrawRECT();
 	virtual void UpdateStat(int stat,int val);
-	virtual void UpdateState(Player*) {};
+	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) {};
 	virtual void stun();
 	virtual void die();
 };

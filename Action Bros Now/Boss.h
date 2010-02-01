@@ -7,30 +7,37 @@
 #include <string>
 
 class Player;
+class EntityManager;
 
 //changed from protected to public cuz of error c2243
-class Boss : public Enemy
+class Boss : public BaseGameEntity
 {
 private:
-	State<Boss,Player> *CurrentState;
-	int health,special,sPower;
+	State<Boss, Player> *CurrentState;
+	int health,maxSpecial,special,sPower;
+	bool AnimFinished;
 public:
 
 	Boss(int ID);
 	Boss(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
 	~Boss() {}
 
-	int getSpecialMeter() {return special;}
+	int getSpecial() {return special;}
+	int getMaxSpecial() {return maxSpecial;}
 	int getsPower() {return sPower;}
 	
 	bool isAlive();
+	bool isAnimFinished() {return AnimFinished;}
 
 	virtual void UpdateStat(int stat, int val);
-	virtual void UpdateState(Player*);
+	virtual void calcDrawRECT();
+	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
+	virtual void stun();
+	virtual void die() {};
 
 	
-	void ChangeState(State<Boss,Player>* pNewState);
-	int getStatus() {return state;}
+	void ChangeState(State<Boss, Player>* pNewState);
+	void movement(char);
 };
 
 #endif

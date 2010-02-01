@@ -2,6 +2,7 @@
 
 class Enemy;
 class Player;
+class EntityManager;
 
 //Enemy Idle State
 class Idle : public State<Enemy,Player>
@@ -15,7 +16,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, Player* player);
+	virtual void Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Idle* Instance();
@@ -33,7 +34,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, Player* player);
+	virtual void Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Patrol* Instance();
@@ -51,7 +52,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, Player* player);
+	virtual void Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Chase* Instance();
@@ -61,7 +62,8 @@ public:
 class Attack : public State<Enemy,Player>
 {
 private:
-	Attack() {}
+	int attacks;
+	Attack() {attacks = 0;}
 
 	//copy ctor and assignment should be private
 	Attack(const Attack&);
@@ -69,7 +71,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, Player* player);
+	virtual void Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static Attack* Instance();
@@ -87,7 +89,7 @@ private:
 public:
 	virtual void Enter(Enemy* enemy);
 	virtual void Exit(Enemy* enemy);
-	virtual void Execute(Enemy* enemy, Player* player);
+	virtual void Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> EntMgr);
 
 	//this is a singleton
 	static RunAway* Instance();

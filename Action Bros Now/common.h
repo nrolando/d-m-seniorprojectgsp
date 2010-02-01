@@ -7,6 +7,7 @@
 #include <d3dx9tex.h>
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include <assert.h>
 #include <dsound.h>
 #include "dsutil.h"
@@ -91,7 +92,7 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   0
+#define DEBUGMODE   1
 
 ///////////////////////
 //screen size defines//
@@ -105,9 +106,10 @@
 ///////////////////
 
 //Macros for Enemy and Bosses visual ranges
-#define RANGE_OFFSET 10
-#define CHASE_RANGE 100
-#define ATTACK_RANGE 30
+#define RANGE_OFFSET 5
+#define CHASE_RANGE 150
+#define ATTACK_RANGE 40
+#define AVOID_RANGE	 20
 #define PATROL_RANGE 50
 
 //Player Macros for player stat screen position//
@@ -180,7 +182,7 @@ enum PlayerStates
 /////////////////
 
 //bgm list
-static char* BGMlist[4] = {"I like it a lot","Days to Come","Collarbone",};
+static char* BGMlist[4] = {"Something for Windy","Days To Come (Instrumental)","Collarbone",};
 
 //predefined combo inputs for the inputmanager
 static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',	//uppercut combo
@@ -235,8 +237,8 @@ struct eSprInfo
 	int height;
 	D3DXVECTOR3 POS;
 	spriteSheet *ss_ptr;
-	RECT drawRect, cBox,
-		 threatBox, hitBox;
+	RECT drawRect, threatBox, 
+		 hitBox;
 };
 
 ///////////////
