@@ -686,8 +686,8 @@ void Graphics::drawTitle(int cursor)
 	//screen position
 	D3DXVECTOR3 l_pos;
 
-	l_pos.x = (float)SCREEN_WIDTH/2 - 320;
-	l_pos.y = (float)SCREEN_HEIGHT/2 - 240;
+	l_pos.x = 0.0f;//(float)SCREEN_WIDTH/2 - 320;
+	l_pos.y = 0.0f;//(float)SCREEN_HEIGHT/2 - 240;
 	l_pos.z = 0.9f;
 	//draw title screen
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey(',')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
@@ -695,19 +695,30 @@ void Graphics::drawTitle(int cursor)
 	//draw the title screen sprites
 	if(cursor == 0)
 	{
-		l_pos.x = (SCREEN_WIDTH/10) * 1;
+		l_pos.x = (SCREEN_WIDTH/20) * 2;
 		l_pos.y = (SCREEN_HEIGHT/20) * 15;
 		l_pos.z = 0.5f;
 		gSprite->Draw(spriteContainer::getInstance()->getElemKey('?')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
-		this->displayString((SCREEN_WIDTH/10) * 7, (SCREEN_HEIGHT/10) * 8, "LOAD");
+		this->displayString((SCREEN_WIDTH/20) * 8, (SCREEN_HEIGHT/10) * 8, "LOAD GAME");
+		this->displayString((SCREEN_WIDTH/20) * 15, (SCREEN_HEIGHT/10) * 8, "OPTIONS");
 	}
 	else if(cursor == 1)
 	{
-		l_pos.x = (SCREEN_WIDTH/10) * 6;
+		l_pos.x = (SCREEN_WIDTH/20) * 8;
 		l_pos.y = (SCREEN_HEIGHT/20) * 15;
 		l_pos.z = 0.5f;
 		gSprite->Draw(spriteContainer::getInstance()->getElemKey('/')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
-		this->displayString((SCREEN_WIDTH/10) * 2, (SCREEN_HEIGHT/10) * 8, "NEW");
+		this->displayString((SCREEN_WIDTH/20) * 2, (SCREEN_HEIGHT/10) * 8, "NEW GAME");
+		this->displayString((SCREEN_WIDTH/20) * 15, (SCREEN_HEIGHT/10) * 8, "OPTIONS");
+	}
+	else if(cursor == 2)
+	{
+		l_pos.x = (SCREEN_WIDTH/20) * 15;
+		l_pos.y = (SCREEN_HEIGHT/20) * 15;
+		l_pos.z = 0.5f;
+		gSprite->Draw(spriteContainer::getInstance()->getElemKey(':')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+		this->displayString((SCREEN_WIDTH/20) * 2, (SCREEN_HEIGHT/10) * 8, "NEW GAME");
+		this->displayString((SCREEN_WIDTH/20) * 8, (SCREEN_HEIGHT/10) * 8, "LOAD GAME");
 	}
 }
 

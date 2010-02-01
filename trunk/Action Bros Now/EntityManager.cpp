@@ -20,7 +20,7 @@ bool EntityManager::loadFromFile(int prog)
 	unsigned int i = 0; int j = 0;
 	int lvl = prog/3;
 	int sublvl = prog%3;
-	char fname[maxcharsize];
+	char fname[MAXCHARSIZE];
 	//ENTITY VARIABLES THAT WILL BE PASSES TO THE CONSTRUCTOR
 	char map_key = ' ';
 	D3DXVECTOR3 PoS;
@@ -30,7 +30,7 @@ bool EntityManager::loadFromFile(int prog)
 	if(!entityVector.empty())
 		entityVector.clear();
 
-	sprintf_s(fname, (size_t)maxcharsize, "./enemySprites/mobs%i-%i.txt", lvl, sublvl);
+	sprintf_s(fname, (size_t)MAXCHARSIZE, "./enemySprites/mobs%i-%i.txt", lvl, sublvl);
 
 	inFile.open(fname);
 	if(!inFile.is_open())

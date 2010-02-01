@@ -268,7 +268,7 @@ int Game::checkAttacks()
 					if(pSprInfo.threatBox.top >= e_SprInfo.hitBox.bottom && pSprInfo.threatBox.bottom <= e_SprInfo.hitBox.top)
 					{
 						//check depth collision (z illusion)
-						distance = int(pSprInfo.POS.y - e_SprInfo.POS.y);
+						distance = int(pSprInfo.POS.y - (e_SprInfo.POS.y - (e_SprInfo.height/2.0f)));
 						if(distance < 0)
 							distance *= -1;	//get absolute value
 						if(distance < depthRange)
@@ -320,7 +320,7 @@ int Game::checkAttacks()
 				if(e_SprInfo.threatBox.top >= pSprInfo.hitBox.bottom && e_SprInfo.threatBox.bottom <= pSprInfo.hitBox.top)
 				{
 					//check depth collision (z illusion)
-					distance = int(e_SprInfo.POS.y - pSprInfo.POS.y);
+					distance = int((e_SprInfo.POS.y - (e_SprInfo.height/2.0f)) - pSprInfo.POS.y);
 					if(distance < 0)
 						distance *= -1;	//get absolute value
 					if(distance < depthRange)

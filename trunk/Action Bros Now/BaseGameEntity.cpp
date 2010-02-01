@@ -9,8 +9,8 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	key = _key;
 	sprInfo.POS = pos;
 	sprInfo.ss_ptr = ptr;
-	sprInfo.width = FRAME_WIDTH;
-	sprInfo.height = FRAME_HEIGHT;
+	sprInfo.width = E_FRAME_WIDTH;
+	sprInfo.height = E_FRAME_HEIGHT;
 	state = anim = 0;
 	speed = 2.0f;
 	health = maxHealth = 100;
