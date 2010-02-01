@@ -58,7 +58,10 @@ public:
 	//need to code
 	void playSound(char* sound);
 	void playSoundLoop(char* sound);
-	void stopSound(); 
+	//for current BGM
+	void stopSound();
+	//for any sound
+	void stopSound(char* sound);
 };
 
 #endif 
