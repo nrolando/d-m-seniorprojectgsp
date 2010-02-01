@@ -91,7 +91,7 @@ void Chase::Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> En
 	//If player is within attack range then switch to Attack state
 	if(enemy->getDistance(enemy->getPos(),player->getPos()) <= ATTACK_RANGE && !enemy->isTagged())
 			enemy->ChangeState(Attack::Instance());
-	if(!enemy->isTagged()){
+	/*if(!enemy->isTagged()){*/
 		if(enemy->getPos().y > player->getPos().y+RANGE_OFFSET)
 		{
 			enemy->setStatus(E_WALK);
@@ -112,7 +112,7 @@ void Chase::Execute(Enemy* enemy, Player* player,std::vector<BaseGameEntity*> En
 			enemy->setStatus(E_WALK);
 			enemy->movement('r',player->getPos(),EntMgr);
 		}
-	}
+	/*}*/
 	else
 	{
 		enemy->movement('n',player->getPos(),EntMgr);
