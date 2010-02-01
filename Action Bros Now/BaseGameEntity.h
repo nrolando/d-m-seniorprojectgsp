@@ -7,13 +7,14 @@
 #include <string>
 #include <ctime>
 
-#define maxcharsize		50
 #define ANIMATIONGAP	90
 //all sprite sheets will have same frame width/height? if so, take out of eSprInfo and just use this
 //right now, the player is instatiated with these values and the enemy reads its dimensions from file
 //this is not being used
 #define FRAME_WIDTH		128
 #define FRAME_HEIGHT	128
+#define E_FRAME_WIDTH	256
+#define E_FRAME_HEIGHT	256
 
 class Player;
 class EntityManager;

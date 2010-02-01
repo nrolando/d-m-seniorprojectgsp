@@ -2,3 +2,4 @@
 ./Screen Sprites/new.png#?
 ./Screen Sprites/Title.png#,
 ./Screen Sprites/brain sheet.jpg#>
+./Screen Sprites/Options.png#:
