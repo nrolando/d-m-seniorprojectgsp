@@ -120,7 +120,7 @@ bool Game::loadAssets()
 
 bool Game::update(clock_t ct)
 {
-	char input = ' ';
+	char input = '\0';
 	int num;
 	bool newGame = true;
 
@@ -143,6 +143,10 @@ bool Game::update(clock_t ct)
 		num = this->titleScreen(input);
 		if(num >= 0)
 		{
+			graphics->BeginRender();
+			graphics->drawLoadScreen();
+			graphics->EndRender();
+
 			screen++;
 			level->setProg(num);
 			//load assets for game (sounds, fill entity container, set player SS ptr)

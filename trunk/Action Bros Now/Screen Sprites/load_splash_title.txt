@@ -3,3 +3,4 @@
 ./Screen Sprites/Title.png#,
 ./Screen Sprites/brain sheet.jpg#>
 ./Screen Sprites/Options.png#:
+./Screen Sprites/Loading.png#;
