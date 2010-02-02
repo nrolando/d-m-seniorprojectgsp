@@ -95,9 +95,10 @@ bool Game::loadLvl()
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
 	//new song per level
-	if(soundManager::getInstance()->isBGMplaying())
+	//TURN MUSIC BACK ON!!!!
+	/*if(soundManager::getInstance()->isBGMplaying())
 		soundManager::getInstance()->stopSound();
-	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);
+	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);*/
 
 	return true;
 }
@@ -185,20 +186,7 @@ bool Game::update(clock_t ct)
 		for(int i = 0; i<EntMgr->getVecSize();++i)
 			EntMgr->getEntVec(i)->move(ct);
 
-		//checks if player beat the level
-		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
-		{
-			/*automatically move player off level and initiate transmission to next level
-			if the player is moving into a whole new level, maybe a score calculation will take place
-			before transmission*/
-			//increment progress and loadLvl
-			level->incrementProg();
-			if(!this->loadLvl())
-			{
-				MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
-				return false;
-			}
-		}
+		//MIKE"S CHANGE: MOVED TEH LEVEL END CHECK
 
 		//EntMgr->moveEnemies(ct);
 		//update camera
@@ -219,6 +207,32 @@ bool Game::update(clock_t ct)
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}
 		graphics->EndRender();
+		
+		//MIKE"S CHANGE: MOVED TH LEVEL END CHECK HERE
+		//checks if player beat the level
+		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
+		{
+			if(level->getProg() == 5)
+			{
+				//unload all assets and reload title stuff
+				graphics->loadSplashTitle();
+				level->setProg(0);
+				screen = 0;
+			}
+			else
+			{
+				/*automatically move player off level and initiate transmission to next level
+				if the player is moving into a whole new level, maybe a score calculation will take place
+				before transmission*/
+				//increment progress and loadLvl
+				level->incrementProg();
+				if(!this->loadLvl())
+				{
+					MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+					return false;
+				}
+			}
+		}
 		break;
 	case 3:		//gameover/win
 		break;
