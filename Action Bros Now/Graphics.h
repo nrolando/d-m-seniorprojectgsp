@@ -107,6 +107,7 @@ public:
 	//load screens for splash, menus, etc
 	void drawTitle(int);
 	void drawSplash(int, int, int, int);
+	void drawLoadScreen();
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	

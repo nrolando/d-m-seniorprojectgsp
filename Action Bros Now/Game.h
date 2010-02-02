@@ -42,8 +42,8 @@ private:
 	Graphics *graphics;
 
 	//graphics func  calls
-	void beginRender()		{ graphics->BeginRender();}
-	void endRender()		{ graphics->EndRender(); }
+	//void beginRender()		{ graphics->BeginRender();}
+	//void endRender()		{ graphics->EndRender(); }
 	void drawLvl();
 
 	//load assets

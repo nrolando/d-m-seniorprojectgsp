@@ -741,6 +741,18 @@ void Graphics::drawSplash(int r, int c, int w, int h)
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey('>')->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 }
 
+void Graphics::drawLoadScreen()
+{
+	//screen position
+	D3DXVECTOR3 l_pos;
+
+	l_pos.x = 0.0f;//(float)SCREEN_WIDTH/2 - 320;
+	l_pos.y = 0.0f;//(float)SCREEN_HEIGHT/2 - 240;
+	l_pos.z = 0.9f;
+	//draw title screen
+	gSprite->Draw(spriteContainer::getInstance()->getElemKey(';')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+}
+
 /*************************************************************************
 * move the simulated Camera!
 the pixel rect that is grabbed from the level is based on this simulated
