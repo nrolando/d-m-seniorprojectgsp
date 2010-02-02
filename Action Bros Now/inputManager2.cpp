@@ -278,12 +278,14 @@ char InputManager2::comboCheck(char input)
 	int whichCombo = -1;
 
 	//if the time window is closed or the buffer is full
-	if(now - comboStartTime > COMBO_TIME || cbIter >= 4)
+	if(comboStartTime != 0 && now - comboStartTime > COMBO_TIME || cbIter >= 3)
 	{
+		//reset everything
 		cbIter = 0;
 		for(int i = 0; i < 4; i++)
 			comboBuff[i] = '\0';
-		comboStartTime = now;
+		//it won't come back in here unless a combo has been started
+		comboStartTime = 0;
 	}
 	else
 	{
@@ -298,19 +300,30 @@ char InputManager2::comboCheck(char input)
 				//only go to the next combo if the previous one wasn't right
 				if(comboFlag == false)
 				{
-					//step through each key of the combo sequence
-					for(int i = 0; i < 4; i++)
+					//have to check the first char in the buffer seperately
+					if(comboBuff[0] == comboDefinitions[j][0])//&& comboDefinitions[j][0] != '\0')
 					{
-						//the != '\0' makes sure that any '\0' char is not checked
-						// if the keys match remeber which combo and set combo to true
-						if(comboBuff[i] == comboDefinitions[j][i] && comboBuff[i] != '\0')
+						comboFlag = true;
+						whichCombo = j;
+						comboStartTime = now;
+					}
+					//step through each key of the combo sequence
+					for(int i = 1; i < 4; i++)
+					{
+						//makes sure that each char is right not just the last one
+						if(comboFlag == true)
 						{
-							comboFlag = true;
-							whichCombo = j;
+							//the != '\0' makes sure that any '\0' char is not checked
+							// if the keys match remeber which combo and set combo to true
+							if(comboBuff[i] == comboDefinitions[j][i])// && comboDefinitions[j][i] != '\0')
+							{
+								comboFlag = true;
+								whichCombo = j;
+							}
+							//if keys don't match set combo to false
+							else //if(comboDefinitions[j][i] != '\0')
+								comboFlag = false;
 						}
-						//if keys don't match set combo to false
-						else if(comboBuff[i] != '\0')
-							comboFlag = false;
 					}
 				}
 			}
@@ -323,12 +336,24 @@ char InputManager2::comboCheck(char input)
 		switch(whichCombo)
 		{
 		case 0:
+			for(int i = 0; i < 4; i++)
+			comboBuff[i] = '\0';
+			cbIter = 0;
 			return '1';
 		case 1:
+			for(int i = 0; i < 4; i++)
+			comboBuff[i] = '\0';
+			cbIter = 0;
 			return 'R';
 		case 2:
+			for(int i = 0; i < 4; i++)
+			comboBuff[i] = '\0';
+			cbIter = 0;
 			return 'L';
 		default:
+			for(int i = 0; i < 4; i++)
+			comboBuff[i] = '\0';
+			cbIter = 0;
 			return 'i';
 		}
 	}
