@@ -22,7 +22,7 @@ InputManager2::InputManager2(HINSTANCE hInstance, HWND wndHandle)
 										DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
 	//get access to the input device
-	hr = g_lpDIDevice->Acquire();
+	//hr = g_lpDIDevice->Acquire();
 }
 
 InputManager2::~InputManager2()

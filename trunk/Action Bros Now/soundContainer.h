@@ -17,7 +17,8 @@ private:
 public:
 
 	//make isEmpty and clear functions
-
+	bool		isEmpty()					{return soundCont.empty();}
+	void		clearVec()					{soundCont.clear();}
 	//something wrong here soundName gets lost...
 	void		pushSound(soundFile sound)	{soundCont.push_back(sound);}
 	soundFile*  getSound(char* soundName);

@@ -42,6 +42,10 @@ public:
 	InputManager2(HINSTANCE hInstance, HWND wndHandle);
 	~InputManager2();
 
+	//for switching windows
+	void acquireDevice()				{g_lpDIDevice->Acquire();}
+	void unAcquireDevice()				{g_lpDIDevice->Unacquire();}
+
 	void setInput();
 	//passing screen advancement
 	char getInput(int);
