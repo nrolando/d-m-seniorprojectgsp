@@ -73,21 +73,45 @@ void BaseGameEntity::move(clock_t TIME)
 	sprInfo.POS.y += vel.y*TIME;
 	sprInfo.POS.z += vel.z*TIME;
 
-	//keep player within boundaries
-	if(sprInfo.POS.y >= YLIMIT_TOP)
+	if(this->key != '0')
 	{
-		sprInfo.POS.y = YLIMIT_TOP;
-		vel.x = vel.y = vel.z = 0.0f;
+		eSprInfo esi = this->getDrawInfo();
+		esi.POS.y -= (esi.height/2.0f);
+		//keep enemy within boundaries
+		if(esi.POS.y >= YLIMIT_TOP)
+		{
+			sprInfo.POS.y = YLIMIT_TOP;
+			vel.y = 0.0f;
+		}
+		if(esi.POS.y <= YLIMIT_BOTTOM)
+		{
+			sprInfo.POS.y = YLIMIT_BOTTOM;
+			vel.y = 0.0f;
+		}
+		if(esi.POS.x <= -1500.0f)
+		{
+			sprInfo.POS.x = -1500.0f;
+			vel.x = 0.0f;
+		}
 	}
-	if(sprInfo.POS.y <= YLIMIT_BOTTOM)
+	else
 	{
-		sprInfo.POS.y = YLIMIT_BOTTOM;
-		vel.x = vel.y = vel.z = 0.0f;
-	}
-	if(sprInfo.POS.x <= -1500.0f)
-	{
-		sprInfo.POS.x = -1500.0f;
-		vel.x = vel.y = vel.z = 0.0f;
+		//keep player within boundaries
+		if(sprInfo.POS.y >= YLIMIT_TOP)
+		{
+			sprInfo.POS.y = YLIMIT_TOP;
+			vel.y = 0.0f;
+		}
+		if(sprInfo.POS.y <= YLIMIT_BOTTOM)
+		{
+			sprInfo.POS.y = YLIMIT_BOTTOM;
+			vel.y = 0.0f;
+		}
+		if(sprInfo.POS.x <= -1500.0f)
+		{
+			sprInfo.POS.x = -1500.0f;
+			vel.x = 0.0f;
+		}
 	}
 }
 
