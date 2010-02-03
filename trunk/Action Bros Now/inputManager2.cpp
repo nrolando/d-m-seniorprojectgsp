@@ -6,7 +6,7 @@ InputManager2::InputManager2(HINSTANCE hInstance, HWND wndHandle)
 	downflag  = 0;
 	lastinput = 0;
 
-	comboStartTime = 0;
+	comboStart = 0;
 	cbIter = 0;
 
 	//create the DI object
@@ -273,6 +273,101 @@ char InputManager2::getInput(int screen)
 
 char InputManager2::comboCheck(char input)
 {
+	bool flag = false;		//set to true when a combo's been completed
+	//an array of ints to keep track of combo index checking allows me to check multiple combos at one time
+	static int check[5] = {-1,-1,-1,-1,-1};
+	clock_t now = clock();
+	int i = 0;
+
+	//resets variables to start checking for new combo initiation
+	if(now - comboStart > COMBO_TIME)
+	{
+		iter = 0;
+		check[0] = -1;
+		check[1] = -1;
+		check[2] = -1;
+		check[3] = -1;
+		check[4] = -1;
+	}
+
+	//if(iter == 0) look for the first input for any combo, then set combo checking and timer for that combo
+	if(iter == 0)
+	{
+		for(i = 0; i < NUM_COMBOS; ++i)
+		{
+			if(input == comboDefinitions[i][iter])
+			{
+				comboStart = now;
+				iter++;
+				if(check[0] < 0)
+					check[0] = i;
+				else if(check[1] < 0)
+					check[1] = i;
+				else if(check[2] < 0)
+					check[2] = i;
+				else if(check[3] < 0)
+					check[3] = i;
+				else if(check[4] < 0)
+					check[4] = i;
+			}
+		}
+		i = 0;
+	}
+	else
+	{
+		for(i = 0; i < 5; i++)
+		{
+			if(check[i] >= 0)
+			{
+				if(input == comboDefinitions[check[i]][iter])
+				{
+					iter++;
+					if(iter < COMBO_HITS)
+					{
+						if(comboDefinitions[check[i]][iter] == '\0')
+							iter++;
+						if(iter < COMBO_HITS)
+						{
+							if(comboDefinitions[check[i]][iter] == '\0')
+								iter++;
+						}
+					}
+				}
+				else
+				{
+					check[i] = -1;
+				}
+				if(iter == COMBO_HITS)
+				{
+					flag = true;
+					break;
+				}
+			}
+		}
+	}
+	
+	if(flag)
+	{
+		comboStart = 0;
+		switch(check[i])
+		{
+		case 0:
+			return '1';
+			break;
+		case 1:
+			return 'R';
+			break;
+		case 2:
+			return 'L';
+			break;
+		default:
+			return 'i';
+			break;
+		};
+	}
+	else
+		return 'i';
+	/*						MIKE'S STUFF
 	bool comboFlag = false;		//set to true when a combo's been completed
 	clock_t now = clock();
 	int whichCombo = -1;
@@ -359,6 +454,7 @@ char InputManager2::comboCheck(char input)
 	}
 	else
 		return 'i';
+		*/
 }
 
 char InputManager2::charReturn()

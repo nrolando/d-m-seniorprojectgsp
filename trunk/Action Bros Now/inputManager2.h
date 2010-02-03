@@ -26,11 +26,15 @@ private:
 	char comboBuff[4];
 
 	char buffer[256];		//for the DI stuff
+
+	//COMBO MEMBERS***************
 	//for the combo window
-	clock_t comboStartTime;
-	
-	//checks the 
+	clock_t comboStart;
+	//iterator for combos
+	int iter;
 	char comboCheck(char);
+	//COMBO MEMBERS***************
+
 	//makes getInput smaller 
 	char charReturn();
 

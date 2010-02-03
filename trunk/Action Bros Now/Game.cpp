@@ -26,6 +26,7 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	inputMan		= new InputManager2(HI, hWnd);
 	input			= ' ';
 	screen			= 0;	//start at 1 until we get splash
+	currentScreen   = TITLE;
 	hitEnemy		= -1;
 	lastHitEnemy	= -1;
 	lastLvl			= -1;
@@ -190,7 +191,36 @@ bool Game::update(clock_t ct)
 		for(int i = 0; i<EntMgr->getVecSize();++i)
 			EntMgr->getEntVec(i)->move(ct);
 
-		//MIKE"S CHANGE: MOVED TEH LEVEL END CHECK
+		//MIKE"S CHANGE: MOVED THE LEVEL END CHECK HERE
+		//checks if player beat the level
+		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
+		{
+			if(level->getProg() == 5)
+			{
+				level->setProg(0);
+				if(!graphics->loadSplashTitle())
+					return false;
+				lastLvl = -1;
+				screen = 1;
+				currentScreen = TITLE;
+				if(soundManager::getInstance()->isBGMplaying())
+					soundManager::getInstance()->stopSound();
+				return true;
+			}
+			else
+			{
+				/*automatically move player off level and initiate transmission to next level
+				if the player is moving into a whole new level, maybe a score calculation will take place
+				before transmission*/
+				//increment progress and loadLvl
+				level->incrementProg();
+				if(!this->loadLvl())
+				{
+					MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+					return false;
+				}
+			}
+		}
 
 		//EntMgr->moveEnemies(ct);
 		//update camera
@@ -211,32 +241,6 @@ bool Game::update(clock_t ct)
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}
 		graphics->EndRender();
-		
-		//MIKE"S CHANGE: MOVED TH LEVEL END CHECK HERE
-		//checks if player beat the level
-		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
-		{
-			if(level->getProg() == 5)
-			{
-				//unload all assets and reload title stuff
-				graphics->loadSplashTitle();
-				level->setProg(0);
-				screen = 0;
-			}
-			else
-			{
-				/*automatically move player off level and initiate transmission to next level
-				if the player is moving into a whole new level, maybe a score calculation will take place
-				before transmission*/
-				//increment progress and loadLvl
-				level->incrementProg();
-				if(!this->loadLvl())
-				{
-					MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
-					return false;
-				}
-			}
-		}
 		break;
 	case 3:		//gameover/win
 		break;
@@ -369,7 +373,6 @@ int Game::checkAttacks()
 
 int Game::titleScreen(char input)
 {
-	static SCREENS currentScreen = TITLE;
 	static int selection = 0;
 	switch(input)
 	{
@@ -407,7 +410,7 @@ int Game::titleScreen(char input)
 				selection = 0;
 			}
 		}
-		if(currentScreen == LOAD)
+		else if(currentScreen == LOAD)
 		{
 			if(this->load())
 				return level->getProg();
@@ -466,7 +469,11 @@ void Game::splashScreen()
 		aniFStart = now;
 	}
 	if(splashRow == maxRow)
+	{
+		splashRow = 0;
+		splashCol = 0;
 		screen++;
+	}
 	else
 	{
 		//splashCol = 1; splashRow = 7;	//testing purposes
