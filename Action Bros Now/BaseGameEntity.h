@@ -66,9 +66,9 @@ public:
 	virtual ~BaseGameEntity(){}
 
 	//Update Functions
+	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) = 0;
 	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
-	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) = 0;
 	virtual void stun() = 0;
 	virtual void die() = 0;
 
@@ -88,13 +88,11 @@ public:
 	int				getHeight()		{ return sprInfo.height; }
 	const int		ID()			{ return entity_ID;}
 	eSprInfo		getDrawInfo()	{ return sprInfo; }
-	int getStatus()					{ return state;}
-	int getAnimFrame()				{ return anim; }
-	int getState()					{ return state; }
-	int getLastAttFrame()			{ return lastAttFrame;}
-	char getKey()					{ return key; }
-	int getDistance(D3DXVECTOR3,D3DXVECTOR3);		
-
+	int				getStatus()		{ return state;}
+	int				getAnimFrame()	{ return anim; }
+	int				getState()		{ return state; }
+	int				getLastAttFrame()	{ return lastAttFrame;}
+	char			getKey()		{ return key; }		
 
 	//set methods
 	bool isAlive()					{ return alive; }

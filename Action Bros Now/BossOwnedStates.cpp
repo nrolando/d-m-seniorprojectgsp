@@ -20,7 +20,7 @@ void Stationary::Enter(Boss *boss)
 
 void Stationary::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getDistance(boss->getPos(),player->getPos()) <= SB_RUSH_RANGE)
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
 	{
 		boss->ChangeState(Aggressive::Instance());
 		printf("Player in Range Charge Him\n");
@@ -48,14 +48,14 @@ void Aggressive::Enter(Boss *boss)
 
 void Aggressive::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getDistance(boss->getPos(),player->getPos()) <= SB_ATTACK_RANGE)
+	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
 	{
 		boss->ChangeState(Attacking::Instance());
 		boss->movement('n');
 	}
 	//Rush at the Player if within Range
-	else if(boss->getDistance(boss->getPos(),player->getPos()) <= SB_RUSH_RANGE &&
-	boss->getDistance(boss->getPos(),player->getPos()) > SB_ATTACK_RANGE) 
+	else if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
+	boss->getDistance(boss,player) > SB_ATTACK_RANGE) 
 		boss->ChangeState(Rush::Instance());
 	else
 		boss->setStatus(SB_TAUNT);
@@ -151,10 +151,10 @@ void Rush::Enter(Boss *boss)
 
 void Rush::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getDistance(boss->getPos(),player->getPos()) < SB_ATTACK_RANGE)
+	if(boss->getDistance(boss,player) < SB_ATTACK_RANGE)
 		boss->ChangeState(Attacking::Instance());
-	if(boss->getDistance(boss->getPos(),player->getPos()) <= SB_RUSH_RANGE &&
-	boss->getDistance(boss->getPos(),player->getPos()) > SB_ATTACK_RANGE)
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
+	boss->getDistance(boss,player) > SB_ATTACK_RANGE)
 	{
 		if(boss->getPos().y > player->getPos().y+SB_RANGE_OFFSET)
 		{

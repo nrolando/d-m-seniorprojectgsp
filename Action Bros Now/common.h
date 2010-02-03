@@ -98,7 +98,7 @@
 //screen size defines//
 ///////////////////////
 
-#define SCREEN_WIDTH			1024
+#define SCREEN_WIDTH		   1024
 #define SCREEN_HEIGHT			768
 
 ///////////////////
@@ -106,9 +106,9 @@
 ///////////////////
 
 //Macros for Enemy and Bosses visual ranges
-#define RANGE_OFFSET 5
-#define CHASE_RANGE 150
-#define ATTACK_RANGE 40
+#define RANGE_OFFSET 15.0f
+#define CHASE_RANGE  150
+#define ATTACK_RANGE 30
 #define AVOID_RANGE	 20
 #define PATROL_RANGE 50
 

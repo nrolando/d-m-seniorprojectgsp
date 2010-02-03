@@ -16,15 +16,13 @@
 #define DEATHFRAMETIME		150
 #define WALKFRAMETIME		150
 
-class EntityManager;
-
 class Enemy : public BaseGameEntity
 {
 private:
 	status_type status;
 protected:
 	State<Enemy, Player> *CurrentState;
-	bool pHit;
+	bool miss;
 	
 	/* Attributes - power moved to BGE*/
 	int stat,val;
@@ -39,8 +37,10 @@ public:
 	virtual void UpdateStat(int,int);
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
 	virtual void stun();
+	int  getDistance(Enemy*,Player*);
 
 	bool update();
+	bool missedAtk()		{ miss = !miss;}
 	void rotate()			{ faceRight = !faceRight; }
 	virtual void die();
 
@@ -48,15 +48,16 @@ public:
 	void setHealth(int hp) { health = hp;}
 	int  getHealth()       { return health;}
 	bool isRotated()	   { return faceRight;}
+	bool Missed()		   { return miss;}
 	bool MovementPossible(std::vector<BaseGameEntity*>);
 
 	/* Enemy State Updates */
 	void ChangeState(State<Enemy, Player>* pNewState);
 	void ChangeStatus(status_type sts) {status = sts;}
 	void ChasePlayer(Player*);
-	void AvoidEntity(D3DXVECTOR3,std::vector<BaseGameEntity*>);
+	void AvoidEntity(Player*,std::vector<BaseGameEntity*>);
 	
-	void movement(char,D3DXVECTOR3,std::vector<BaseGameEntity*>);
+	void movement(char,Player*,std::vector<BaseGameEntity*>);
 	status_type getStatus() {return status;}
 };
 

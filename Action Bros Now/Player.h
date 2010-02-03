@@ -3,6 +3,8 @@
 #include "BaseGameEntity.h"
 #include "soundManager.h"
 
+class Enemy;
+
 class Player : public BaseGameEntity
 {
 private:
@@ -34,7 +36,7 @@ public:
 	int UpdatePlayerState();
 	void addScore(int s)			{ score += s; }
 	virtual void calcDrawRECT();
-	virtual void UpdateStat(int stat,int val);
+	virtual void UpdateStat(int stat,int val); 
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) {};
 	virtual void stun();
 	virtual void die();
