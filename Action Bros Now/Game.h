@@ -19,6 +19,10 @@ class Game
 private:
 	//index to keep track of screen advancement
 	int screen;
+
+	//will be in the Menu class later
+	SCREENS currentScreen;
+
 	char input;
 	
 	//level tracker
