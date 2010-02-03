@@ -4,7 +4,7 @@
 #define FPSdelay	16		//doesn't allow the game to go faster than 62 frames a second
 
 //GLOBALS
-Game* game;
+Game* game = NULL;
 HWND wndHandle;					// global window handle
 
 bool initWindow(HINSTANCE hInstance);
@@ -16,14 +16,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	clock_t now;
 
 	MSG msg;
- 
+ 	game = new Game(hInstance, wndHandle);
 	// call our function to init and create our window
 	if (!initWindow(hInstance))
 	{
 		MessageBox(NULL, "Unable to create window", "ERROR", MB_OK);
 		return 1;
 	}
-	game = new Game(hInstance, wndHandle);
 	if(!game->initGame(wndHandle))
 	{
 		MessageBox(NULL, "Unable to initialize Direct3D", "ERROR", MB_OK);
@@ -102,6 +101,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case 'Q':
 			PostQuitMessage(0);
+			break;
+		};
+		break;
+	case WM_ACTIVATE:
+		switch(wParam)
+		{
+		case WA_INACTIVE:
+			game->deavtivateInput();
+			break;
+		case WA_ACTIVE:
+			if(!game == NULL)
+				game->activateInput();
 			break;
 		};
 	

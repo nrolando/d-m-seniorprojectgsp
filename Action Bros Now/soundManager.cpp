@@ -48,7 +48,9 @@ bool soundManager::loadAllSounds()
 	char fName[MAXCHARSIZE];
 	std::ifstream inFile;
 
-	//add stuff to check for emty vector and clear vector
+	//check for emty vector and clear vector
+	if(!sCont.isEmpty())
+		sCont.clearVec();
 
 	sprintf_s(fName, (size_t)MAXCHARSIZE, "./Sounds/soundlist.txt"); 
 

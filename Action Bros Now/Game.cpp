@@ -96,10 +96,9 @@ bool Game::loadLvl()
 	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
 
 	//new song per level
-	//TURN MUSIC BACK ON!!!!
-	/*if(soundManager::getInstance()->isBGMplaying())
+	if(soundManager::getInstance()->isBGMplaying())
 		soundManager::getInstance()->stopSound();
-	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);*/
+	soundManager::getInstance()->playSoundLoop(BGMlist[level->getProg()/3]);
 
 	return true;
 }
@@ -203,6 +202,9 @@ bool Game::update(clock_t ct)
 				lastLvl = -1;
 				screen = 1;
 				currentScreen = TITLE;
+				if(soundManager::getInstance()->isBGMplaying())
+					soundManager::getInstance()->stopSound();
+				return true;
 				if(soundManager::getInstance()->isBGMplaying())
 					soundManager::getInstance()->stopSound();
 				return true;

@@ -64,6 +64,10 @@ public:
 	Game(HINSTANCE, HWND);
 	~Game();
 
+	//functions for input when switching windows
+	void activateInput()					{inputMan->acquireDevice();}
+	void deavtivateInput()					{inputMan->unAcquireDevice();}
+
 	bool initGame(HWND);
 	void _shutdown();
 
