@@ -91,21 +91,24 @@ void BaseGameEntity::move(clock_t TIME)
 	}
 	else
 	{
-		//keep player within boundaries
-		if(sprInfo.POS.y >= YLIMIT_TOP)
+		if(state != RESPAWN)
 		{
-			sprInfo.POS.y = YLIMIT_TOP;
-			vel.y = 0.0f;
-		}
-		if(sprInfo.POS.y <= YLIMIT_BOTTOM)
-		{
-			sprInfo.POS.y = YLIMIT_BOTTOM;
-			vel.y = 0.0f;
-		}
-		if(sprInfo.POS.x <= -1500.0f)
-		{
-			sprInfo.POS.x = -1500.0f;
-			vel.x = 0.0f;
+			//keep player within boundaries
+			if(sprInfo.POS.y >= YLIMIT_TOP)
+			{
+				sprInfo.POS.y = YLIMIT_TOP;
+				vel.y = 0.0f;
+			}
+			if(sprInfo.POS.y <= YLIMIT_BOTTOM)
+			{
+				sprInfo.POS.y = YLIMIT_BOTTOM;
+				vel.y = 0.0f;
+			}
+			if(sprInfo.POS.x <= -1500.0f)
+			{
+				sprInfo.POS.x = -1500.0f;
+				vel.x = 0.0f;
+			}
 		}
 	}
 }

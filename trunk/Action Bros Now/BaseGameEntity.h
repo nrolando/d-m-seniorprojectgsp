@@ -70,6 +70,7 @@ public:
 	virtual void calcDrawRECT() = 0;
 	virtual void UpdateStat(int, int) = 0;
 	virtual void stun() = 0;
+	virtual void stun(int) = 0;	//para: add-on to regular stun. extra stun time
 	virtual void die() = 0;
 
 	//move player according to velocity
@@ -96,6 +97,8 @@ public:
 
 	//set methods
 	bool isAlive()					{ return alive; }
+	void setAlive(bool a)			{ alive = a; }
+	void setHealth(int h)			{ health = h; }
 	bool isTagged()					{ return tagged;} //Used to check enemy's neighbors to avoid
 	void tag()						{ tagged = true;} //Tags that entity to stop moving
 	void untag()					{ tagged = false;} //Untags them so the entities can move again

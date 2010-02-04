@@ -3,6 +3,8 @@
 #include "BaseGameEntity.h"
 #include "soundManager.h"
 
+#define MAXHEALTH		100
+
 class Enemy;
 
 class Player : public BaseGameEntity
@@ -23,6 +25,7 @@ public:
 	void takeDMG(int DMG)			{ health -= DMG;}
 	void setSheetPtr(spriteSheet*);
 	void DoAction(char);
+	void decLives()					{ lives--; }
 
 	/*Get Functions for Attributes*/
 	bool isStunned()		{ return stunned;}
@@ -39,6 +42,7 @@ public:
 	virtual void UpdateStat(int stat,int val); 
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>) {};
 	virtual void stun();
+	virtual void stun(int);
 	virtual void die();
 };
 #endif

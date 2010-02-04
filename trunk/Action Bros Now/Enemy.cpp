@@ -374,6 +374,17 @@ void Enemy::stun()
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
+void Enemy::stun(int num)
+{
+	//min + rand() % max - min + 1
+	stunTime = (200 + rand() % 301) + num;
+	stunStart = clock();
+	state = E_STUN;
+	anim = 0;
+	aniFStart = clock();
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
 int Enemy::getDistance(Enemy* e,Player* p)
 {
 	D3DXVECTOR3 ePos,pPos;

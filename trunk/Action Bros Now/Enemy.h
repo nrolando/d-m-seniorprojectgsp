@@ -37,6 +37,7 @@ public:
 	virtual void UpdateStat(int,int);
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
 	virtual void stun();
+	virtual void stun(int);
 	int  getDistance(Enemy*,Player*);
 
 	bool update();

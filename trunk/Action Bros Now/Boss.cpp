@@ -259,3 +259,12 @@ void Boss::stun()
 	state = E_STUN;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
+
+void Boss::stun(int num)
+{
+	//min + rand() % max - min + 1
+	stunTime = (200 + rand() % 301) + num;
+	stunStart = clock();
+	state = E_STUN;
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}

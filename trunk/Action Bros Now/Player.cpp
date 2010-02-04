@@ -3,8 +3,8 @@
 
 Player::Player(std::string n):BaseGameEntity(n)
 {
-	health = 100;
-	maxHealth = 100;
+	health = MAXHEALTH;
+	maxHealth = MAXHEALTH;
 	special = 100;
 	maxSpecial = 100;
 	lives = 3;
@@ -540,8 +540,12 @@ int Player::UpdatePlayerState()
 		}
 		break;
 	case FALL:
-		if(anim == 6)
+		if(anim == 5)
 		{
+			if(now - aniFStart >= RESPAWN_WAIT_TIME)
+			{
+				alive = false;
+			}
 
 		}
 		else
@@ -552,14 +556,30 @@ int Player::UpdatePlayerState()
 				{
 					if(anim < MAXDEATHFRAME-1)
 						anim++;
-					else
-						alive = false;
 				}
 				else			//fall
 				{
 				}
 				aniFStart = now;
 			}
+		}
+		break;
+	case RESPAWN:
+		if(now - aniFStart >= MAXRESPAWNANIMATION)
+		{
+			if(anim < 1)
+				anim++;
+			else
+			{
+				anim = 0;
+			}
+			aniFStart = now;
+		}
+		if(sprInfo.POS.y <= -40.0f)
+		{
+			state = IDLE;
+			anim = 0;
+			vel.y = 0.0f;
 		}
 	}
 
@@ -695,6 +715,15 @@ void Player::stun()
 {
 	//min + rand() % max - min + 1
 	stunTime = 100 + rand() % 201;
+	stunStart = clock();
+	state = STUN;
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
+void Player::stun(int num)
+{
+	//min + rand() % max - min + 1
+	stunTime = (100 + rand() % 201) + num;
 	stunStart = clock();
 	state = STUN;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
