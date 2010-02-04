@@ -39,6 +39,7 @@ public:
 	int getVecSize()		{ return entityVector.size(); }
 
 	void stunEnt(int i, int a)		{ entityVector[i]->stun(a); }
+	int getHealth(int i)			{ return entityVector[i]->getHealth(); }
 
 	//update the entities
 	//void entiyUpdate(Player* player);
