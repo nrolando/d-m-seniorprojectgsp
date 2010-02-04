@@ -77,6 +77,7 @@ public:
 //returns progress for game start, if -1, player hasn't chosen yet
 	int titleScreen(char);
 	void splashScreen();
+	bool loadScreen();
 
 	//load level
 	bool loadLvl();

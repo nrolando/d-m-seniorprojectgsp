@@ -14,21 +14,22 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 	sprInfo.width = E_FRAME_WIDTH;
 	sprInfo.height = E_FRAME_HEIGHT;
 	state = anim = 0;
-	speed = 2.0f;
 	health = maxHealth = 100;
 	vel.x = 0.0f;
 	vel.y = 0.0f;
 	vel.z = 0.0f;
 	stunStart = 0;
 	aniFStart = clock();
-	tagged = false;
+	miss = false;
 	switch(key)
 	{
 	case SOLDIER1:
 		maxHealth = health = 120;
+		speed = 2.0f;
 		break;
 	case SOLDIER_BOSS:
 		maxHealth = health = 400;
+		speed = SB_RUN_SPEED;
 		break;
 	default:
 		maxHealth = health = 100;

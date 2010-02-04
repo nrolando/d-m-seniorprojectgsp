@@ -164,7 +164,10 @@ void soundManager::playSoundLoop(char* sound)
 {
 	sCont.getSound(sound)->sound->Play(0,0,DSBPLAY_LOOPING);
 	BGMplaying = true;
+	if(currBGM != NULL)
+		prevBGM = currBGM;
 	currBGM = sound;
+	
 }
 //for playing sfx
 void soundManager::playSound(char *sound)
@@ -176,8 +179,11 @@ void soundManager::playSound(char *sound)
 void soundManager::stopSound()
 {
 	sCont.getSound(currBGM)->sound->Stop();
+	if(prevBGM != NULL)
+		sCont.getSound(prevBGM)->sound->Stop();
 	BGMplaying = false;
 	currBGM = NULL;
+	prevBGM = NULL;
 }
 
 //for stoping any sound

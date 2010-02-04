@@ -44,14 +44,17 @@ bool Game::initGame(HWND hwnd)
 {
 	srand(unsigned(time(0)));
 
+	//initlialize direct sound and load all sounds
+	if(!soundManager::getInstance()->initSound(hwnd))
+		return false;
+
+	if(!soundManager::getInstance()->loadAllSounds())
+		return false;
+
 	if(!graphics->initD3D(hwnd))
 		return false;
 
 	if(!graphics->loadSplashTitle())
-		return false;
-
-	//initlialize direct sound and load all sounds
-	if(!soundManager::getInstance()->initSound(hwnd))
 		return false;
 
 	return true;
@@ -110,8 +113,6 @@ bool Game::loadAssets()
 	//initialization down below) the sprite container will be loaded in loadlvl()
 	if(!graphics->loadEntityCont())
 		return false;
-	if(!soundManager::getInstance()->loadAllSounds())
-		return false;
 	//initialize the players sprite pointer
 	player->setSSPtr(spriteContainer::getInstance()->EC_getElem(0));
 
@@ -121,7 +122,7 @@ bool Game::loadAssets()
 bool Game::update(clock_t ct)
 {
 	char input = '\0';
-	int num;
+	static int num = -1;
 	bool newGame = true;
 
 	//get user input
@@ -135,6 +136,7 @@ bool Game::update(clock_t ct)
 	switch(screen)
 	{
 	case 0:		//splash
+		soundManager::getInstance()->playSound(BGMlist[5]);
 		this->splashScreen();
 		if(input == 'p')
 			screen++;
@@ -143,13 +145,13 @@ bool Game::update(clock_t ct)
 		num = this->titleScreen(input);
 		if(num >= 0)
 		{
-			graphics->BeginRender();
+		    graphics->BeginRender();
 			graphics->drawLoadScreen();
 			graphics->EndRender();
 
 			screen++;
 			level->setProg(num);
-			//load assets for game (sounds, fill entity container, set player SS ptr)
+			//load assets for game (fill entity container, set player SS ptr)
 			loadAssets();
 			//load level retrieved from titleScreen()
 			if(!this->loadLvl())
@@ -349,6 +351,7 @@ int Game::checkAttacks()
 
 				//TAKE HEALTH FROM PLAYER AND STUN OR DIE
 						player->UpdateStat(0, -(E[i]->getPower()));
+						player->UpdateStat(1, E[i]->getPower());
 						if(player->getHealth() < 1)
 							player->die();
 						else
@@ -356,6 +359,8 @@ int Game::checkAttacks()
 
 						index = i;		//last enemy that hit you
 					}
+					else
+						E[i]->missedAtk();
 				}
 			}
 		}
@@ -383,6 +388,7 @@ void Game::respawnPlayer()
 
 int Game::titleScreen(char input)
 {
+
 	static int selection = 0;
 	switch(input)
 	{
@@ -443,6 +449,13 @@ int Game::titleScreen(char input)
 	{
 	case TITLE:
 		graphics->drawTitle(selection);
+		if(soundManager::getInstance()->isBGMplaying())
+		{
+			soundManager::getInstance()->stopSound(BGMlist[5]);
+			soundManager::getInstance()->stopSound(BGMlist[6]);
+		}
+		soundManager::getInstance()->playSoundLoop(BGMlist[3]);
+		soundManager::getInstance()->playSoundLoop(BGMlist[4]);
 		break;
 	case LOAD:
 		break;
@@ -488,12 +501,65 @@ void Game::splashScreen()
 	{
 		//splashCol = 1; splashRow = 7;	//testing purposes
 		if(splashCol == 1 && splashRow == 7)
+		{
+			soundManager::getInstance()->playSound(BGMlist[6]);
 			graphics->BeginSplashRender();
+		}
 		else
 			graphics->BeginRender();
 		graphics->drawSplash(splashRow, splashCol, width, height);
 		graphics->EndRender();
 	}
+}
+
+bool Game::loadScreen()
+{
+	clock_t now = clock();
+	static int loadCol = 0;
+	static int loadRow = 0;
+	static int aniFStart = clock();
+
+	const int maxCol = 4;
+	const int maxRow = 4;
+	const int height = 512;
+	const int width = 512;
+
+	if(now - aniFStart >= ANIMATIONGAP)
+	{
+		if(loadCol < maxCol-1)
+			loadCol++;
+		else
+		{
+			loadCol = 0;
+			loadRow++;
+		}
+
+		aniFStart = now;
+	}
+	if(loadRow == maxRow)
+	{
+		loadRow = 0;
+		loadCol = 0;
+		screen++;
+	}
+	else
+	{
+		//loadCol = 1; loadRow = 7;	//testing purposes
+		if(loadCol == 1 && loadRow == 4)
+		{
+			graphics->BeginSplashRender();
+			graphics->drawLoadScreen();
+			return true;
+		}
+		else
+		{
+			graphics->BeginRender();
+			graphics->drawLoadAnimation(loadRow, loadCol, width, height);
+			graphics->EndRender();
+			return false;
+		}
+	}
+	return false;
 }
 
 bool Game::save()

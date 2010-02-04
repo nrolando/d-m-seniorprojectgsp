@@ -10,4 +10,5 @@
 ./Screen Sprites/Load.png#/
 ./Screen Sprites/new.png#?
 ./Screen Sprites/Title.png#,
+./Screen Sprites/LoadingAnimation.png#<
 ./Screen Sprites/brain sheet.jpg#>

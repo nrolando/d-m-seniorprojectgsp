@@ -35,7 +35,7 @@ protected:
 	eSprInfo sprInfo;
 	//set by getnameofentity(ID);
 	std::string name;
-	bool alive;
+	bool alive,miss;
 	//entity velocity
 	float speed;
 	D3DXVECTOR3 vel;
@@ -92,16 +92,16 @@ public:
 	int				getStatus()		{ return state;}
 	int				getAnimFrame()	{ return anim; }
 	int				getState()		{ return state; }
-	int				getLastAttFrame()	{ return lastAttFrame;}
+	int				getLastAttFrame(){ return lastAttFrame;}
 	char			getKey()		{ return key; }		
 
 	//set methods
+	void missedAtk()				{ miss = true;}
+	void resetAtk()					{ miss = false;}
 	bool isAlive()					{ return alive; }
+	bool Missed()					{ return miss;}
 	void setAlive(bool a)			{ alive = a; }
 	void setHealth(int h)			{ health = h; }
-	bool isTagged()					{ return tagged;} //Used to check enemy's neighbors to avoid
-	void tag()						{ tagged = true;} //Tags that entity to stop moving
-	void untag()					{ tagged = false;} //Untags them so the entities can move again
 	void setPower(int p)			{ power = p; }
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
