@@ -93,7 +93,7 @@ bool Game::loadLvl()
 	hitEnemy = lastHitEnemy = -1;
 
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
-	player->setPos(D3DXVECTOR3(-1350.0f, 0.0f, 0.0f));
+	player->setPos(D3DXVECTOR3(-1350.0f, -40.0f, 0.0f));
 
 	//new song per level
 	if(soundManager::getInstance()->isBGMplaying())
@@ -160,7 +160,7 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:
-		if(player->getState() != STUN && player->getState() != FALL)
+		if(player->getState() != STUN && player->getState() != FALL && player->getState() != RESPAWN)
 			player->DoAction(input);
 		if(!player->isAlive())
 		{
@@ -366,7 +366,19 @@ int Game::checkAttacks()
 
 void Game::respawnPlayer()
 {
-	
+	D3DXVECTOR3 pPos = player->getPos();
+	player->decLives();
+	player->setState(RESPAWN);
+	for(int i = 0; i < EntMgr->getVecSize(); ++i)
+	{
+		EntMgr->stunEnt(i, 1000);
+	}
+	player->setHealth(MAXHEALTH);
+	player->setAlive(true);
+	player->setVel(D3DXVECTOR3(0.0f, -8.0f, 0.0f));
+	pPos.y += 480;
+	player->setPos(D3DXVECTOR3(pPos));
+	player->resetTimes();
 }
 
 int Game::titleScreen(char input)

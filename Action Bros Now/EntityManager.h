@@ -38,6 +38,8 @@ public:
 	bool isVectorEmpty()	{ return entityVector.empty();}
 	int getVecSize()		{ return entityVector.size(); }
 
+	void stunEnt(int i, int a)		{ entityVector[i]->stun(a); }
+
 	//update the entities
 	//void entiyUpdate(Player* player);
 };

@@ -39,7 +39,7 @@
 /////////////////////
 
 //current number of player states in spritesheet for one direction
-#define NUM_STATES		9
+#define NUM_STATES		10
 //these are for animation and stun length
 #define STUNTIME		500
 
@@ -60,6 +60,7 @@
 #define MAXPUNCHANIMATION		30
 #define MAXCOMBO1ANIMATION		60
 #define MAXDEATHANIMATION		100
+#define MAXRESPAWNANIMATION		200
 #define RESPAWN_WAIT_TIME		2000
 
 /////////////////////////
@@ -174,7 +175,7 @@ enum SCREENS
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2, FALL
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2, FALL, RESPAWN
 };
 
 /////////////

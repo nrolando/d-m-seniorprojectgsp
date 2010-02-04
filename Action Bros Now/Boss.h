@@ -34,6 +34,7 @@ public:
 	virtual void calcDrawRECT();
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
 	virtual void stun();
+	virtual void stun(int);
 	virtual void die() {};
 
 	
