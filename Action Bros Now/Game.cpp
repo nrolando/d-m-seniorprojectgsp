@@ -229,7 +229,8 @@ bool Game::update(clock_t ct)
 
 		//EntMgr->moveEnemies(ct);
 		//update camera
-		graphics->updateCamera(player->getDrawInfo());
+		if(player->getState() != RESPAWN)
+			graphics->updateCamera(player->getDrawInfo());
 
 		//RENDER :D we can put this inside if statements and check to see if anything has changed
 		//that way we dont render when not necessary
@@ -287,7 +288,7 @@ int Game::checkAttacks()
 						{
 							//play the hit sfx
 							//shorten the sfx
-							if(player->getState() == PUNCH || player->getState() == KICK)
+							//if(player->getState() == PUNCH || player->getState() == KICK)
 								soundManager::getInstance()->playSound("punch_kick_impact");
 
 							//take damage and check if dead
@@ -376,7 +377,8 @@ void Game::respawnPlayer()
 	player->setState(RESPAWN);
 	for(int i = 0; i < EntMgr->getVecSize(); ++i)
 	{
-		EntMgr->stunEnt(i, 1000);
+		if(EntMgr->getHealth(i) > 0)
+			EntMgr->stunEnt(i, 1000);
 	}
 	player->setHealth(MAXHEALTH);
 	player->setAlive(true);
@@ -478,8 +480,14 @@ void Game::splashScreen()
 	const int maxRow = 10;
 	const int height = 400;
 	const int width = 400;
+	int frameTime;
 
-	if(now - aniFStart >= ANIMATIONGAP)
+	if(splashRow == maxRow-1)
+		frameTime = 375;
+	else
+		frameTime = ANIMATIONGAP;
+
+	if(now - aniFStart >= frameTime)
 	{
 		if(splashCol < maxCol-1)
 			splashCol++;
