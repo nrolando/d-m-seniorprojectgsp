@@ -20,12 +20,10 @@ void Player::UpdateStat(int stat, int val)
 	{//dont change alive to false until death animation has finished, not currently being implemented,
 	//waiting for death animation
 		case 0:
-			if(health > 0)
-				health += val;
-			else
+			health += val;
+			if(health < 1)
 			{
 				health = 0;
-				alive = false;
 			}
 			break;
 		case 1:
@@ -484,7 +482,7 @@ int Player::UpdatePlayerState()
 			else
 			{
 				anim = 0;
-				state = IDLE;
+				state = RUN;
 			}
 
 			aniFStart = now;
@@ -539,6 +537,29 @@ int Player::UpdatePlayerState()
 			else
 				anim = 0;
 			aniFStart = now;
+		}
+		break;
+	case FALL:
+		if(anim == 6)
+		{
+
+		}
+		else
+		{
+			if(now - aniFStart >= MAXDEATHANIMATION)
+			{
+				if(health < 1)	//die
+				{
+					if(anim < MAXDEATHFRAME-1)
+						anim++;
+					else
+						alive = false;
+				}
+				else			//fall
+				{
+				}
+				aniFStart = now;
+			}
 		}
 	}
 
@@ -681,6 +702,10 @@ void Player::stun()
 
 void Player::die()
 {
+	state = FALL;
+	anim = 0;
+	this->setVel(D3DXVECTOR3(0.0f,0.0f,0.0f));
+	aniFStart = clock();
 }
 
 int Player::getDmg()
