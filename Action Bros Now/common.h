@@ -39,7 +39,7 @@
 /////////////////////
 
 //current number of player states in spritesheet for one direction
-#define NUM_STATES		8
+#define NUM_STATES		9
 //these are for animation and stun length
 #define STUNTIME		500
 
@@ -52,11 +52,15 @@
 #define MAXSTUNFRAME	1
 #define MAXCOMBO1FRAME	21
 #define MAXKICK2FRAME	7
+#define MAXDEATHFRAME	7
+#define MAXFALLFRAME	11
 
 //animation times
 #define MAXKICKANIMATION		50
 #define MAXPUNCHANIMATION		30
 #define MAXCOMBO1ANIMATION		60
+#define MAXDEATHANIMATION		100
+#define RESPAWN_WAIT_TIME		2000
 
 /////////////////////////
 //end animation defines//
@@ -77,7 +81,7 @@
 
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
-#define COMBO_TIME		1000
+#define COMBO_TIME		500
 #define NUM_COMBOS		3		//number of different combos in comboDefintion
 #define COMBO_HITS		4		//number of hits it takes to complete a combo
 
@@ -170,7 +174,7 @@ enum SCREENS
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2, FALL
 };
 
 /////////////

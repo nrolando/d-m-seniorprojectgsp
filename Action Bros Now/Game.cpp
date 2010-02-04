@@ -160,24 +160,25 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:
-
-		//gameplay!
-		//checks movement collision
-		//MIKE"S CHANGE: removed the static flags
-		if(actionPossible(input))
-		{
+		if(player->getState() != STUN && player->getState() != FALL)
 			player->DoAction(input);
-		}
-		else
+		if(!player->isAlive())
 		{
-			player->setState(IDLE);
-			player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			if(player->getLives() > 0)
+				this->respawnPlayer();
+			else
+			{
+				//gameover();
+			}
 		}
 
 		//check for collision (needs to be moved/adjusted)
-		hitEnemy = checkAttacks();
-		if(hitEnemy >= 0)
-			lastHitEnemy = hitEnemy;
+		if(player->getHealth() > 0 && player->isAlive())
+		{
+			hitEnemy = checkAttacks();
+			if(hitEnemy >= 0)
+				lastHitEnemy = hitEnemy;
+		}
 
 		//update player state, enemies state
 		player->UpdatePlayerState();
@@ -251,21 +252,6 @@ bool Game::update(clock_t ct)
 	return true;
 }
 
-bool Game::actionPossible(char input)
-{
-	eSprInfo psi = player->getDrawInfo();
-	//Code to check if player new position 
-	//is greater than the player's walking area
-	//or if the player has collided with something
-	if((input == 'u' || input == 'w'  || input == 'x') && psi.POS.y >= YLIMIT_TOP)
-		return false;
-	if((input == 'd' || input == 'y' || input == 'z') && psi.POS.y <= YLIMIT_BOTTOM)
-		return false;
-	if((input == 'l' || input == 'z' || input == 'x') && psi.POS.x <= -1500.0f)
-		return false;
-	return true;
-}
-
 int Game::checkAttacks()
 {
 	//index gets either the last enemy you hit, or the last enemy to hit you..return -1 if nothing
@@ -281,7 +267,7 @@ int Game::checkAttacks()
 	{
 		for(unsigned int i = 0; i < E.size(); ++i)
 		{
-			if(E[i]->isAlive() || E[i]->getHealth() < 1)
+			if(E[i]->isAlive() && E[i]->getHealth() > 0)
 			{
 				//get enemy's info
 				e_SprInfo = E[i]->getDrawInfo();
@@ -358,11 +344,16 @@ int Game::checkAttacks()
 								soundManager::getInstance()->playSound("sword_impact");
 							break;
 						};
-						player->UpdateStat(0, -(E[i]->getPower()));
 						//set last attack frame
 						E[i]->setLAF(E[i]->getAnimFrame());
-						player->setAnim(0);
-						player->stun();
+
+				//TAKE HEALTH FROM PLAYER AND STUN OR DIE
+						player->UpdateStat(0, -(E[i]->getPower()));
+						if(player->getHealth() < 1)
+							player->die();
+						else
+							player->stun();
+
 						index = i;		//last enemy that hit you
 					}
 				}
@@ -371,6 +362,11 @@ int Game::checkAttacks()
 
 	}
 	return index;
+}
+
+void Game::respawnPlayer()
+{
+	
 }
 
 int Game::titleScreen(char input)

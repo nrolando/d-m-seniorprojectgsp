@@ -73,25 +73,20 @@ void BaseGameEntity::move(clock_t TIME)
 	sprInfo.POS.y += vel.y*TIME;
 	sprInfo.POS.z += vel.z*TIME;
 
-	if(this->key != '0')
+	if(this->name != "Baek")
 	{
 		eSprInfo esi = this->getDrawInfo();
 		esi.POS.y -= (esi.height/2.0f);
 		//keep enemy within boundaries
 		if(esi.POS.y >= YLIMIT_TOP)
 		{
-			sprInfo.POS.y = YLIMIT_TOP;
+			sprInfo.POS.y = YLIMIT_TOP + (esi.height/2.0f);
 			vel.y = 0.0f;
 		}
 		if(esi.POS.y <= YLIMIT_BOTTOM)
 		{
-			sprInfo.POS.y = YLIMIT_BOTTOM;
+			sprInfo.POS.y = YLIMIT_BOTTOM + (esi.height/2.0f);
 			vel.y = 0.0f;
-		}
-		if(esi.POS.x <= -1500.0f)
-		{
-			sprInfo.POS.x = -1500.0f;
-			vel.x = 0.0f;
 		}
 	}
 	else
