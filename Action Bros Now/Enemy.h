@@ -22,7 +22,6 @@ private:
 	status_type status;
 protected:
 	State<Enemy, Player> *CurrentState;
-	bool miss;
 	
 	/* Attributes - power moved to BGE*/
 	int stat,val;
@@ -38,10 +37,11 @@ public:
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
 	virtual void stun();
 	virtual void stun(int);
+
 	int  getDistance(Enemy*,Player*);
+	int	 getDistance(Enemy*,RECT);
 
 	bool update();
-	bool missedAtk()		{ miss = !miss;}
 	void rotate()			{ faceRight = !faceRight; }
 	virtual void die();
 
@@ -49,7 +49,6 @@ public:
 	void setHealth(int hp) { health = hp;}
 	int  getHealth()       { return health;}
 	bool isRotated()	   { return faceRight;}
-	bool Missed()		   { return miss;}
 	bool MovementPossible(std::vector<BaseGameEntity*>);
 
 	/* Enemy State Updates */

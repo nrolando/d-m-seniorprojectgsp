@@ -29,7 +29,7 @@ private:
 
 	//if BGM is playing
 	bool BGMplaying;
-	char* currBGM;
+	char *currBGM,*prevBGM;
 
 	//the container
 	soundContainer sCont;

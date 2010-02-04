@@ -97,7 +97,7 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   1
+#define DEBUGMODE   0
 
 ///////////////////////
 //screen size defines//
@@ -111,10 +111,11 @@
 ///////////////////
 
 //Macros for Enemy and Bosses visual ranges
-#define RANGE_OFFSET 15.0f
+#define XRANGE_OFFSET 15.0f
+#define YRANGE_OFFSET 20.0f
 #define CHASE_RANGE  150
-#define ATTACK_RANGE 30
-#define AVOID_RANGE	 20
+#define ATTACK_RANGE 50
+#define AVOID_RANGE	 60
 #define PATROL_RANGE 50
 
 //Player Macros for player stat screen position//
@@ -187,7 +188,7 @@ enum PlayerStates
 /////////////////
 
 //bgm list
-static char* BGMlist[4] = {"Something for Windy","Days To Come (Instrumental)","Collarbone",};
+static char* BGMlist[7] = {"129","122","Collarbone","124","fire","movieprojector","thunder"};
 
 //predefined combo inputs for the inputmanager
 static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',	//uppercut combo

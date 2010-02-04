@@ -27,7 +27,12 @@ void Player::UpdateStat(int stat, int val)
 			}
 			break;
 		case 1:
-			special += val;
+			if(special >= -1 && special <= 100)
+				special += val;
+			else if(special > 100)
+				special = 100;
+			else if(special < 0)
+				special = -1;
 			break;
 		default:
 			printf("incorrect stat!\n");
@@ -381,18 +386,22 @@ void Player::DoAction(char input)
 /***********	NOTE    *********
 ~put "!=" any states we don't want player initiating combos during
 ********************************/
-		if(state != COMBO1)
+		if(special >= 50 && special > 0)
 		{
-			//the player stops to kick
-			vel.x = vel.y = vel.z = 0.0f;
-			anim = 0;
-			aniFStart = clock();
-			state = COMBO1;
-			lastAttFrame = -1;
-			//set hit frames
-			hitFrames[0] = 3;
-			hitFrames[1] = 11;
-			hitFrames[2] = 17;
+			if(state != COMBO1)
+			{
+				this->UpdateStat(1,-50);
+				//the player stops to kick
+				vel.x = vel.y = vel.z = 0.0f;
+				anim = 0;
+				aniFStart = clock();
+				state = COMBO1;
+				lastAttFrame = -1;
+				//set hit frames
+				hitFrames[0] = 3;
+				hitFrames[1] = 11;
+				hitFrames[2] = 17;
+			}
 		}
 	}
 	else

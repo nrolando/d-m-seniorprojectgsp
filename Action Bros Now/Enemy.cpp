@@ -63,12 +63,6 @@ void Enemy::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 		}
 		break;
 	case E_ATTACK1:
-		//Makes sure to face the character correctly when attacking
-		if(p->getPos().x < this->getPos().x && isRotated())
-			rotate();
-		else if(p->getPos().x > this->getPos().x && !isRotated())
-			rotate();
-
 		setHitFrames(2, -1, -1);
 		setPower(5);
 		if(now - aniFStart >= ANIMATIONGAP)
@@ -144,13 +138,13 @@ void Enemy::UpdateStat(int stat, int val)
 	switch(stat)
 	{
 		case 0:
-			if(health > 0)
-				health += val;
-			else
+			if(health <= 0)
 			{
 				health = 0;
 				alive = false;
 			}
+			else
+				health += val;
 			break;
 		default:
 			printf("Sorry incorrect stat addition");
@@ -275,15 +269,13 @@ bool Enemy::MovementPossible(std::vector<BaseGameEntity*> EMgr)
 		if(this != EMgr[i])
 		{
 			if (getDrawInfo().hitBox.top >= EMgr[i]->getDrawInfo().hitBox.bottom &&
-			getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top)
-			{return false;}
-			if (getDrawInfo().hitBox.left >= EMgr[i]->getDrawInfo().hitBox.left &&
+			getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top &&
+			getDrawInfo().hitBox.left >= EMgr[i]->getDrawInfo().hitBox.left &&
 			getDrawInfo().hitBox.left <= EMgr[i]->getDrawInfo().hitBox.right)
 			{return false;}
 			if (getDrawInfo().hitBox.right >= EMgr[i]->getDrawInfo().hitBox.left &&
-			getDrawInfo().hitBox.right <= EMgr[i]->getDrawInfo().hitBox.right)
-			{return false;}
-			if (getDrawInfo().hitBox.bottom <= EMgr[i]->getDrawInfo().hitBox.top &&
+			getDrawInfo().hitBox.right <= EMgr[i]->getDrawInfo().hitBox.right &&
+			getDrawInfo().hitBox.bottom <= EMgr[i]->getDrawInfo().hitBox.top &&
 			getDrawInfo().hitBox.bottom >= EMgr[i]->getDrawInfo().hitBox.bottom)
 			{return false;}
 		}
@@ -292,35 +284,23 @@ bool Enemy::MovementPossible(std::vector<BaseGameEntity*> EMgr)
 }
 void Enemy::AvoidEntity(Player* p,std::vector<BaseGameEntity*> EMgr)
 {
-	//for(unsigned int i= 0;i<EMgr.size();++i)
-	//{
-	//	//If the entity being checked is not itself, within sight range, and has not been tagged to stand still
-	//	if(this != EMgr[i] && getDistance(this,EMgr[i]->getPos()) < AVOID_RANGE /*&& !EMgr[i]->isTagged()*/)
-	//	{
-	//		//EMgr[i]->tag();
-	//		if(getPos().x+getDrawInfo().hitBox.right >= EMgr[i]->getPos().x){
-	//			vel.y = speed; 
-	//			vel.x = -speed;
-	//			vel.z = 0;}
-	//		if(getPos().x >= EMgr[i]->getPos().x+EMgr[i]->getDrawInfo().hitBox.right){
-	//			vel.y = -speed; 
-	//			vel.x = speed; 
-	//			vel.z = 0;}
-	//		if(getPos().y-getDrawInfo().hitBox.bottom <= EMgr[i]->getPos().y){
-	//			faceRight = true;
-	//			vel.x = speed; 
-	//			vel.y = -speed;
-	//			vel.z = 0;}
-	//		if(getPos().y >= EMgr[i]->getPos().y-EMgr[i]->getDrawInfo().hitBox.bottom){
-	//			faceRight = false;
-	//			vel.x = -speed;
-	//			vel.y = speed;
-	//			vel.z = 0;}
-	//	}
-		/*else if(getDistance(getPos(),EMgr[i]->getPos()) >= AVOID_RANGE/5 && EMgr[i]->isTagged() ||
-		!isAlive())
-		{EMgr[i]->untag();}*/
-	/*}*/
+	//Zeroes out everything since movement possible failed
+	//movement('n',p,EMgr);
+	for(unsigned int i= 0;i<EMgr.size();i++)
+	{
+		//If the entity being checked is not itself, within sight range, and has not been tagged to stand still
+		if(this != EMgr[i] && getDistance(this,EMgr[i]->getDrawInfo().hitBox) < AVOID_RANGE)
+		{
+			if(getDrawInfo().hitBox.right <= EMgr[i]->getDrawInfo().hitBox.right-5.0f)
+				vel.x = -speed;
+			if(getDrawInfo().hitBox.left >= EMgr[i]->getDrawInfo().hitBox.left+5.0f)
+				vel.x = speed;
+			if(getDrawInfo().hitBox.bottom >= EMgr[i]->getDrawInfo().hitBox.bottom-YRANGE_OFFSET)
+				vel.y = speed;
+			if(getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top+YRANGE_OFFSET)
+				vel.y = -speed;
+		}
+	}
 }
 void Enemy::movement(char dir,Player* p,std::vector<BaseGameEntity*> EMgr)
 {
@@ -330,30 +310,22 @@ void Enemy::movement(char dir,Player* p,std::vector<BaseGameEntity*> EMgr)
 		case 'l':
 			faceRight = false;
 			vel.x = -speed;
-			vel.y = vel.z = 0;
-
 			if(!MovementPossible(EMgr))
 				AvoidEntity(p,EMgr);
 			break;
 		case 'd':
 			vel.y = -speed;
-			vel.x = vel.z = 0;
-
 			if(!MovementPossible(EMgr))
 				AvoidEntity(p,EMgr);
 			break;
 		case 'r':
 			faceRight = true;
 			vel.x = speed;
-			vel.y = vel.z = 0;
-
 			if(!MovementPossible(EMgr))
 				AvoidEntity(p,EMgr);
 			break;
 		case 'u':
 			vel.y = speed; 
-			vel.x = vel.z = 0;
-
 			if(!MovementPossible(EMgr))
 				AvoidEntity(p,EMgr);
 			break;
@@ -394,6 +366,17 @@ int Enemy::getDistance(Enemy* e,Player* p)
 	pPos.y = float(p->getDrawInfo().hitBox.top);
 
 	double distance = sqrt(pow((ePos.x - pPos.x),2)+pow((ePos.y - pPos.y),2));
+	return int(distance);
+}
+int Enemy::getDistance(Enemy* e, RECT eMgr)
+{
+	D3DXVECTOR3 ePos,mgrPos;
+	ePos.x = float(e->getDrawInfo().hitBox.left);
+	ePos.y = float(e->getDrawInfo().hitBox.top);
+	mgrPos.x = float(eMgr.left);
+	mgrPos.y = float(eMgr.top);
+
+	double distance = sqrt(pow((ePos.x - mgrPos.x),2)+pow((ePos.y - mgrPos.y),2));
 	return int(distance);
 }
 void Enemy::die()

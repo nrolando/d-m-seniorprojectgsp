@@ -194,32 +194,20 @@ void Boss::movement(char dir)
 	{
 		case 'l':
 			faceRight = false;
-			if(this->getStatus() == SB_RUN)
-				vel.x = -SB_RUN_SPEED;
-			else
-				vel.x = -SB_WALK_SPEED;
+			vel.x = -speed;
 			vel.y = vel.z = 0;
 			break;
 		case 'd':
-			if(this->getStatus() == SB_RUN)
-				vel.y = -SB_RUN_SPEED;
-			else
-				vel.y = -SB_WALK_SPEED;
+			vel.y = -speed;
 			vel.x = vel.z = 0;
 			break;
 		case 'r':
 			faceRight = true;
-			if(this->getStatus() == SB_RUN)
-				vel.x = SB_RUN_SPEED;
-			else
-				vel.x = SB_WALK_SPEED;
+			vel.x = speed;
 			vel.y = vel.z = 0;
 			break;
 		case 'u':
-			if(this->getStatus() == SB_RUN)
-				vel.y = SB_RUN_SPEED; 
-			else
-				vel.y = SB_WALK_SPEED;
+			vel.y = speed;
 			vel.x = vel.z = 0;
 			break;
 		default:

@@ -2,5 +2,6 @@
 ./Screen Sprites/new.png#?
 ./Screen Sprites/Title.png#,
 ./Screen Sprites/brain sheet.jpg#>
+./Screen Sprites/LoadingAnimation.png#<
 ./Screen Sprites/Options.png#:
 ./Screen Sprites/Loading.png#;

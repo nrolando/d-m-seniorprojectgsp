@@ -741,6 +741,25 @@ void Graphics::drawSplash(int r, int c, int w, int h)
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey('>')->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 }
 
+void Graphics::drawLoadAnimation(int r, int c, int w, int h)
+{
+	//screen position
+	D3DXVECTOR3 l_pos;
+	RECT src;
+//note: 200 is half frame width/height
+	l_pos.x = SCREEN_WIDTH/2 - 200;
+	l_pos.y = SCREEN_HEIGHT/2 - 200;
+	l_pos.z = 0.9f;
+
+	src.left = c*w;
+	src.right = src.left+w;
+	src.top = r*h;
+	src.bottom = src.top+h;
+
+	//draw splash screen
+	gSprite->Draw(spriteContainer::getInstance()->getElemKey('<')->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
+}
+
 void Graphics::drawLoadScreen()
 {
 	//screen position
