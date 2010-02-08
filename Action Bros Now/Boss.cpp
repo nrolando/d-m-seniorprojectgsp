@@ -1,5 +1,5 @@
 #include "Boss.h"
-#include "Enemy.h"
+#include "Player.h"
 #include "EnemyOwnedStates.h"
 #include "BossOwnedStates.h"
 
@@ -36,6 +36,9 @@ void Boss::UpdateStat(int stat, int val)
 			break;
 		case 1:
 			special += val;
+			break;
+		case 2:
+			speed = float(val);
 			break;
 		default:
 			printf("Sorry incorrect stat addition");
@@ -107,12 +110,11 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			{
 				if(anim < SB_KICK_FRAME-1)
 				{
-					AnimFinished = false;
 					anim++;
 				}
 				else
 				{
-					AnimFinished = true;
+					lastAttFrame = -1;
 					anim = 0;
 				}
 
@@ -122,31 +124,13 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 		case SB_SLASH:
 			if(now - aniFStart >= SBSLASHANIMATION)
 			{
-				if(anim < SB_WALK_FRAME-1)
+				if(anim < SB_SLASH_FRAME-1)
 				{
-					AnimFinished = false;
 					anim++;
 				}
 				else
 				{
-					AnimFinished = true;
-					anim = 0;
-				}
-
-				aniFStart = now;
-			}
-			break;
-		case SB_STUN:
-			if(now - aniFStart >= GENERALANIMATION)
-			{
-				if(anim < SB_WALK_FRAME-1)
-				{
-					AnimFinished = false;
-					anim++;
-				}
-				else
-				{
-					AnimFinished = true;
+					lastAttFrame = -1;
 					anim = 0;
 				}
 
@@ -154,20 +138,35 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			}
 			break;
 		case SB_DIE:
-			if(now - aniFStart >= GENERALANIMATION)
+			if(this->getCurrHealth() == 0)
 			{
-				if(anim < SB_WALK_FRAME-1)
-					anim++;
-				else
-					anim = 0;
+				if(now - aniFStart >= GENERALANIMATION)
+				{
+					if(anim < SB_DEATH_FRAME-1)
+						anim++;
+					else
+						anim = 0;
 
-				aniFStart = now;
+					aniFStart = now;
+				}
+			}
+			else
+			{
+				if(now - aniFStart >= GENERALANIMATION)
+				{
+					if(anim < SB_STUN_FRAME-1)
+						anim++;
+					else
+						anim = 0;
+
+					aniFStart = now;
+				}
 			}
 			break;
 		case SB_TAUNT:
 			if(now - aniFStart >= GENERALANIMATION)
 			{
-				if(anim < SB_WALK_FRAME-1)
+				if(anim < SB_TAUNT_FRAME-1)
 				{
 					AnimFinished = false;
 					anim++;
@@ -180,9 +179,13 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 
 				aniFStart = now;
 			}
-			break;
-		
+			break;	
 	};
+
+	if(p->getDrawInfo().hitBox.left > this->getDrawInfo().hitBox.left)
+		faceRight = true;
+	else
+		faceRight = false;
 
 	calcDrawRECT();
 }
@@ -195,20 +198,20 @@ void Boss::movement(char dir)
 		case 'l':
 			faceRight = false;
 			vel.x = -speed;
-			vel.y = vel.z = 0;
+			//vel.y = vel.z = 0;
 			break;
 		case 'd':
 			vel.y = -speed;
-			vel.x = vel.z = 0;
+			//vel.x = vel.z = 0;
 			break;
 		case 'r':
 			faceRight = true;
 			vel.x = speed;
-			vel.y = vel.z = 0;
+			//vel.y = vel.z = 0;
 			break;
 		case 'u':
 			vel.y = speed;
-			vel.x = vel.z = 0;
+			//vel.x = vel.z = 0;
 			break;
 		default:
 			vel.x = vel.y = vel.z = 0;
@@ -222,7 +225,7 @@ void Boss::calcDrawRECT()
 
 	switch(this->key)
 	{
-	case SOLDIER1:
+	case SOLDIER_BOSS:
 		if(faceRight)
 			state_frame = state;
 		else
@@ -237,6 +240,33 @@ void Boss::calcDrawRECT()
 	sprInfo.drawRect.right = sprInfo.drawRect.left + sprInfo.width;
 	sprInfo.drawRect.top = state_frame * sprInfo.height;
 	sprInfo.drawRect.bottom = sprInfo.drawRect.top + sprInfo.height;
+
+	switch(this->key)
+	{
+		case SOLDIER_BOSS:
+			sprInfo.hitBox.top  = long(sprInfo.POS.y - 181);
+			sprInfo.hitBox.left = long(sprInfo.POS.x + 101);
+			sprInfo.hitBox.right = sprInfo.hitBox.left + 45;
+			sprInfo.hitBox.bottom  = sprInfo.hitBox.top - 75;
+			if(state == SB_KICK || state == SB_SLASH)
+			{
+				if(faceRight)
+				{
+					sprInfo.threatBox.top  = long(sprInfo.POS.y - 192);
+					sprInfo.threatBox.left = long(sprInfo.POS.x + 145);
+					sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
+					sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+				}
+				else
+				{
+					sprInfo.threatBox.top  = long(sprInfo.POS.y - 192);
+					sprInfo.threatBox.left = long(sprInfo.POS.x + 55);
+					sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
+					sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
+				}
+			}
+			break;
+	}
 }
 
 void Boss::stun()
@@ -255,4 +285,16 @@ void Boss::stun(int num)
 	stunStart = clock();
 	state = E_STUN;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
+int Boss::getDistance(Boss *b,Player *p)
+{
+	D3DXVECTOR2 bPos,pPos;
+	bPos.x = float(b->getDrawInfo().hitBox.left);
+	bPos.y = float(b->getDrawInfo().hitBox.top);
+	pPos.x = float(p->getDrawInfo().hitBox.left);
+	pPos.y = float(p->getDrawInfo().hitBox.top);
+
+	double distance = sqrt(pow((bPos.x - pPos.x),2)+pow((bPos.y - pPos.y),2));
+	return int(distance);
 }

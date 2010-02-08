@@ -93,11 +93,13 @@ public:
 	int				getAnimFrame()	{ return anim; }
 	int				getState()		{ return state; }
 	int				getLastAttFrame(){ return lastAttFrame;}
-	char			getKey()		{ return key; }		
+	char			getKey()		{ return key; }	
+	int				getCurrHealth()	{ return int(float(health)/float(maxHealth)*100);}
 
 	//set methods
 	void missedAtk()				{ miss = true;}
 	void resetAtk()					{ miss = false;}
+	bool isFacing()					{ return faceRight;}
 	bool isAlive()					{ return alive; }
 	bool Missed()					{ return miss;}
 	void setAlive(bool a)			{ alive = a; }
