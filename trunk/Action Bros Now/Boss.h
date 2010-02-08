@@ -25,7 +25,7 @@ public:
 	int getSpecial() {return special;}
 	int getMaxSpecial() {return maxSpecial;}
 	int getsPower() {return sPower;}
-	int getDistance(Boss*,Player*) {return 0;}
+	int getDistance(Boss*,Player*);
 	
 	bool isAlive();
 	bool isAnimFinished() {return AnimFinished;}

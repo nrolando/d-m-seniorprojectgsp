@@ -20,10 +20,20 @@ void Stationary::Enter(Boss *boss)
 
 void Stationary::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
+	if(boss->getDistance(boss,player) <= SB_SIGHT_RANGE && boss->getCurrHealth() >= 80)
 	{
 		boss->ChangeState(Aggressive::Instance());
 		printf("Player in Range Charge Him\n");
+	}
+	else if(boss->getCurrHealth() >= 50)
+	{
+		boss->ChangeState(Defensive::Instance());
+		printf("Boss: Less than 80percent switching to defensive mode");
+	}
+	else if(boss->getCurrHealth() >= 0)
+	{
+		boss->ChangeState(Beserk::Instance());
+		printf("Boss: Less than 50percent GOIN INSANE!!!");
 	}
 }
 
@@ -49,17 +59,13 @@ void Aggressive::Enter(Boss *boss)
 void Aggressive::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr)
 {
 	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
-	{
 		boss->ChangeState(Attacking::Instance());
-		boss->movement('n');
-	}
 	//Rush at the Player if within Range
-	else if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
-	boss->getDistance(boss,player) > SB_ATTACK_RANGE) 
+	else if(boss->getDistance(boss,player) >= SB_RUSH_RANGE && boss->getDistance(boss,player) > SB_ATTACK_RANGE) 
+	{
+		boss->UpdateStat(2,SB_RUN_SPEED);
 		boss->ChangeState(Rush::Instance());
-	else
-		boss->setStatus(SB_TAUNT);
-	printf("I am currently <50% Health!\n");
+	}
 }
 
 
@@ -78,22 +84,26 @@ Defensive* Defensive::Instance()
 
 void Defensive::Enter(Boss *boss)
 {
-	printf("<50% Health...\n");
+	printf("Entering Defensive state\n");
 }
 
 void Defensive::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getStatus() == EnemyDead)
+	if(player->getStatus() == KICK || player->getStatus() == PUNCH || player->getStatus() == COMBO1)
+		boss->ChangeState(Avoid::Instance());
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
 	{
-		printf("Player is dead...now Idleing....\n");
-		//boss->ChangeState(Idle::Instance());
+		if(boss->isFacing() && player->isFacing() ||
+		!boss->isFacing() && !player->isFacing())
+		{
+			boss->UpdateStat(2,SB_RUN_SPEED);
+			boss->ChangeState(Rush::Instance());
+		}
 	}
-	if(boss->getStatus() == InRange)
-	{
-		printf("Going for Attacking!\n");
-		//boss->ChangeState(Beserk::Instance());
-	}
-	printf("I am currently <50% Health!\n");
+	else if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
+		boss->ChangeState(Attacking::Instance());
+	else
+		boss->ChangeState(Avoid::Instance());
 }
 
 
@@ -112,22 +122,35 @@ Beserk* Beserk::Instance()
 
 void Beserk::Enter(Boss *boss)
 {
-	printf("<25% Health...\n");
+	printf("<25percent Health...\n");
 }
 
 void Beserk::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getStatus() == EnemyDead)
+	if(!boss->isAnimFinished() && !taunted)
+		boss->setStatus(SB_TAUNT);
+	else if(boss->getStatus() == SB_TAUNT && !taunted)
+		taunted = true;
+		
+	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
+		boss->ChangeState(Attacking::Instance());
+	if(player->getStatus() == KICK || player->getStatus() == PUNCH || player->getStatus() == COMBO1)
+		boss->ChangeState(Avoid::Instance());
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
 	{
-		printf("Enemy died from Attacking, returning to patrol....\n");
-		//boss->ChangeState(Idle::Instance());
+		if(boss->isFacing() && player->isFacing() ||
+		!boss->isFacing() && !player->isFacing())
+		{
+			boss->UpdateStat(2,SB_RUN_SPEED);
+			boss->ChangeState(Rush::Instance());
+		}
 	}
-
-	if(boss->getStatus() == WeakerThanEnemy)
+	else if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
+		boss->ChangeState(Attacking::Instance());
+	else
 	{
-		printf("WeakerThanPlayer, going crazy!!!!\n");
+		boss->ChangeState(Avoid::Instance());
 	}
-	printf("I am currently <25% Health!\n");
 }
 
 void Beserk::Exit(Boss *boss)
@@ -151,35 +174,52 @@ void Rush::Enter(Boss *boss)
 
 void Rush::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
 {
-	if(boss->getDistance(boss,player) < SB_ATTACK_RANGE)
-		boss->ChangeState(Attacking::Instance());
-	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
-	boss->getDistance(boss,player) > SB_ATTACK_RANGE)
+	boss->setStatus(SB_IDLE);
+	boss->movement('n');
+	boss->UpdateStat(2,SB_RUN_SPEED*1.4);
+	if(boss->getDistance(boss,player) < SB_ATTACK_RANGE-XRANGE_OFFSET)
 	{
-		if(boss->getPos().y > player->getPos().y+SB_RANGE_OFFSET)
-		{
-			boss->setStatus(SB_RUN);
-			boss->movement('d');
-		}
-		//Boss position less than [since coordinates are negative, below the player]
-		//the player's current position 
-		if(boss->getPos().y < player->getPos().y-player->getDrawInfo().hitBox.right) 
-		{
-			boss->setStatus(SB_RUN);
-			boss->movement('u');
-		}
-		if(boss->getPos().x > player->getPos().x+SB_RANGE_OFFSET)
-		{
-			boss->setStatus(SB_RUN);
-			boss->movement('l');
-		}
-		if(boss->getPos().x < player->getPos().x+SB_RANGE_OFFSET) 
-		{
-			boss->setStatus(SB_RUN);
-			boss->movement('r');
-		}
-		printf("Player in Range Charge Him\n");
+		boss->UpdateStat(2,SB_WALK_SPEED);
+		boss->ChangeState(Attacking::Instance());
 	}
+	if(player->getDrawInfo().hitBox.top <= boss->getDrawInfo().hitBox.top-YRANGE_OFFSET &&
+	boss->getDistance(boss,player) >= SB_ATTACK_RANGE)
+	{
+		boss->setStatus(SB_RUN);
+		boss->movement('d');
+	}
+	if(player->getDrawInfo().hitBox.bottom >= boss->getDrawInfo().hitBox.bottom+YRANGE_OFFSET &&
+	boss->getDistance(boss,player) >= SB_ATTACK_RANGE)
+	{
+		boss->setStatus(SB_RUN);
+		boss->movement('u');
+	}
+	if(player->getDrawInfo().hitBox.right-XRANGE_OFFSET <= boss->getDrawInfo().hitBox.left &&
+	boss->getDistance(boss,player) >= SB_ATTACK_RANGE)
+	{
+		boss->setStatus(SB_RUN);
+		boss->movement('l');
+	}
+	if(player->getDrawInfo().hitBox.left+XRANGE_OFFSET >= boss->getDrawInfo().hitBox.right &&
+	boss->getDistance(boss,player) >= SB_ATTACK_RANGE)
+	{
+		boss->setStatus(SB_RUN);
+		boss->movement('r');
+	}
+	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE)
+	{
+		if(player->getStatus() == STUN && boss->getLastAttFrame() == -1 || boss->Missed() && boss->getLastAttFrame() == -1)
+			++attacks;
+		if(attacks >= 1)
+		{
+			attacks = 0;
+			boss->ChangeState(Stationary::Instance());
+			boss->UpdateStat(2,SB_WALK_SPEED);
+		}
+		boss->setStatus(SB_SLASH);
+	}
+	if(boss->getDistance(boss,player) >= SB_RUSH_RANGE)
+		boss->ChangeState(Stationary::Instance());
 }
 
 
@@ -204,22 +244,92 @@ void Attacking::Enter(Boss *boss)
 void Attacking::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
 {
 	boss->movement('n');
-	if(boss->getStatus() == SB_RUN)
+	if(boss->getDistance(boss,player) >= SB_ATTACK_RANGE-XRANGE_OFFSET)
+		boss->ChangeState(Stationary::Instance());
+	if(player->getDrawInfo().hitBox.top <= boss->getDrawInfo().hitBox.top-YRANGE_OFFSET &&
+	boss->getDistance(boss,player) >= SB_ATTACK_RANGE)
 	{
-		boss->setStatus(SB_SLASH);
-		if(boss->isAnimFinished())
-			boss->ChangeState(Aggressive::Instance());
+		boss->setStatus(SB_RUN);
+		boss->movement('d');
 	}
-	else
+	if(player->getDrawInfo().hitBox.bottom >= boss->getDrawInfo().hitBox.bottom+YRANGE_OFFSET)
+	{
+		boss->setStatus(E_WALK);
+		boss->movement('u');
+	}
+	if(player->getDrawInfo().hitBox.right-XRANGE_OFFSET <= boss->getDrawInfo().hitBox.left)
+	{
+		boss->setStatus(E_WALK);
+		boss->movement('l');
+	}
+	if(player->getDrawInfo().hitBox.left+XRANGE_OFFSET >= boss->getDrawInfo().hitBox.right)
+	{
+		boss->setStatus(E_WALK);
+		boss->movement('r');
+	}
+	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE-XRANGE_OFFSET)
 	{
 		boss->setStatus(SB_KICK);
-		if(boss->isAnimFinished())
-			boss->ChangeState(Aggressive::Instance());
+		boss->movement('n');
 	}
-
 }
 
 void Attacking::Exit(Boss *boss)
 {
 	printf("Leaving Attacking State\n");
+}
+
+//-------------------------methods for Avoid-------------------------------//
+Avoid* Avoid::Instance()
+{
+  static Avoid instance;
+
+  return &instance;
+}
+
+void Avoid::Enter(Boss *boss)
+{
+	printf("Boss: Avoiding...\n");
+}
+
+void Avoid::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntMgr)
+{
+	boss->setStatus(SB_IDLE);
+	boss->movement('n');
+	boss->UpdateStat(2,SB_BACKUP_SPEED);
+	if(boss->getDistance(boss,player) <= SB_DEFENSE_RANGE)
+	{
+		if(boss->getDistance(boss,player) >= SB_ATTACK_RANGE-XRANGE_OFFSET)
+			boss->ChangeState(Stationary::Instance());
+		if(player->getDrawInfo().hitBox.top <= boss->getDrawInfo().hitBox.top-YRANGE_OFFSET)
+		{
+			boss->setStatus(SB_RUN);
+			boss->movement('u');
+		}
+		if(player->getDrawInfo().hitBox.bottom >= boss->getDrawInfo().hitBox.bottom+YRANGE_OFFSET)
+		{
+			boss->setStatus(SB_RUN);
+			boss->movement('d');
+		}
+		if(player->getDrawInfo().hitBox.right-XRANGE_OFFSET <= boss->getDrawInfo().hitBox.left)
+		{
+			boss->setStatus(SB_RUN);
+			boss->movement('r');
+		}
+		if(player->getDrawInfo().hitBox.left+XRANGE_OFFSET >= boss->getDrawInfo().hitBox.right)
+		{
+			boss->setStatus(SB_RUN);
+			boss->movement('l');
+		}
+	}
+	if(boss->getDistance(boss,player) >= SB_DEFENSE_RANGE)
+	{
+		boss->UpdateStat(2,SB_WALK_SPEED);
+		boss->ChangeState(Stationary::Instance());
+	}
+}
+
+void Avoid::Exit(Boss *boss)
+{
+	printf("Leaving Avoid State\n");
 }

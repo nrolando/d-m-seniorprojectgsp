@@ -57,7 +57,7 @@
 
 //animation times
 #define MAXKICKANIMATION		50
-#define MAXPUNCHANIMATION		30
+#define MAXPUNCHANIMATION		45
 #define MAXCOMBO1ANIMATION		60
 #define MAXDEATHANIMATION		100
 #define MAXRESPAWNANIMATION		200
@@ -97,7 +97,7 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   0
+#define DEBUGMODE   1
 
 ///////////////////////
 //screen size defines//
