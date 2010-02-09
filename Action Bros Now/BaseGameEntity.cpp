@@ -29,7 +29,7 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 		break;
 	case SOLDIER_BOSS:
 		maxHealth = 400;
-		health = 80;
+		health = 400;
 		speed = SB_RUN_SPEED;
 		break;
 	default:
