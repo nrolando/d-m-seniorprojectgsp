@@ -109,6 +109,8 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			}
 			break;
 		case SB_KICK:
+			setHitFrames(3, -1, -1);
+			setPower(5);
 			if(now - aniFStart >= SBKICKANIMATION)
 			{
 				if(anim < SB_KICK_FRAME-1)
@@ -125,6 +127,8 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			}
 			break;
 		case SB_SLASH:
+			setHitFrames(6, 7, 8);
+			setPower(3);
 			if(now - aniFStart >= SBSLASHANIMATION)
 			{
 				if(anim < SB_SLASH_FRAME-1)

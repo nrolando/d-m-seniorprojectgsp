@@ -28,8 +28,7 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 		speed = 2.0f;
 		break;
 	case SOLDIER_BOSS:
-		maxHealth = 400;
-		health = 400;
+		maxHealth = health = 100;;
 		speed = SB_RUN_SPEED;
 		special = maxSpecial = 150;
 		sPower = 50;
@@ -44,7 +43,7 @@ BaseGameEntity::BaseGameEntity(std::string n)
 {
 	//player position will be initiated in game:initGame
 	name = n;
-	maxHealth = health = 100;
+	maxHealth = health = 140;
 	state = anim = 0;
 	speed = 3.0f;
 	vel.x = 0.0f;
@@ -111,6 +110,11 @@ void BaseGameEntity::move(clock_t TIME)
 			if(sprInfo.POS.x <= -1500.0f)
 			{
 				sprInfo.POS.x = -1500.0f;
+				vel.x = 0.0f;
+			}
+			if(sprInfo.POS.x >= 1400.0f)
+			{
+				sprInfo.POS.x = 1400.0f;
 				vel.x = 0.0f;
 			}
 		}
