@@ -65,12 +65,12 @@ bool initWindow(HINSTANCE hInstance)
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= NULL;
-	wcex.lpszClassName	= "DirectXExample";
+	wcex.lpszClassName	= "Fury";
 	wcex.hIconSm		= 0;
 	RegisterClassEx(&wcex);
 
-	wndHandle = CreateWindow("DirectXExample", 
-							 "DirectXExample", 
+	wndHandle = CreateWindow("Fury", 
+							 "Fury", 
 							 WS_OVERLAPPEDWINDOW,
 							 CW_USEDEFAULT, 
 							 CW_USEDEFAULT, 

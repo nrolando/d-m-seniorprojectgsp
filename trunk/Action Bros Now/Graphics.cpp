@@ -15,7 +15,9 @@ Graphics::~Graphics()
 {
 	
 }
-
+///////////////////////////DirectX Fullscreen example//////////////////////
+/// http://www.directxtutorial.com/tutorial9/b-direct3dbasics/dx9B2.aspx //
+/////////////////////////////////////////////////////////////////////////
 bool Graphics::initD3D(HWND hwnd)
 {
 	//create direct3D object
