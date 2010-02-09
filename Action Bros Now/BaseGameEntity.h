@@ -28,6 +28,8 @@ private:
 protected:
 	//stat variables
 	int health,maxHealth;
+	//variables for the boss and player to be accessed by game
+	int maxSpecial,special,sPower;
 	//power for Enemy class
 	int power;
 	char key;
@@ -95,6 +97,11 @@ public:
 	int				getLastAttFrame(){ return lastAttFrame;}
 	char			getKey()		{ return key; }	
 	int				getCurrHealth()	{ return int(float(health)/float(maxHealth)*100);}
+
+	/*for the boss, quick and dirty*/
+	int getSpecial() {return special;}
+	int getMaxSpecial() {return maxSpecial;}
+	int getsPower() {return sPower;}
 
 	//set methods
 	void missedAtk()				{ miss = true;}

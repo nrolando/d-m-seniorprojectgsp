@@ -31,6 +31,8 @@ BaseGameEntity::BaseGameEntity(int ID, char _key, D3DXVECTOR3 pos, spriteSheet *
 		maxHealth = 400;
 		health = 400;
 		speed = SB_RUN_SPEED;
+		special = maxSpecial = 150;
+		sPower = 50;
 		break;
 	default:
 		maxHealth = health = 100;

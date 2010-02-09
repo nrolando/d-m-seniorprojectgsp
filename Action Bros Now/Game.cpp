@@ -240,8 +240,14 @@ bool Game::update(clock_t ct)
 		if(DEBUGMODE)
 			display_time(ct, 50);
 
+		//*******DISPLAY HUD*******
 		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		//graphics->DisplayBossStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
+		//display Boss health
+		if(EntMgr->getStateByKey('B') != SB_IDLE  && EntMgr->getStateByKey('B') >= 0)
+			graphics->DisplayBossStat(EntMgr->getHealthByKey('B'), EntMgr->getMaxHealthByKey('B'), EntMgr->getSpecialByKey('B'), EntMgr->getMaxHealthByKey('B'));
+		if(EntMgr->getStateByKey('b') != SB_IDLE  && EntMgr->getStateByKey('b') >= 0)
+			graphics->DisplayBossStat(EntMgr->getHealthByKey('b'), EntMgr->getMaxHealthByKey('b'), EntMgr->getSpecialByKey('b'), EntMgr->getMaxHealthByKey('b'));
+		//display enemy health
 		if(!EntMgr->isVectorEmpty() && lastHitEnemy >= 0)
 		{
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());

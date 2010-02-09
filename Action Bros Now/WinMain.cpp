@@ -105,6 +105,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		};
 		break;
 	case WM_ACTIVATE:
+		game->activateInput();
 		switch(wParam)
 		{
 		case WA_INACTIVE:

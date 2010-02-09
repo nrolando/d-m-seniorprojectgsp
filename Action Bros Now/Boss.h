@@ -14,7 +14,6 @@ class Boss : public BaseGameEntity
 {
 private:
 	State<Boss, Player> *CurrentState;
-	int health,maxSpecial,special,sPower;
 	bool AnimFinished;
 public:
 
@@ -22,9 +21,6 @@ public:
 	Boss(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr);
 	~Boss() {}
 
-	int getSpecial() {return special;}
-	int getMaxSpecial() {return maxSpecial;}
-	int getsPower() {return sPower;}
 	int getDistance(Boss*,Player*);
 	
 	bool isAlive();
@@ -35,7 +31,7 @@ public:
 	virtual void UpdateState(Player*,std::vector<BaseGameEntity*>);
 	virtual void stun();
 	virtual void stun(int);
-	virtual void die() {};
+	virtual void die();
 
 	
 	void ChangeState(State<Boss, Player>* pNewState);

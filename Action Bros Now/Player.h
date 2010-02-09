@@ -11,7 +11,7 @@ class Player : public BaseGameEntity
 {
 private:
 	//character attributes
-	int special, maxSpecial, lives;
+	int lives;
 	int score;
 	bool stunned;
 public:
