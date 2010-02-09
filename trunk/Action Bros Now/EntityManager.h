@@ -37,6 +37,11 @@ public:
 
 	bool isVectorEmpty()	{ return entityVector.empty();}
 	int getVecSize()		{ return entityVector.size(); }
+	int getStateByKey(char);
+	int getHealthByKey(char);
+	int getMaxHealthByKey(char);
+	int getSpecialByKey(char);
+	int getMaxSpecialByKey(char);
 
 	void stunEnt(int i, int a)		{ entityVector[i]->stun(a); }
 	int getHealth(int i)			{ return entityVector[i]->getHealth(); }

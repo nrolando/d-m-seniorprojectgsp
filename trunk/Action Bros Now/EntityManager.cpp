@@ -97,3 +97,63 @@ bool EntityManager::update()
 	*/
 	return true;
 }
+
+int EntityManager::getStateByKey(char k)
+{
+	for(int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->getKey() == k)
+		{
+			return entityVector[i]->getState();
+		}
+	}
+	return -1;
+}
+
+int EntityManager::getHealthByKey(char k)
+{
+	for(int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->getKey() == k)
+		{
+			return entityVector[i]->getHealth();
+		}
+	}
+	return -1;
+}
+
+int EntityManager::getMaxHealthByKey(char k)
+{
+	for(int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->getKey() == k)
+		{
+			return entityVector[i]->getMaxHealth();
+		}
+	}
+	return -1;
+}
+
+int EntityManager::getSpecialByKey(char k)
+{
+	for(int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->getKey() == k)
+		{
+			return entityVector[i]->getSpecial();
+		}
+	}
+	return -1;
+}
+
+int EntityManager::getMaxSpecialByKey(char k)
+{
+	for(int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->getKey() == k)
+		{
+			return entityVector[i]->getMaxSpecial();
+		}
+	}
+	return -1;
+}

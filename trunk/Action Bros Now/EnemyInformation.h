@@ -9,6 +9,7 @@ enum ENEMY_STATES
 #define SOLDIER1				'1'
 #define SOLDIER_BOSS			'B'
 #define SOLDIER1STATES			 7
+#define SOLDIERBOSSSTATES		 7
 
 #define SOLDIER1_AVOID_RANGE	80
 

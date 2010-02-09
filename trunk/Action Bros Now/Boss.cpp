@@ -10,8 +10,6 @@ Boss::Boss(int ID):BaseGameEntity(ID)
 Boss::Boss(int ID, char KEY, D3DXVECTOR3 pos, spriteSheet *ptr)
 			:BaseGameEntity(ID, KEY, pos, ptr), CurrentState(Stationary::Instance())
 {
-	special = maxSpecial = 150;
-	sPower = 50;
 	AnimFinished = true;
 }
 
@@ -33,6 +31,11 @@ void Boss::UpdateStat(int stat, int val)
 	{
 		case 0:
 			health += val;
+			if(health <= 0)
+			{
+				alive = false;
+				health = 0;
+			}
 			break;
 		case 1:
 			special += val;
@@ -145,7 +148,7 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 					if(anim < SB_DEATH_FRAME-1)
 						anim++;
 					else
-						anim = 0;
+						alive = false;
 
 					aniFStart = now;
 				}
@@ -229,7 +232,7 @@ void Boss::calcDrawRECT()
 		if(faceRight)
 			state_frame = state;
 		else
-			state_frame = state + SOLDIER1STATES;
+			state_frame = state + SOLDIERBOSSSTATES;
 		break;
 	default:
 		state_frame = state;
@@ -274,7 +277,7 @@ void Boss::stun()
 	//min + rand() % max - min + 1
 	stunTime = 200 + rand() % 301;
 	stunStart = clock();
-	state = E_STUN;
+	state = SB_DIE;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
@@ -283,7 +286,16 @@ void Boss::stun(int num)
 	//min + rand() % max - min + 1
 	stunTime = (200 + rand() % 301) + num;
 	stunStart = clock();
-	state = E_STUN;
+	state = SB_DIE;
+	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+}
+
+void Boss::die()
+{
+//note the alive variable doesn't get set until animation is over, then enemy gets deleted in EntMgr->update()
+	state = SB_DIE;
+	anim = 0;
+	aniFStart = clock();
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
