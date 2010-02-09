@@ -171,7 +171,18 @@ bool Game::update(clock_t ct)
 				this->respawnPlayer();
 			else
 			{
-				//gameover();
+				level->setProg(0);
+				if(!graphics->loadSplashTitle())
+					return false;
+				lastLvl = -1;
+				screen = 1;
+				currentScreen = TITLE;
+				if(soundManager::getInstance()->isBGMplaying())
+					soundManager::getInstance()->stopSound();
+				return true;
+				if(soundManager::getInstance()->isBGMplaying())
+					soundManager::getInstance()->stopSound();
+				return true;
 			}
 		}
 
@@ -249,12 +260,16 @@ bool Game::update(clock_t ct)
 		//*******DISPLAY HUD*******
 		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
 		//display Boss health
-		if(EntMgr->getStateByKey('B') != SB_IDLE  && EntMgr->getStateByKey('B') >= 0)
-			graphics->DisplayBossStat(EntMgr->getHealthByKey('B'), EntMgr->getMaxHealthByKey('B'), EntMgr->getSpecialByKey('B'), EntMgr->getMaxHealthByKey('B'));
-		if(EntMgr->getStateByKey('b') != SB_IDLE  && EntMgr->getStateByKey('b') >= 0)
-			graphics->DisplayBossStat(EntMgr->getHealthByKey('b'), EntMgr->getMaxHealthByKey('b'), EntMgr->getSpecialByKey('b'), EntMgr->getMaxHealthByKey('b'));
+		if(EntMgr->getStateByKey('B') != SB_IDLE)
+			BAggression = 1;
+		if(EntMgr->getStateByKey('b') != SB_IDLE)
+			bAggression = 1;
+		if(BAggression == 1)
+			graphics->DisplayBossStat(EntMgr->getHealthByKey('B'), EntMgr->getMaxHealthByKey('B'), EntMgr->getSpecialByKey('B'), EntMgr->getMaxSpecialByKey('B'));
+		if(bAggression == 1)
+			graphics->DisplayBossStat(EntMgr->getHealthByKey('b'), EntMgr->getMaxHealthByKey('b'), EntMgr->getSpecialByKey('b'), EntMgr->getMaxSpecialByKey('b'));
 		//display enemy health
-		if(!EntMgr->isVectorEmpty() && lastHitEnemy >= 0)
+		if(!EntMgr->isVectorEmpty() && lastHitEnemy >= 0 && EntMgr->getEntVec(lastHitEnemy)->getKey() != 'B' && EntMgr->getEntVec(lastHitEnemy)->getKey() != 'b')
 		{
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}

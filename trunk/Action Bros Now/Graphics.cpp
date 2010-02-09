@@ -306,7 +306,7 @@ void Graphics::DisplayBossStat(int currhealth,int maxhealth,int currspecial,int 
 
 		special.top = 0;
 		special.left = 0;
-		special.right = long(special.left + ((float)currspecial/(float)maxspecial *  + sMeter.Width));
+		special.right = long(special.left + ((float)currspecial/(float)maxspecial * sMeter.Width));
 		special.bottom = special.top + sMeter.Height;
 
 		gSprite->Draw(spriteContainer::getInstance()->getElemKey('b')->gTexture, &healthBar, NULL, &hBarPos, 0xFFFFFFFF);

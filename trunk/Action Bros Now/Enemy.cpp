@@ -231,15 +231,15 @@ bool Enemy::MovementPossible(std::vector<BaseGameEntity*> EMgr)
 	{
 		if(this != EMgr[i])
 		{
-			if (getDrawInfo().hitBox.top >= EMgr[i]->getDrawInfo().hitBox.bottom &&
-			getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top &&
-			getDrawInfo().hitBox.left >= EMgr[i]->getDrawInfo().hitBox.left &&
-			getDrawInfo().hitBox.left <= EMgr[i]->getDrawInfo().hitBox.right)
+			if (getDrawInfo().hitBox.top >= EMgr[i]->getDrawInfo().hitBox.bottom-20 &&
+			getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top+20 &&
+			getDrawInfo().hitBox.left >= EMgr[i]->getDrawInfo().hitBox.left+20 &&
+			getDrawInfo().hitBox.left <= EMgr[i]->getDrawInfo().hitBox.right-20)
 			{return false;}
-			if (getDrawInfo().hitBox.right >= EMgr[i]->getDrawInfo().hitBox.left &&
-			getDrawInfo().hitBox.right <= EMgr[i]->getDrawInfo().hitBox.right &&
-			getDrawInfo().hitBox.bottom <= EMgr[i]->getDrawInfo().hitBox.top &&
-			getDrawInfo().hitBox.bottom >= EMgr[i]->getDrawInfo().hitBox.bottom)
+			if (getDrawInfo().hitBox.right >= EMgr[i]->getDrawInfo().hitBox.left+20 &&
+			getDrawInfo().hitBox.right <= EMgr[i]->getDrawInfo().hitBox.right-20 &&
+			getDrawInfo().hitBox.bottom <= EMgr[i]->getDrawInfo().hitBox.top+20 &&
+			getDrawInfo().hitBox.bottom >= EMgr[i]->getDrawInfo().hitBox.bottom-20)
 			{return false;}
 		}
 	}
