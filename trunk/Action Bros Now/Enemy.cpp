@@ -229,7 +229,7 @@ bool Enemy::MovementPossible(std::vector<BaseGameEntity*> EMgr)
 {
 	for(unsigned int i=0;i<EMgr.size();++i)
 	{
-		if(this != EMgr[i])
+		if(this != EMgr[i] && EMgr[i]->isAlive())
 		{
 			if (getDrawInfo().hitBox.top >= EMgr[i]->getDrawInfo().hitBox.bottom-20 &&
 			getDrawInfo().hitBox.top <= EMgr[i]->getDrawInfo().hitBox.top+20 &&

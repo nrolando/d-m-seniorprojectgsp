@@ -97,7 +97,7 @@
 //and player hitboxes will be //
 //		   displayed		  //
 ////////////////////////////////
-#define DEBUGMODE   1
+#define DEBUGMODE   0
 
 ///////////////////////
 //screen size defines//
