@@ -117,7 +117,7 @@ public:
 	void setVel(D3DXVECTOR3 v)		{ vel = v; }
 	void setSrc(RECT rect)			{ sprInfo.drawRect = rect; }
 	void setSSPtr(spriteSheet *p)   { sprInfo.ss_ptr = p; }
-	void setStatus(int s)			{ state = s;}
+	void setStatus(int s)			{ state = s;}//if(state != s){state=s; anim = 0;}}
 	void resetHitFrames()			{ hitFrames[0] = hitFrames[1] = hitFrames[2] = 0;}
 	void setLAF(int f)				{ lastAttFrame = f; }
 	void setAnim(int a)				{ anim = a; }

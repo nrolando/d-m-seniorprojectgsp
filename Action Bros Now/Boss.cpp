@@ -51,7 +51,8 @@ void Boss::UpdateStat(int stat, int val)
 
 void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 {
-	CurrentState->Execute(this,p,e);
+	if(state != SB_DIE)
+		CurrentState->Execute(this,p,e);
 
 	//temp code: IM USING STATE/ANIM FROM BGE FOR RIGHT NOW.
 	clock_t now = clock();
@@ -159,7 +160,15 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			}
 			else
 			{
-				if(now - aniFStart >= GENERALANIMATION)
+				//if has been long enough
+				if(now - stunStart >= stunTime)
+				{
+					//switch to first frame of idle state
+					state = SB_IDLE;
+					anim = 0;
+					aniFStart = now;
+				}
+				else if(now - aniFStart >= GENERALANIMATION)
 				{
 					if(anim < SB_STUN_FRAME-1)
 						anim++;
@@ -279,7 +288,7 @@ void Boss::calcDrawRECT()
 void Boss::stun()
 {
 	//min + rand() % max - min + 1
-	stunTime = 200 + rand() % 301;
+	stunTime = 50 + rand() % 101;
 	stunStart = clock();
 	state = SB_DIE;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));

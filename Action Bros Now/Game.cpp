@@ -369,13 +369,12 @@ int Game::checkAttacks()
 						{
 								//play the sword sfx
 							//need to shorten the sound
-							switch(E[i]->getKey())
-							{
-							case SOLDIER1:
-								if(E[i]->getState() == E_ATTACK1)
-									soundManager::getInstance()->playSound("sword_impact");
-								break;
-							};
+							
+							if(E[i]->getState() == SB_KICK)
+								soundManager::getInstance()->playSound("punch_kick_impact");
+							else if(E[i]->getState() == SB_SLASH)
+								soundManager::getInstance()->playSound("sword_impact");
+			
 							//set last attack frame
 							E[i]->setLAF(E[i]->getAnimFrame());
 
