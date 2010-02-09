@@ -23,13 +23,13 @@ enum ENEMY_STATES
 #define SBIDLEANIMATION	    80
 #define	SBWALKANIMATION     40
 #define SBRUNANIMATION		40
-#define SBKICKANIMATION		40
-#define SBSLASHANIMATION    60
+#define SBKICKANIMATION		80
+#define SBSLASHANIMATION    70
 
 #define SB_IDLE_FRAME		4
 #define SB_WALK_FRAME		12
 #define SB_RUN_FRAME		12
-#define SB_KICK_FRAME		8
+#define SB_KICK_FRAME		7
 #define SB_SLASH_FRAME		11
 #define SB_STUN_FRAME		2
 #define SB_DEATH_FRAME		8
@@ -42,6 +42,7 @@ enum ENEMY_STATES
 //State and combat
 #define SBTOTALSTATES		8
 
+#define SB_DEPTH_RANGE		25
 #define SB_SIGHT_RANGE		300
 #define SB_ATTACK_RANGE		80
 #define SB_RUSH_RANGE		200

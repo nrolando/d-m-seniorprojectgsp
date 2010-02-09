@@ -124,6 +124,7 @@ bool Game::update(clock_t ct)
 	char input = '\0';
 	static int num = -1;
 	bool newGame = true;
+	int numdead = 0;
 
 	//get user input
 	inputMan->setInput();
@@ -192,6 +193,11 @@ bool Game::update(clock_t ct)
 		player->move(ct);
 		for(int i = 0; i<EntMgr->getVecSize();++i)
 			EntMgr->getEntVec(i)->move(ct);
+		for(int i=0;i<EntMgr->getVecSize();++i)
+		{
+			if(!EntMgr->getEntVec(i)->isAlive())
+				++numdead;
+		}
 
 		//MIKE"S CHANGE: MOVED THE LEVEL END CHECK HERE
 		//checks if player beat the level
@@ -212,7 +218,7 @@ bool Game::update(clock_t ct)
 					soundManager::getInstance()->stopSound();
 				return true;
 			}
-			else
+			else if(numdead == EntMgr->getVecSize())
 			{
 				/*automatically move player off level and initiate transmission to next level
 				if the player is moving into a whole new level, maybe a score calculation will take place
@@ -342,34 +348,64 @@ int Game::checkAttacks()
 					distance = int((e_SprInfo.POS.y - (e_SprInfo.height/2.0f)) - pSprInfo.POS.y);
 					if(distance < 0)
 						distance *= -1;	//get absolute value
-					if(distance < depthRange)
+					if(E[i]->getKey() == 'B')
 					{
-						//play the sword sfx
-						//need to shorten the sound
-						switch(E[i]->getKey())
+						if(distance < SB_DEPTH_RANGE)
 						{
-						case SOLDIER1:
-							if(E[i]->getState() == E_ATTACK1)
-								soundManager::getInstance()->playSound("sword_impact");
-							break;
-						};
-						//set last attack frame
-						E[i]->setLAF(E[i]->getAnimFrame());
+								//play the sword sfx
+							//need to shorten the sound
+							switch(E[i]->getKey())
+							{
+							case SOLDIER1:
+								if(E[i]->getState() == E_ATTACK1)
+									soundManager::getInstance()->playSound("sword_impact");
+								break;
+							};
+							//set last attack frame
+							E[i]->setLAF(E[i]->getAnimFrame());
 
-				//TAKE HEALTH FROM PLAYER AND STUN OR DIE
-						player->UpdateStat(0, -(E[i]->getPower()));
-						player->UpdateStat(1, E[i]->getPower());
-						if(player->getHealth() < 1)
-							player->die();
-						else
-							player->stun();
+							//TAKE HEALTH FROM PLAYER AND STUN OR DIE
+							player->UpdateStat(0, -(E[i]->getPower()));
+							player->UpdateStat(1, E[i]->getPower());
+							if(player->getHealth() < 1)
+								player->die();
+							else
+								player->stun();
 
-						index = i;		//last enemy that hit you
+							index = i;		//last enemy that hit you
+						}
 					}
 					else
-						E[i]->missedAtk();
+					{
+						if(distance < depthRange)
+						{
+							//play the sword sfx
+							//need to shorten the sound
+							switch(E[i]->getKey())
+							{
+							case SOLDIER1:
+								if(E[i]->getState() == E_ATTACK1)
+									soundManager::getInstance()->playSound("sword_impact");
+								break;
+							};
+							//set last attack frame
+							E[i]->setLAF(E[i]->getAnimFrame());
+
+					//TAKE HEALTH FROM PLAYER AND STUN OR DIE
+							player->UpdateStat(0, -(E[i]->getPower()));
+							player->UpdateStat(1, E[i]->getPower());
+							if(player->getHealth() < 1)
+								player->die();
+							else
+								player->stun();
+
+							index = i;		//last enemy that hit you
+						}
+					} //else do enemy depth collision
 				}
 			}
+			else
+			{E[i]->missedAtk();}
 		}
 
 	}
@@ -450,7 +486,6 @@ int Game::titleScreen(char input)
 		}
 		break;
 	};
-
 //draw screen
 	graphics->BeginRender();
 	switch(currentScreen)

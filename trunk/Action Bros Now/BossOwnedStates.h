@@ -83,7 +83,8 @@ public:
 class Attacking : public State<Boss,Player>
 {
 private:
-	Attacking() {}
+	int attacks;
+	Attacking() {attacks = 0;}
 
 	//copy ctor and assignment should be private
 	Attacking(const Attacking&);

@@ -164,12 +164,6 @@ void Enemy::calcDrawRECT()
 		else
 			state_frame = state + SOLDIER1STATES;
 		break;
-	case SOLDIER_BOSS:
-		if(faceRight)
-			state_frame = state;
-		else
-			state_frame = state + SBTOTALSTATES;
-		break;
 	default:
 		state_frame = state;
 	};
@@ -188,12 +182,6 @@ void Enemy::calcDrawRECT()
 		sprInfo.hitBox.left = long(sprInfo.POS.x + 102);
 		sprInfo.hitBox.right = sprInfo.hitBox.left + 48;
 		sprInfo.hitBox.bottom  = sprInfo.hitBox.top - 86;
-		break;
-	case SOLDIER_BOSS:
-		sprInfo.hitBox.top  = long(sprInfo.POS.y - 181);
-		sprInfo.hitBox.left = long(sprInfo.POS.x + 101);
-		sprInfo.hitBox.right = sprInfo.hitBox.left + 45;
-		sprInfo.hitBox.bottom  = sprInfo.hitBox.top - 75;
 		break;
 	default:
 		break;
@@ -232,31 +220,6 @@ void Enemy::calcDrawRECT()
 			sprInfo.threatBox.bottom = -8880;
 		}
 		break;
-	case SOLDIER_BOSS:
-		if(state == E_ATTACK1)
-		{
-			if(faceRight)
-			{
-				sprInfo.threatBox.top  = long(sprInfo.POS.y - 192);
-				sprInfo.threatBox.left = long(sprInfo.POS.x + 145);
-				sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
-				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
-			}
-			else
-			{
-				sprInfo.threatBox.top  = long(sprInfo.POS.y - 192);
-				sprInfo.threatBox.left = long(sprInfo.POS.x + 55);
-				sprInfo.threatBox.right = sprInfo.threatBox.left + 56;
-				sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 21;
-			}
-		}
-		else
-		{	//make threatbox off world
-			sprInfo.threatBox.top  = -8880;
-			sprInfo.threatBox.left = -8880;
-			sprInfo.threatBox.right = -8880;
-			sprInfo.threatBox.bottom = -8880;
-		}
 	default:
 		break;
 	};
