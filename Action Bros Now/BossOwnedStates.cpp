@@ -99,7 +99,8 @@ void Defensive::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> 
 {
 	if(player->getStatus() == KICK || player->getStatus() == PUNCH || player->getStatus() == COMBO1)
 		boss->ChangeState(Avoid::Instance());
-	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
+		boss->getDistance(boss,player) > SB_ATTACK_RANGE)
 	{
 		if(boss->isFacing() && player->isFacing() ||
 		!boss->isFacing() && !player->isFacing())
@@ -144,7 +145,8 @@ void Beserk::Execute(Boss* boss, Player* player,std::vector<BaseGameEntity*> Ent
 		boss->ChangeState(Attacking::Instance());
 	if(player->getStatus() == KICK || player->getStatus() == PUNCH || player->getStatus() == COMBO1)
 		boss->ChangeState(Avoid::Instance());
-	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE)
+	if(boss->getDistance(boss,player) <= SB_RUSH_RANGE &&
+		boss->getDistance(boss,player) > SB_ATTACK_RANGE)
 	{
 		if(boss->isFacing() && player->isFacing() ||
 		!boss->isFacing() && !player->isFacing())
@@ -185,7 +187,7 @@ void Rush::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*> EntM
 	boss->setStatus(SB_IDLE);
 	boss->movement('n');
 	boss->UpdateStat(2,SB_RUN_SPEED*1.4);
-	if(boss->getDistance(boss,player) < SB_ATTACK_RANGE-XRANGE_OFFSET)
+	if(boss->getDistance(boss,player) < SB_ATTACK_RANGE-40.0f)
 	{
 		boss->UpdateStat(2,SB_WALK_SPEED);
 		boss->ChangeState(Attacking::Instance());
@@ -275,7 +277,7 @@ void Attacking::Execute(Boss* boss, Player* player, std::vector<BaseGameEntity*>
 		boss->setStatus(SB_WALK);
 		boss->movement('r');
 	}
-	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE-XRANGE_OFFSET)
+	if(boss->getDistance(boss,player) <= SB_ATTACK_RANGE-40.0f)
 	{
 		if(boss->Missed() && boss->getLastAttFrame() == -1)
 			++attacks;

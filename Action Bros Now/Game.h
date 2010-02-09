@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "inputManager.h"
 #include "inputManager2.h"
+#include "BossOwnedStates.h"
 #include "Level.h"
 #include "soundManager.h"
 #include <windows.h>
@@ -34,6 +35,7 @@ private:
 	//Entities
 	Player* player;
 	EntityManager *EntMgr;
+	int bAggression, BAggression;
 
 	//used to display enemy health bar
 	int hitEnemy;

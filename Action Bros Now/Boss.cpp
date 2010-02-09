@@ -145,7 +145,7 @@ void Boss::UpdateState(Player *p,std::vector<BaseGameEntity*> e)
 			}
 			break;
 		case SB_DIE:
-			if(this->getCurrHealth() == 0)
+			if(this->getCurrHealth() <= 0)
 			{
 				if(now - aniFStart >= GENERALANIMATION)
 				{
@@ -300,6 +300,7 @@ void Boss::die()
 	state = SB_DIE;
 	anim = 0;
 	aniFStart = clock();
+	alive = false;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 

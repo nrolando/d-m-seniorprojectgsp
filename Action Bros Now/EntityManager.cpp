@@ -100,19 +100,19 @@ bool EntityManager::update()
 
 int EntityManager::getStateByKey(char k)
 {
-	for(int i = 0; i < entityVector.size(); ++i)
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
 	{
 		if(entityVector[i]->getKey() == k)
 		{
 			return entityVector[i]->getState();
 		}
 	}
-	return -1;
+	return 0;
 }
 
 int EntityManager::getHealthByKey(char k)
 {
-	for(int i = 0; i < entityVector.size(); ++i)
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
 	{
 		if(entityVector[i]->getKey() == k)
 		{
@@ -124,7 +124,7 @@ int EntityManager::getHealthByKey(char k)
 
 int EntityManager::getMaxHealthByKey(char k)
 {
-	for(int i = 0; i < entityVector.size(); ++i)
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
 	{
 		if(entityVector[i]->getKey() == k)
 		{
@@ -136,7 +136,7 @@ int EntityManager::getMaxHealthByKey(char k)
 
 int EntityManager::getSpecialByKey(char k)
 {
-	for(int i = 0; i < entityVector.size(); ++i)
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
 	{
 		if(entityVector[i]->getKey() == k)
 		{
@@ -148,7 +148,7 @@ int EntityManager::getSpecialByKey(char k)
 
 int EntityManager::getMaxSpecialByKey(char k)
 {
-	for(int i = 0; i < entityVector.size(); ++i)
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
 	{
 		if(entityVector[i]->getKey() == k)
 		{
