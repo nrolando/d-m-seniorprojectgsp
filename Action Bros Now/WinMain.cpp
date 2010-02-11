@@ -69,17 +69,30 @@ bool initWindow(HINSTANCE hInstance)
 	wcex.hIconSm		= 0;
 	RegisterClassEx(&wcex);
 
-	wndHandle = CreateWindow("Fury", 
-							 "Fury", 
-							 WS_EX_TOPMOST | WS_POPUP,//WS_OVERLAPPEDWINDOW,
-							 CW_USEDEFAULT, 
-							 CW_USEDEFAULT, 
-							 SCREEN_WIDTH, 
-							 SCREEN_HEIGHT, 
-							 NULL, 
-							 NULL, 
-							 hInstance, 
-							 NULL);
+	if(FULLSCREEN)
+		wndHandle = CreateWindow("Fury", 
+								 "Fury", 
+								 WS_EX_TOPMOST | WS_POPUP | WS_VISIBLE,
+								 CW_USEDEFAULT, 
+								 CW_USEDEFAULT, 
+								 SCREEN_WIDTH, 
+								 SCREEN_HEIGHT, 
+								 NULL, 
+								 NULL, 
+								 hInstance, 
+								 NULL);
+	else
+		wndHandle = CreateWindow("Fury", 
+								 "Fury", 
+								 WS_OVERLAPPEDWINDOW,
+								 CW_USEDEFAULT, 
+								 CW_USEDEFAULT, 
+								 SCREEN_WIDTH, 
+								 SCREEN_HEIGHT, 
+								 NULL, 
+								 NULL, 
+								 hInstance, 
+								 NULL);
    if (!wndHandle)
       return false;
    

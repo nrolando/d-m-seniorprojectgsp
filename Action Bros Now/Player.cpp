@@ -27,11 +27,10 @@ void Player::UpdateStat(int stat, int val)
 			}
 			break;
 		case 1:
-			if(special >= -1 && special <= 100)
-				special += val;
-			else if(special > 100)
+			special += val;
+			if(special > 100)
 				special = 100;
-			else if(special < 0)
+			if(special < 0)
 				special = -1;
 			break;
 		default:
@@ -390,7 +389,6 @@ void Player::DoAction(char input)
 		{
 			if(state != COMBO1)
 			{
-				this->UpdateStat(1,-50);
 				//the player stops to kick
 				vel.x = vel.y = vel.z = 0.0f;
 				anim = 0;

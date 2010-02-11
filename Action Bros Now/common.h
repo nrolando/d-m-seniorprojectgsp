@@ -13,6 +13,7 @@
 #include "dsutil.h"
 #include "EnemyInformation.h"
 
+#define FULLSCREEN		1
 
 #define MAXCHARSIZE			50
 
