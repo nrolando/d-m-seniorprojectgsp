@@ -43,7 +43,6 @@ BaseGameEntity::BaseGameEntity(std::string n)
 {
 	//player position will be initiated in game:initGame
 	name = n;
-	maxHealth = health = 140;
 	state = anim = 0;
 	speed = 3.0f;
 	vel.x = 0.0f;
@@ -54,6 +53,7 @@ BaseGameEntity::BaseGameEntity(std::string n)
 	stunStart = 0;
 	aniFStart = clock();
 	faceRight = true;
+	passLvl = false;
 }
 
 void BaseGameEntity::setID(int val)
@@ -112,10 +112,13 @@ void BaseGameEntity::move(clock_t TIME)
 				sprInfo.POS.x = -1500.0f;
 				vel.x = 0.0f;
 			}
-			if(sprInfo.POS.x >= 1400.0f)
+			if(!passLvl)
 			{
-				sprInfo.POS.x = 1400.0f;
-				vel.x = 0.0f;
+				if(sprInfo.POS.x >= 1400.0f)
+				{
+					sprInfo.POS.x = 1400.0f;
+					vel.x = 0.0f;
+				}
 			}
 		}
 	}

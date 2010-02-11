@@ -288,7 +288,7 @@ void Boss::calcDrawRECT()
 void Boss::stun()
 {
 	//min + rand() % max - min + 1
-	stunTime = 50 + rand() % 101;
+	stunTime = 100 + rand() % 101;
 	stunStart = clock();
 	state = SB_DIE;
 	this->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));

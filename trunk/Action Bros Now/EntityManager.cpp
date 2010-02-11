@@ -80,14 +80,14 @@ void EntityManager::moveEnemies(clock_t et)
 	}
 }
 
-bool EntityManager::update()
+bool EntityManager::update(clock_t CT)
 {
 	if(entityVector.empty())
 		return true;
 	//iterate through the vector list
-	std::vector<BaseGameEntity*>::iterator iter = entityVector.begin();
+	//std::vector<BaseGameEntity*>::iterator iter = entityVector.begin();
 
-	/*
+	/*		//	THIS CODE *MIGHT* BE BUGGY, BUT UNCOMMENT IT TO ERASE ENEMIES AFTER THEY DIE
 	//check if any enemies are dead and erase them
 	for(; iter != entityVector.end(); ++iter)
 	{
@@ -95,6 +95,13 @@ bool EntityManager::update()
 			iter = entityVector.erase(iter);
 	}
 	*/
+
+	//move entities
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
+	{
+		entityVector[i]->move(CT);
+	}
+
 	return true;
 }
 
@@ -156,4 +163,16 @@ int EntityManager::getMaxSpecialByKey(char k)
 		}
 	}
 	return -1;
+}
+
+bool EntityManager::isEnemiesDead()
+{
+	for(unsigned int i = 0; i < entityVector.size(); ++i)
+	{
+		if(entityVector[i]->isAlive())
+		{
+			return false;
+		}
+	}
+	return true;
 }

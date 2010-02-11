@@ -47,6 +47,7 @@ protected:
 	//this is the state of the entity, and the current animation frame
 	int state, anim;
 	bool faceRight;		//keeps track of which direction the entity is facing
+	bool passLvl;	//for player, allows him to move off the lvl
 	bool tagged;
 
 	//aggressive frames
@@ -95,8 +96,12 @@ public:
 	int				getAnimFrame()	{ return anim; }
 	int				getState()		{ return state; }
 	int				getLastAttFrame(){ return lastAttFrame;}
-	char			getKey()		{ return key; }	
+	char			getKey()		{ return key; }
+	bool			getPassLvl()	{ return passLvl; }
 	int				getCurrHealth()	{ return int(float(health)/float(maxHealth)*100);}
+	bool isFacing()					{ return faceRight;}
+	bool isAlive()					{ return alive; }
+	bool Missed()					{ return miss;}
 
 	/*for the boss, quick and dirty*/
 	int getSpecial() {return special;}
@@ -106,12 +111,11 @@ public:
 	//set methods
 	void missedAtk()				{ miss = true;}
 	void resetAtk()					{ miss = false;}
-	bool isFacing()					{ return faceRight;}
-	bool isAlive()					{ return alive; }
-	bool Missed()					{ return miss;}
 	void setAlive(bool a)			{ alive = a; }
+	void setFace(bool f)			{ faceRight = f; }
 	void setHealth(int h)			{ health = h; }
 	void setPower(int p)			{ power = p; }
+	void setPassLvl(bool b)			{ passLvl = b; }
 	void setSprInfo(eSprInfo esi)	{ sprInfo = esi; }
 	void setPos(D3DXVECTOR3 p)		{ sprInfo.POS = p; }
 	void setVel(D3DXVECTOR3 v)		{ vel = v; }
