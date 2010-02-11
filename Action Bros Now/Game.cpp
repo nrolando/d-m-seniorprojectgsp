@@ -97,6 +97,7 @@ bool Game::loadLvl()
 
 	//set players data for the next level (parameter should be gotten from Level? constant for now)
 	player->setPos(D3DXVECTOR3(-1350.0f, -40.0f, 0.0f));
+	player->setPassLvl(false);
 
 	//new song per level
 	if(soundManager::getInstance()->isBGMplaying())
@@ -124,7 +125,6 @@ bool Game::update(clock_t ct)
 	char input = '\0';
 	static int num = -1;
 	bool newGame = true;
-	int numdead = 0;
 
 	//get user input
 	inputMan->setInput();
@@ -163,26 +163,18 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:
-		if(player->getState() != STUN && player->getState() != FALL && player->getState() != RESPAWN)
+		if(player->getState() != STUN && player->getState() != FALL && player->getState() != RESPAWN
+															&& player->getPassLvl() != true)
+		{
 			player->DoAction(input);
+		}
 		if(!player->isAlive())
 		{
 			if(player->getLives() > 0)
 				this->respawnPlayer();
 			else
 			{
-				level->setProg(0);
-				if(!graphics->loadSplashTitle())
-					return false;
-				lastLvl = -1;
-				screen = 1;
-				currentScreen = TITLE;
-				if(soundManager::getInstance()->isBGMplaying())
-					soundManager::getInstance()->stopSound();
-				return true;
-				if(soundManager::getInstance()->isBGMplaying())
-					soundManager::getInstance()->stopSound();
-				return true;
+				return this->resetGameToTitle();
 			}
 		}
 
@@ -194,55 +186,39 @@ bool Game::update(clock_t ct)
 				lastHitEnemy = hitEnemy;
 		}
 
-		//update player state, enemies state
+		//UPDATE AND MOVE ENTITIES
 		player->UpdatePlayerState();
 		EntMgr->UpdateEnemyState(player);
-		//update entities
-		if(!EntMgr->update())
-			return false;
-		//move player here
 		player->move(ct);
-		for(int i = 0; i<EntMgr->getVecSize();++i)
-			EntMgr->getEntVec(i)->move(ct);
-		for(int i=0;i<EntMgr->getVecSize();++i)
-		{
-			if(!EntMgr->getEntVec(i)->isAlive())
-				++numdead;
-		}
+		if(!EntMgr->update(ct))
+			return false;
 
-		//MIKE"S CHANGE: MOVED THE LEVEL END CHECK HERE
 		//checks if player beat the level
-		if(player->getPos().x > 1350.0f /*&& boss == dead*/)
+		if(player->getPos().x > 1300.0f /*&& boss == dead*/)
 		{
-			if(level->getProg() == 5)
+			if(EntMgr->isEnemiesDead())
 			{
-				level->setProg(0);
-				if(!graphics->loadSplashTitle())
-					return false;
-				lastLvl = -1;
-				screen = 1;
-				currentScreen = TITLE;
-				if(soundManager::getInstance()->isBGMplaying())
-					soundManager::getInstance()->stopSound();
-				return true;
-				if(soundManager::getInstance()->isBGMplaying())
-					soundManager::getInstance()->stopSound();
-				return true;
-			}
-			else if(numdead == EntMgr->getVecSize())
-			{
-				/*automatically move player off level and initiate transmission to next level
-				if the player is moving into a whole new level, maybe a score calculation will take place
-				before transmission*/
-				//increment progress and loadLvl
-				level->incrementProg();
-				if(!this->loadLvl())
+				player->setPassLvl(true);
+				if(player->getPos().x > 1500.0f)
 				{
-					MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
-					return false;
+					if(level->getProg() == 5)		//end of game
+					{
+						return this->resetGameToTitle();
+					}
+					//increment progress and loadLvl
+					level->incrementProg();
+					if(!this->loadLvl())
+					{
+						MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+						return false;
+					}
 				}
-			}
-		}
+				else
+				{
+					this->lvlTrans(ct);	//move player off level
+				}
+			}	//end-if enemies are dead
+		}	//end-if player->pos.x > 1300
 
 		//EntMgr->moveEnemies(ct);
 		//update camera
@@ -259,11 +235,14 @@ bool Game::update(clock_t ct)
 
 		//*******DISPLAY HUD*******
 		graphics->DisplayPlayerStat(player->getHealth(),player->getMaxHealth(),player->getSpecial(),player->getMaxSpecial());
-		//display Boss health
-		if(EntMgr->getStateByKey('B') != SB_IDLE)
-			BAggression = 1;
-		if(EntMgr->getStateByKey('b') != SB_IDLE)
-			bAggression = 1;
+		//check if boss has come off IDLE
+		if(BAggression != 1)
+			if(EntMgr->getStateByKey('B') != SB_IDLE)
+				BAggression = 1;
+		if(bAggression != 1)
+			if(EntMgr->getStateByKey('b') != SB_IDLE)
+				bAggression = 1;
+		//draw boss's health
 		if(BAggression == 1)
 			graphics->DisplayBossStat(EntMgr->getHealthByKey('B'), EntMgr->getMaxHealthByKey('B'), EntMgr->getSpecialByKey('B'), EntMgr->getMaxSpecialByKey('B'));
 		if(bAggression == 1)
@@ -363,13 +342,12 @@ int Game::checkAttacks()
 					distance = int((e_SprInfo.POS.y - (e_SprInfo.height/2.0f)) - pSprInfo.POS.y);
 					if(distance < 0)
 						distance *= -1;	//get absolute value
-					if(E[i]->getKey() == 'B')
+					if(E[i]->getKey() == 'B')	//all bosses 'B'?
 					{
 						if(distance < SB_DEPTH_RANGE)
 						{
-								//play the sword sfx
+							//play the sword sfx
 							//need to shorten the sound
-							
 							if(E[i]->getState() == SB_KICK)
 								soundManager::getInstance()->playSound("punch_kick_impact");
 							else if(E[i]->getState() == SB_SLASH)
@@ -416,10 +394,10 @@ int Game::checkAttacks()
 							index = i;		//last enemy that hit you
 						}
 					} //else do enemy depth collision
-				}
-			}
+				}//end-if check y-boxes
+			}	//end-if check x-boxes
 			else
-			{E[i]->missedAtk();}
+			{E[i]->missedAtk();}	//will only work for x-box misses
 		}
 
 	}
@@ -446,7 +424,6 @@ void Game::respawnPlayer()
 
 int Game::titleScreen(char input)
 {
-
 	static int selection = 0;
 	switch(input)
 	{
@@ -486,6 +463,7 @@ int Game::titleScreen(char input)
 		}
 		else if(currentScreen == LOAD)
 		{
+			selection = 0;
 			if(this->load())
 				return level->getProg();
 			else
@@ -666,5 +644,30 @@ bool Game::load()
 	player->setLives(lives);
 	//close file
 	fin.close();
+	return true;
+}
+
+void Game::lvlTrans(clock_t ct)
+{
+	player->setVel(D3DXVECTOR3(2.0f, 0.0f, 0.0f));
+	player->setState(WALK);
+	player->setFace(true);
+}
+
+bool Game::resetGameToTitle()
+{
+	level->setProg(0);
+	if(!graphics->loadSplashTitle())
+		return false;
+	lastLvl = -1;
+	screen = 1;
+	currentScreen = TITLE;
+	player->setLives(3);
+	player->setAlive(true);
+	player->setState(IDLE);
+	player->setFace(true);
+	player->setHealth(player->getMaxHealth());
+	if(soundManager::getInstance()->isBGMplaying())
+		soundManager::getInstance()->stopSound();
 	return true;
 }

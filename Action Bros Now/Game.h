@@ -35,6 +35,7 @@ private:
 	//Entities
 	Player* player;
 	EntityManager *EntMgr;
+	//used to display bosses health
 	int bAggression, BAggression;
 
 	//used to display enemy health bar
@@ -60,6 +61,7 @@ private:
 	bool load();
 
 	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
+	void lvlTrans(clock_t);		//move player off level
 
 public:
 	Game();
@@ -88,6 +90,7 @@ public:
 	int checkAttacks();
 
 	void respawnPlayer();
+	bool resetGameToTitle();
 
 	//camera
 	void moveCamera(D3DXVECTOR3 vec)	{ graphics->moveCamera(vec); }

@@ -27,7 +27,7 @@ public:
 	BaseGameEntity* getEntVec(int i)			{ return entityVector[i];}
 	std::vector<BaseGameEntity*> getEntVec()	{ return entityVector; }
 	
-	bool update();
+	bool update(clock_t);
 	void moveEnemies(clock_t);
 	void UpdateEnemyState(Player*);
 	//creates the entity vector for the enemies for this level
@@ -36,6 +36,7 @@ public:
 	void setImgPtrs();
 
 	bool isVectorEmpty()	{ return entityVector.empty();}
+	bool isEnemiesDead();
 	int getVecSize()		{ return entityVector.size(); }
 	int getStateByKey(char);
 	int getHealthByKey(char);
