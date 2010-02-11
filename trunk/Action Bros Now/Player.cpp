@@ -389,6 +389,7 @@ void Player::DoAction(char input)
 		{
 			if(state != COMBO1)
 			{
+				this->UpdateStat(1,-50);
 				//the player stops to kick
 				vel.x = vel.y = vel.z = 0.0f;
 				anim = 0;
