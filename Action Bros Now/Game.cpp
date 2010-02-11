@@ -305,13 +305,10 @@ int Game::checkAttacks()
 							}
 							else if(player->getState() == KICK2)
 							{
-								//player->UpdateStat(1, 10);
 								soundManager::getInstance()->playSound("punch_kick_impact");
 							}
 							else if(player->getState() == COMBO1)
 							{
-								if(player->getAnimFrame() >= 16)
-									player->UpdateStat(1,-50);
 								soundManager::getInstance()->playSound("punch_kick_impact");
 							}
 
