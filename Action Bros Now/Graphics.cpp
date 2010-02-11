@@ -83,17 +83,44 @@ bool Graphics::initD3D(HWND hwnd)
 	pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	D3DXCreateFont( pd3dDevice,
-					20,				//SIZE
+					30,				//SIZE
 					0, 
-					FW_BOLD,		//weight
+					FW_ULTRABOLD,		//weight
 					0, 
 					FALSE,			//Italic
 					DEFAULT_CHARSET, 
 					OUT_DEFAULT_PRECIS, 
 					DEFAULT_QUALITY, 
 					DEFAULT_PITCH | FF_DONTCARE, 
-					TEXT("Arial"), 
+					TEXT("Comic Sans MS"), 
 					&m_font );
+
+	/*
+	OPTIONS FOR TEXT() PARAMETER:
+Arial
+Arial Black
+Arial Unicode MS
+Calibri
+Cambria
+Cambria Math
+Comic Sans MS
+Candara
+Consolas
+Constantia
+Corbel
+Courier New
+Georgia
+Lucida Grande/Lucida Sans Unicode
+Segoe UI
+Symbol
+Tahoma
+Times New Roman
+Trebuchet MS
+Verdana
+Wingdings
+Wingdings 2
+Wingdings 3
+*/
 
 	return true;
 }
@@ -695,6 +722,23 @@ void Graphics::displayString(int x, int y, char* msg)
 	rct.bottom = rct.top + 50;
 
 	m_font->DrawText(NULL, msg, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+}
+
+void Graphics::displayPlayerInfo(int _score, int _lives)
+{
+	RECT rct;
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 180, 0, 0);
+
+	rct.left = 300;
+	rct.right = rct.left + 300;
+	rct.top = 20;
+	rct.bottom = rct.top + 80;
+
+	char display[MAXCHARSIZE];
+	sprintf_s(display, "Score: %i\nLives: %i", _score, _lives);
+
+	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 

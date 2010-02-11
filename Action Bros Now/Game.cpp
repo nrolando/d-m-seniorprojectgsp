@@ -251,6 +251,8 @@ bool Game::update(clock_t ct)
 		{
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}
+		//display player's info
+		graphics->displayPlayerInfo(player->getScore(), player->getLives());
 		graphics->EndRender();
 		break;
 	case 3:		//gameover/win

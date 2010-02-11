@@ -138,13 +138,11 @@ void Enemy::UpdateStat(int stat, int val)
 	switch(stat)
 	{
 		case 0:
-			if(health <= 0)
+			health += val;
+			if(health < 0)
 			{
 				health = 0;
-				alive = false;
 			}
-			else
-				health += val;
 			break;
 		default:
 			printf("Sorry incorrect stat addition");

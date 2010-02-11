@@ -103,6 +103,7 @@ public:
 
 	void displayTime(clock_t, int);
 	void displayString(int, int, char*);
+	void displayPlayerInfo(int, int);
 
 	//load screens for splash, menus, etc
 	void drawTitle(int);
