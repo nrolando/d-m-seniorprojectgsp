@@ -28,15 +28,30 @@ bool Graphics::initD3D(HWND hwnd)
 
 	D3DPRESENT_PARAMETERS d3dpp; 
     ZeroMemory( &d3dpp, sizeof(d3dpp) );
-    d3dpp.Windowed = FALSE;
-    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
-	d3dpp.BackBufferCount  = 1;
-	d3dpp.BackBufferHeight = SCREEN_HEIGHT;
-	d3dpp.BackBufferWidth  = SCREEN_WIDTH;
-	d3dpp.hDeviceWindow    = hwnd;
-	d3dpp.EnableAutoDepthStencil = TRUE;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	if(FULLSCREEN)
+	{
+		d3dpp.Windowed = FALSE;
+		d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;    
+		d3dpp.BackBufferCount  = 1;
+		d3dpp.BackBufferHeight = SCREEN_HEIGHT;
+		d3dpp.BackBufferWidth  = SCREEN_WIDTH;
+		d3dpp.hDeviceWindow    = hwnd;
+		d3dpp.EnableAutoDepthStencil = TRUE;
+		d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	}
+	else
+	{
+		d3dpp.Windowed = TRUE;
+		d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;//X8R8G8B8;    
+		d3dpp.BackBufferCount  = 1;
+		d3dpp.BackBufferHeight = SCREEN_HEIGHT;
+		d3dpp.BackBufferWidth  = SCREEN_WIDTH;
+		d3dpp.hDeviceWindow    = hwnd;
+		d3dpp.EnableAutoDepthStencil = TRUE;
+		d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	}
 
 	hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
                                       D3DCREATE_HARDWARE_VERTEXPROCESSING,

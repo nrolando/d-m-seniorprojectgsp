@@ -220,7 +220,6 @@ bool Game::update(clock_t ct)
 			}	//end-if enemies are dead
 		}	//end-if player->pos.x > 1300
 
-		//EntMgr->moveEnemies(ct);
 		//update camera
 		if(player->getState() != RESPAWN)
 			graphics->updateCamera(player->getDrawInfo());
@@ -294,8 +293,27 @@ int Game::checkAttacks()
 						{
 							//play the hit sfx
 							//shorten the sfx
-							//if(player->getState() == PUNCH || player->getState() == KICK)
+							if(player->getState() == PUNCH)
+							{
+								player->UpdateStat(1, 5);
 								soundManager::getInstance()->playSound("punch_kick_impact");
+							}
+							else if(player->getState() == KICK)
+							{
+								player->UpdateStat(1, 10);
+								soundManager::getInstance()->playSound("punch_kick_impact");
+							}
+							else if(player->getState() == KICK2)
+							{
+								//player->UpdateStat(1, 10);
+								soundManager::getInstance()->playSound("punch_kick_impact");
+							}
+							else if(player->getState() == COMBO1)
+							{
+								if(player->getAnimFrame() >= 16)
+									player->UpdateStat(1,-50);
+								soundManager::getInstance()->playSound("punch_kick_impact");
+							}
 
 							//take damage and check if dead
 							E[i]->UpdateStat(0, -(player->getDmg()));
