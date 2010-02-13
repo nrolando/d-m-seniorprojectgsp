@@ -58,7 +58,7 @@ private:
 
 	//save/load
 	bool save();
-	bool load();
+	bool load(int&, int&, int&);
 
 	void display_time(clock_t t, int y)		{ graphics->displayTime(t, y); }
 	void lvlTrans(clock_t);		//move player off level

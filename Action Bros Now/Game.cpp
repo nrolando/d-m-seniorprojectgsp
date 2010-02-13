@@ -252,7 +252,7 @@ bool Game::update(clock_t ct)
 			graphics->DisplayEnemyHealth(EntMgr->getEntVec(lastHitEnemy)->getHealth(),EntMgr->getEntVec(lastHitEnemy)->getMaxHealth());
 		}
 		//display player's info
-		graphics->displayPlayerInfo(player->getScore(), player->getLives());
+		graphics->displayPlayerInfo(level->getProg(), player->getScore(), player->getLives());
 		graphics->EndRender();
 		break;
 	case 3:		//gameover/win
@@ -442,6 +442,8 @@ void Game::respawnPlayer()
 int Game::titleScreen(char input)
 {
 	static int selection = 0;
+	static int progress, score, lives;
+
 	switch(input)
 	{
 	case 'r':
@@ -469,8 +471,13 @@ int Game::titleScreen(char input)
 				return 0;
 			else if(selection == 1)	//go to load screen
 			{
-				currentScreen = LOAD;
-				selection = 0;
+				if(!this->load(progress, score, lives))
+					MessageBox(NULL, "No load data is available!", "ERROR", MB_OK);
+				else
+				{
+					currentScreen = LOAD;
+					selection = 0;
+				}				
 			}
 			else if(selection == 2)	//go to options screen
 			{
@@ -481,10 +488,9 @@ int Game::titleScreen(char input)
 		else if(currentScreen == LOAD)
 		{
 			selection = 0;
-			if(this->load())
-				return level->getProg();
-			else
-				MessageBox(NULL, "No load data is available!", "ERROR", MB_OK);
+			player->setScore(score);
+			player->setLives(lives);
+			return progress;
 		}
 		break;
 	case 'k':		//the back button
@@ -510,6 +516,7 @@ int Game::titleScreen(char input)
 		soundManager::getInstance()->playSoundLoop(BGMlist[4]);
 		break;
 	case LOAD:
+		graphics->drawLoadInfo(progress, score, lives);
 		break;
 	case OPTIONS:
 		break;
@@ -639,11 +646,8 @@ bool Game::save()
 }
 
 //if false is return then there's no saved data
-bool Game::load()
+bool Game::load(int &prog, int &score, int &lives)
 {
-	int prog;
-	int score;
-	int lives;
 	ifstream fin;
 
 	//open file
@@ -656,9 +660,9 @@ bool Game::load()
 	fin >> score;
 	fin >> lives;
 	//set data
-	level->setProg(prog);
-	player->setScore(score);
-	player->setLives(lives);
+	//level->setProg(prog);
+	//player->setScore(score);
+	//player->setLives(lives);
 	//close file
 	fin.close();
 	return true;
