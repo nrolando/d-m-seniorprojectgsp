@@ -725,8 +725,10 @@ void Graphics::displayString(int x, int y, char* msg)
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 
-void Graphics::displayPlayerInfo(int _score, int _lives)
+void Graphics::displayPlayerInfo(int _prog, int _score, int _lives)
 {
+	int lvl = _prog/3 + 1;
+	int sublvl = _prog%3 + 1;
 	RECT rct;
 	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 180, 0, 0);
 
@@ -737,6 +739,16 @@ void Graphics::displayPlayerInfo(int _score, int _lives)
 
 	char display[MAXCHARSIZE];
 	sprintf_s(display, "Score: %i\nLives: %i", _score, _lives);
+
+	m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+
+	rct.left = 900;
+	rct.right = rct.left + 300;
+	rct.top = 20;
+	rct.bottom = rct.top + 80;
+
+	sprintf_s(display, "Level %i-%i", lvl, sublvl);
 
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
@@ -831,6 +843,25 @@ void Graphics::drawLoadScreen()
 	l_pos.z = 0.9f;
 	//draw title screen
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey(';')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+}
+
+void Graphics::drawLoadInfo(int p, int s, int l)
+{
+	int lvl = p/3 + 1;
+	int sublvl = p%3 + 1;
+	RECT rct;
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 0, 0, 180);
+
+	rct.left = 0;
+	rct.right = rct.left + 200;
+	rct.top = 20;
+	rct.bottom = rct.top + 80;
+
+	char display[MAXCHARSIZE];
+	sprintf_s(display, "Level %i-%i\nScore: %i\nLives: %i",lvl, sublvl, s, l);
+
+	m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 
 /*************************************************************************

@@ -103,13 +103,14 @@ public:
 
 	void displayTime(clock_t, int);
 	void displayString(int, int, char*);
-	void displayPlayerInfo(int, int);
+	void displayPlayerInfo(int, int, int);
 
 	//load screens for splash, menus, etc
 	void drawTitle(int);
 	void drawSplash(int, int, int, int);
 	void drawLoadAnimation(int, int, int, int);
 	void drawLoadScreen();
+	void drawLoadInfo(int, int, int);
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	
