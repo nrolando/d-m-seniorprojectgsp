@@ -30,6 +30,8 @@ Game::Game(HINSTANCE HI, HWND hWnd)
 	hitEnemy		= -1;
 	lastHitEnemy	= -1;
 	lastLvl			= -1;
+	paused = false;
+	pauseMenuSelection = 0;
 }
 
 Game::~Game()
@@ -128,11 +130,19 @@ bool Game::update(clock_t ct)
 
 	//get user input
 	inputMan->setInput();
-	input = inputMan->getInput(screen);
+	input = inputMan->getInput(screen, paused);
 
-	//temporary save spot for testing
+	//handle pause input
 	if(input == ' ')
-		this->save();
+	{
+		if(paused)
+			paused = false;
+		else
+		{
+			pauseMenuSelection = 0;
+			paused = true;
+		}
+	}
 
 	switch(screen)
 	{
@@ -163,7 +173,7 @@ bool Game::update(clock_t ct)
 		}
 		break;
 	case 2:
-		if(player->getState() != STUN && player->getState() != FALL && player->getState() != RESPAWN
+		if(!paused && player->getState() != STUN && player->getState() != FALL && player->getState() != RESPAWN
 															&& player->getPassLvl() != true)
 		{
 			player->DoAction(input);
@@ -178,6 +188,12 @@ bool Game::update(clock_t ct)
 			}
 		}
 
+		if(paused)
+		{
+			if(this->pausedScreen(input))
+				return true;	//game has been reset
+		}
+
 		//check for collision (needs to be moved/adjusted)
 		if(player->getHealth() > 0 && player->isAlive())
 		{
@@ -187,38 +203,41 @@ bool Game::update(clock_t ct)
 		}
 
 		//UPDATE AND MOVE ENTITIES
-		player->UpdatePlayerState();
-		EntMgr->UpdateEnemyState(player);
-		player->move(ct);
-		if(!EntMgr->update(ct))
-			return false;
-
-		//checks if player beat the level
-		if(player->getPos().x > 1300.0f /*&& boss == dead*/)
+		if(!paused)
 		{
-			if(EntMgr->isEnemiesDead())
+			player->UpdatePlayerState();
+			EntMgr->UpdateEnemyState(player);
+			player->move(ct);
+			if(!EntMgr->update(ct))
+				return false;
+
+			//checks if player beat the level
+			if(player->getPos().x > 1300.0f /*&& boss == dead*/)
 			{
-				player->setPassLvl(true);
-				if(player->getPos().x > 1500.0f)
+				if(EntMgr->isEnemiesDead())
 				{
-					if(level->getProg() == 5)		//end of game
+					player->setPassLvl(true);
+					if(player->getPos().x > 1500.0f)
 					{
-						return this->resetGameToTitle();
+						if(level->getProg() == 5)		//end of game
+						{
+							return this->resetGameToTitle();
+						}
+						//increment progress and loadLvl
+						level->incrementProg();
+						if(!this->loadLvl())
+						{
+							MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
+							return false;
+						}
 					}
-					//increment progress and loadLvl
-					level->incrementProg();
-					if(!this->loadLvl())
+					else
 					{
-						MessageBox(NULL, "Unable to load level", "ERROR", MB_OK);
-						return false;
+						this->lvlTrans(ct);	//move player off level
 					}
-				}
-				else
-				{
-					this->lvlTrans(ct);	//move player off level
-				}
-			}	//end-if enemies are dead
-		}	//end-if player->pos.x > 1300
+				}	//end-if enemies are dead
+			}	//end-if player->pos.x > 1300
+		}
 
 		//update camera
 		if(player->getState() != RESPAWN)
@@ -253,6 +272,8 @@ bool Game::update(clock_t ct)
 		}
 		//display player's info
 		graphics->displayPlayerInfo(level->getProg(), player->getScore(), player->getLives());
+		if(paused)
+			graphics->drawPause(pauseMenuSelection);
 		graphics->EndRender();
 		break;
 	case 3:		//gameover/win
@@ -682,6 +703,8 @@ bool Game::resetGameToTitle()
 		return false;
 	lastLvl = -1;
 	screen = 1;
+	paused = false;
+	pauseMenuSelection = 0;
 	currentScreen = TITLE;
 	player->setLives(3);
 	player->setAlive(true);
@@ -691,4 +714,40 @@ bool Game::resetGameToTitle()
 	if(soundManager::getInstance()->isBGMplaying())
 		soundManager::getInstance()->stopSound();
 	return true;
+}
+
+bool Game::pausedScreen(char input)
+{
+	if(paused && input == 'd')
+	{
+		pauseMenuSelection++;
+		if(pauseMenuSelection > 2)
+			pauseMenuSelection = 2;
+			
+	}
+	else if(paused && input == 'u')
+	{
+		pauseMenuSelection--;
+		if(pauseMenuSelection < 0)
+			pauseMenuSelection = 0;
+	}
+	else if(paused && input == 'p')
+	{
+		switch(pauseMenuSelection)
+		{
+		case 0:
+			paused = false;
+			break;
+		case 1:
+			this->save();
+			paused = false;
+			break;
+		case 2:
+			this->resetGameToTitle();
+			return true;					
+			break;
+		};
+		pauseMenuSelection = 0;
+	}
+	return false;
 }

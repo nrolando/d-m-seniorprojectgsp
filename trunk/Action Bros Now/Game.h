@@ -25,6 +25,8 @@ private:
 	SCREENS currentScreen;
 
 	char input;
+	bool paused;
+	int pauseMenuSelection;		//0 = resume, 1 = save, 2 = quit
 	
 	//level tracker
 	Level *level;
@@ -82,6 +84,7 @@ public:
 	int titleScreen(char);
 	void splashScreen();
 	bool loadScreen();
+	bool pausedScreen(char);	//return true if game resets
 
 	//load level
 	bool loadLvl();

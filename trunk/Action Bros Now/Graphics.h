@@ -50,6 +50,8 @@ private:
 
 	//direct text
 	ID3DXFont *m_font;
+	ID3DXFont *m_font2;
+	ID3DXFont *m_font3;
 
 //the pixel rect that is grabbed from the level is based on this simulated
 //camera's position
@@ -111,6 +113,7 @@ public:
 	void drawLoadAnimation(int, int, int, int);
 	void drawLoadScreen();
 	void drawLoadInfo(int, int, int);
+	void drawPause(int);
 
 	//camera functions
 	void moveCamera(D3DXVECTOR3);	

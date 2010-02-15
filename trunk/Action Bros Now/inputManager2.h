@@ -48,6 +48,6 @@ public:
 
 	void setInput();
 	//passing screen advancement
-	char getInput(int);
+	char getInput(int, bool);
 };
 #endif
