@@ -94,6 +94,30 @@ bool Graphics::initD3D(HWND hwnd)
 					DEFAULT_PITCH | FF_DONTCARE, 
 					TEXT("Comic Sans MS"), 
 					&m_font );
+	D3DXCreateFont( pd3dDevice,
+					50,				//SIZE
+					0, 
+					FW_ULTRABOLD,		//weight
+					0, 
+					FALSE,			//Italic
+					DEFAULT_CHARSET, 
+					OUT_DEFAULT_PRECIS, 
+					DEFAULT_QUALITY, 
+					DEFAULT_PITCH | FF_DONTCARE, 
+					TEXT("Consolas"), 
+					&m_font2 );
+	D3DXCreateFont( pd3dDevice,
+					70,				//SIZE
+					0, 
+					FW_ULTRABOLD,		//weight
+					0, 
+					FALSE,			//Italic
+					DEFAULT_CHARSET, 
+					OUT_DEFAULT_PRECIS, 
+					DEFAULT_QUALITY, 
+					DEFAULT_PITCH | FF_DONTCARE, 
+					TEXT("Candara"), 
+					&m_font3 );
 
 	/*
 	OPTIONS FOR TEXT() PARAMETER:
@@ -743,7 +767,7 @@ void Graphics::displayPlayerInfo(int _prog, int _score, int _lives)
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
 
-	rct.left = 900;
+	rct.left = 600;
 	rct.right = rct.left + 300;
 	rct.top = 20;
 	rct.bottom = rct.top + 80;
@@ -862,6 +886,107 @@ void Graphics::drawLoadInfo(int p, int s, int l)
 
 	m_font->DrawText(NULL, display, -1, &rct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
+}
+
+void Graphics::drawPause(int selection)
+{
+	RECT rct;
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+	char display[MAXCHARSIZE];
+
+	//render pause
+	rct.left = SCREEN_WIDTH/2 - 75;
+	rct.right = rct.left + 200;
+	rct.top = 100;
+	rct.bottom = rct.top + 80;
+	sprintf_s(display, "PAUSE");
+	m_font3->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+
+	switch(selection)
+	{
+	case 0:
+		//draw resume
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 200;
+		rct.top = 180;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Resume");
+		m_font2->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw save
+		fontColor = D3DCOLOR_ARGB(255, 150, 0, 0);
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 230;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Save Game");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw quit
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 280;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Quit Game");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		break;
+	case 1:
+		//draw save
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 215;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Save Game");
+		m_font2->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw resume
+		fontColor = D3DCOLOR_ARGB(255, 150, 0, 0);
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 200;
+		rct.top = 180;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Resume");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw quit
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 280;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Quit Game");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		break;
+	case 2:
+		//draw quit
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 265;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Quit Game");
+		m_font2->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw save
+		fontColor = D3DCOLOR_ARGB(255, 150, 0, 0);
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 300;
+		rct.top = 230;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Save Game");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		//draw resume
+		rct.left = SCREEN_WIDTH/2 - 75;
+		rct.right = rct.left + 200;
+		rct.top = 180;
+		rct.bottom = rct.top + 80;
+		sprintf_s(display, "Resume");
+		m_font->DrawText(NULL, display, -1, &rct,
+					DT_NOCLIP | DT_WORDBREAK, fontColor);
+		break;
+	};
 }
 
 /*************************************************************************

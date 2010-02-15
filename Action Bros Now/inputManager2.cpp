@@ -108,7 +108,7 @@ void InputManager2::setInput()
 	downflag = (inputflag^lastinput)&inputflag;
 }
 
-char InputManager2::getInput(int screen)
+char InputManager2::getInput(int screen, bool game_paused)
 {
 	char combo;
 	clock_t now = clock();
@@ -134,101 +134,111 @@ char InputManager2::getInput(int screen)
 			return 'k';
 		break;
 	case 2:
-		//these are diagonal movement
-		if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
-		{
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'w';
-		}
-		if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
-		{
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'x';
-		}
-		if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
-		{
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'y';
-		}
-		if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
-		{
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'z';
-		}
-
-		//Player movement//
-		if(inputflag & INPUT_UP)
+		if(game_paused)
 		{
 			if(downflag & INPUT_UP)
-			{
-				combo = comboCheck('u');
-				if(combo != 'i')
-					return combo;
-			}
-
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'u'; //move player up
-		}
-		else if(inputflag & INPUT_DOWN)
-		{
+				return 'u';
 			if(downflag & INPUT_DOWN)
-			{
-				combo = comboCheck('d');
-				if(combo != 'i')
-					return combo;
-			}
-
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'd'; //move player down
+				return 'd';
 		}
-		else if(inputflag & INPUT_LEFT)
+		else
 		{
-			if(downflag & INPUT_LEFT)
+			//these are diagonal movement
+			if(inputflag & INPUT_UP && inputflag & INPUT_RIGHT)
 			{
-				combo = comboCheck('l');
-				if(combo != 'i')
-					return combo;
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'w';
+			}
+			if(inputflag & INPUT_UP && inputflag & INPUT_LEFT)
+			{
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'x';
+			}
+			if(inputflag & INPUT_DOWN && inputflag & INPUT_RIGHT)
+			{
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'y';
+			}
+			if(inputflag & INPUT_DOWN && inputflag & INPUT_LEFT)
+			{
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'z';
 			}
 
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else
-				return 'l'; //move player left
-		}
-		else if(inputflag & INPUT_RIGHT)
-		{
-			if(downflag & INPUT_RIGHT)
+			//Player movement//
+			if(inputflag & INPUT_UP)
 			{
-				combo = comboCheck('r');
-				if(combo != 'i')
-					return combo;
-			}
+				if(downflag & INPUT_UP)
+				{
+					combo = comboCheck('u');
+					if(combo != 'i')
+						return combo;
+				}
 
-			char tempC = charReturn();
-			if(tempC != 'i')
-				return tempC;
-			else			//else if only movement
-				return 'r';
-		}
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'u'; //move player up
+			}
+			else if(inputflag & INPUT_DOWN)
+			{
+				if(downflag & INPUT_DOWN)
+				{
+					combo = comboCheck('d');
+					if(combo != 'i')
+						return combo;
+				}
+
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'd'; //move player down
+			}
+			else if(inputflag & INPUT_LEFT)
+			{
+				if(downflag & INPUT_LEFT)
+				{
+					combo = comboCheck('l');
+					if(combo != 'i')
+						return combo;
+				}
+
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else
+					return 'l'; //move player left
+			}
+			else if(inputflag & INPUT_RIGHT)
+			{
+				if(downflag & INPUT_RIGHT)
+				{
+					combo = comboCheck('r');
+					if(combo != 'i')
+						return combo;
+				}
+
+				char tempC = charReturn();
+				if(tempC != 'i')
+					return tempC;
+				else			//else if only movement
+					return 'r';
+			}
+		}//end-if game paused
 		
 		//Input for Player Attack Actions//
 		if(downflag & INPUT_Z)
