@@ -194,7 +194,7 @@ static char* BGMlist[7] = {"129","122","Collarbone","124","fire","movieprojector
 
 //predefined combo inputs for the inputmanager
 static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',	//uppercut combo
-														'k','p','k','\0',	//kick combo
+														'p','k','k','\0',	//kick combo
 														'r','r','\0','\0',	//run right
 														'l','l','\0','\0'};	//run left
 
