@@ -26,6 +26,7 @@ public:
 	void setSheetPtr(spriteSheet*);
 	void DoAction(char);
 	void decLives()					{ lives--; }
+	void resetLives()				{ lives = 3;}
 
 	/*Get Functions for Attributes*/
 	bool isStunned()		{ return stunned;}
