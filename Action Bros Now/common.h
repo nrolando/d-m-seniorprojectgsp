@@ -40,7 +40,7 @@
 /////////////////////
 
 //current number of player states in spritesheet for one direction
-#define NUM_STATES		10
+#define NUM_STATES		11
 //these are for animation and stun length
 #define STUNTIME		500
 
@@ -52,6 +52,7 @@
 #define MAXKICKFRAME	8
 #define MAXSTUNFRAME	1
 #define MAXCOMBO1FRAME	21
+#define MAXCOMBO2FRAME	6
 #define MAXKICK2FRAME	7
 #define MAXDEATHFRAME	7
 #define MAXFALLFRAME	11
@@ -84,7 +85,7 @@
 #define KEYDOWN(name, key) (name[key] & 0x80)
 
 #define COMBO_TIME		600
-#define NUM_COMBOS		3		//number of different combos in comboDefintion
+#define NUM_COMBOS		4		//number of different combos in comboDefintion
 #define COMBO_HITS		4		//number of hits it takes to complete a combo
 
 /////////////////////////////
@@ -177,7 +178,7 @@ enum SCREENS
 //for the player states
 enum PlayerStates
 {
-	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2, FALL, RESPAWN
+	IDLE, WALK, PUNCH, KICK, STUN, COMBO1, RUN, KICK2, FALL, RESPAWN, COMBO2
 };
 
 /////////////
@@ -193,6 +194,7 @@ static char* BGMlist[7] = {"129","122","Collarbone","124","fire","movieprojector
 
 //predefined combo inputs for the inputmanager
 static char comboDefinitions[NUM_COMBOS][COMBO_HITS] = {'p','k','p','\0',	//uppercut combo
+														'k','p','k','\0',	//kick combo
 														'r','r','\0','\0',	//run right
 														'l','l','\0','\0'};	//run left
 

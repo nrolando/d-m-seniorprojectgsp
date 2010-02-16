@@ -671,7 +671,8 @@ bool Game::save()
 {
 	//local variables to check if exceeded maximum saves
 	int saves = 0;
-	char buffer[256];
+	int buffer[5*3];
+	int i = 0;
 
 	ifstream infile;
 	infile.open("saved_game.txt");
@@ -680,11 +681,14 @@ bool Game::save()
 	{
 		while(!infile.eof())
 		{
-			infile.getline(buffer,256,'\n');
+			infile >> buffer[i];
 			++saves;
+			++i;
 		}
 		
 	}
+	saves /= 3;
+
 	infile.close();
 
 	ofstream fout;
