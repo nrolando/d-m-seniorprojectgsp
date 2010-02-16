@@ -283,6 +283,7 @@ char InputManager2::getInput(int screen, bool game_paused)
 
 char InputManager2::comboCheck(char input)
 {
+	bool DONTWORRYABOUTIT = false;
 	bool flag = false;		//set to true when a combo's been completed
 	//an array of ints to keep track of combo index checking allows me to check multiple combos at one time
 	static int check[5] = {-1,-1,-1,-1,-1};
@@ -308,7 +309,7 @@ char InputManager2::comboCheck(char input)
 			if(input == comboDefinitions[i][0])
 			{
 				comboStart = now;
-				iter++;
+				iter = 1;
 				if(check[0] < 0)
 					check[0] = i;
 				else if(check[1] < 0)
@@ -331,7 +332,11 @@ char InputManager2::comboCheck(char input)
 			{
 				if(input == comboDefinitions[check[i]][iter])
 				{
-					iter++;
+					if(!DONTWORRYABOUTIT)
+					{
+						iter++;
+						DONTWORRYABOUTIT = true;
+					}
 					if(iter < COMBO_HITS)
 					{
 						if(comboDefinitions[check[i]][iter] == '\0')
