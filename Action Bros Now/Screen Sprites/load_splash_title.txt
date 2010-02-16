@@ -5,3 +5,5 @@
 ./Screen Sprites/LoadingAnimation.png#<
 ./Screen Sprites/Options.png#:
 ./Screen Sprites/Loading.png#;
+./Screen Sprites/Load Game.png#l
+./Screen Sprites/OptionsMenu.png#o

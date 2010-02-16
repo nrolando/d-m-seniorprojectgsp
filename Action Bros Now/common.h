@@ -15,7 +15,7 @@
 
 #define FULLSCREEN		0
 
-#define MAXCHARSIZE			50
+#define MAXCHARSIZE			256
 
 //level boundaries
 //remember the pos is at the upper left corner of the sprite

@@ -118,6 +118,18 @@ bool Graphics::initD3D(HWND hwnd)
 					DEFAULT_PITCH | FF_DONTCARE, 
 					TEXT("Candara"), 
 					&m_font3 );
+	D3DXCreateFont( pd3dDevice,
+					25,				//SIZE
+					0, 
+					FW_ULTRABOLD,		//weight
+					0, 
+					FALSE,			//Italic
+					DEFAULT_CHARSET, 
+					OUT_DEFAULT_PRECIS, 
+					DEFAULT_QUALITY, 
+					DEFAULT_PITCH | FF_DONTCARE, 
+					TEXT("Calibri"), 
+					&loadtext );
 
 	/*
 	OPTIONS FOR TEXT() PARAMETER:
@@ -857,7 +869,7 @@ void Graphics::drawLoadAnimation(int r, int c, int w, int h)
 	gSprite->Draw(spriteContainer::getInstance()->getElemKey('<')->gTexture, &src, NULL, &l_pos, 0xFFFFFFFF);
 }
 
-void Graphics::drawLoadScreen()
+void Graphics::drawScreen(char key)
 {
 	//screen position
 	D3DXVECTOR3 l_pos;
@@ -866,25 +878,27 @@ void Graphics::drawLoadScreen()
 	l_pos.y = 0.0f;//(float)SCREEN_HEIGHT/2 - 240;
 	l_pos.z = 0.9f;
 	//draw title screen
-	gSprite->Draw(spriteContainer::getInstance()->getElemKey(';')->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
+	gSprite->Draw(spriteContainer::getInstance()->getElemKey(key)->gTexture, NULL, NULL, &l_pos, 0xFFFFFFFF);
 }
 
-void Graphics::drawLoadInfo(int p, int s, int l)
+void Graphics::drawLoadInfo(const char* n,int p[], int s[], int l[],int &select)
 {
-	int lvl = p/3 + 1;
-	int sublvl = p%3 + 1;
-	RECT rct;
-	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 0, 0, 180);
+	int lvl = p[select]/3 + 1;
+	int sublvl = p[select]%3 + 1;
+	
+	RECT displayRct,selectRct;
+	D3DCOLOR fontColor = D3DCOLOR_ARGB(255, 255, 255, 255);
+	char display[MAXCHARSIZE],playerSelection[MAXCHARSIZE];
 
-	rct.left = 0;
-	rct.right = rct.left + 200;
-	rct.top = 20;
-	rct.bottom = rct.top + 80;
+	//rect for text display 
+	displayRct.left = 162;
+	displayRct.right = displayRct.left + 1024;
+	displayRct.top = (select*74)+140;
+	displayRct.bottom = displayRct.top+20;
 
-	char display[MAXCHARSIZE];
-	sprintf_s(display, "Level %i-%i\nScore: %i\nLives: %i",lvl, sublvl, s, l);
-
-	m_font->DrawText(NULL, display, -1, &rct,
+	sprintf_s(display, "Player: %s	          Score: %i              Lives: %i                Level: %i-%i"
+	,n, s[select], l[select], lvl, sublvl);
+	loadtext->DrawText(NULL, display, -1, &displayRct,
 					DT_NOCLIP | DT_WORDBREAK, fontColor);
 }
 

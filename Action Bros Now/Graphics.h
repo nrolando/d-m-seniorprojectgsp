@@ -52,6 +52,7 @@ private:
 	ID3DXFont *m_font;
 	ID3DXFont *m_font2;
 	ID3DXFont *m_font3;
+	ID3DXFont *loadtext;
 
 //the pixel rect that is grabbed from the level is based on this simulated
 //camera's position
@@ -61,6 +62,8 @@ private:
 	//the move range stuff for the camera
 	float xRange;
 	float yRange;
+
+	
 
 public:
 	//constructor/destructor
@@ -111,8 +114,8 @@ public:
 	void drawTitle(int);
 	void drawSplash(int, int, int, int);
 	void drawLoadAnimation(int, int, int, int);
-	void drawLoadScreen();
-	void drawLoadInfo(int, int, int);
+	void drawScreen(char);
+	void drawLoadInfo(const char*,int[], int[], int[], int&);
 	void drawPause(int);
 
 	//camera functions

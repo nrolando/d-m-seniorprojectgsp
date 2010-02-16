@@ -5,7 +5,7 @@
 #include <vector>
 #include "common.h"
 
-#define MAXCHARSIZE			50
+#define MAXCHARSIZE			256
 
 class spriteContainer
 {

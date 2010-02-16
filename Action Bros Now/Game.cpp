@@ -157,7 +157,7 @@ bool Game::update(clock_t ct)
 		if(num >= 0)
 		{
 		    graphics->BeginRender();
-			graphics->drawLoadScreen();
+			graphics->drawScreen(';');
 			graphics->EndRender();
 
 			screen++;
@@ -462,8 +462,10 @@ void Game::respawnPlayer()
 
 int Game::titleScreen(char input)
 {
-	static int selection = 0;
-	static int progress, score, lives;
+	static int selection = 0, savenum = 0;
+	static int progress[5] = {0,0,0,0,0}; 
+	static int score[5] = {0,0,0,0,0};
+	static int lives[5] = {3,3,3,3,3};
 
 	switch(input)
 	{
@@ -482,8 +484,22 @@ int Game::titleScreen(char input)
 		}
 		break;
 	case 'd':
+		if(currentScreen == LOAD)
+		{		
+			if(savenum >= 4)
+				savenum = 0;
+			else
+				++savenum;
+		}
 		break;
 	case 'u':
+		if(currentScreen == LOAD)
+		{
+			if(savenum <= 0)
+				savenum = 4;
+			else
+				--savenum;
+		}
 		break;
 	case 'p':	//the select button
 		if(currentScreen == TITLE)
@@ -509,9 +525,9 @@ int Game::titleScreen(char input)
 		else if(currentScreen == LOAD)
 		{
 			selection = 0;
-			player->setScore(score);
-			player->setLives(lives);
-			return progress;
+			player->setScore(score[savenum]);
+			player->setLives(lives[savenum]);
+			return progress[savenum];
 		}
 		break;
 	case 'k':		//the back button
@@ -537,9 +553,12 @@ int Game::titleScreen(char input)
 		soundManager::getInstance()->playSoundLoop(BGMlist[4]);
 		break;
 	case LOAD:
-		graphics->drawLoadInfo(progress, score, lives);
+		//draws the loading screen
+		graphics->drawScreen('l');
+		graphics->drawLoadInfo(player->getName().c_str(),progress, score, lives,savenum);
 		break;
 	case OPTIONS:
+		graphics->drawScreen('o');
 		break;
 	};
 	graphics->EndRender();
@@ -634,7 +653,7 @@ bool Game::loadScreen()
 		if(loadCol == 1 && loadRow == 4)
 		{
 			graphics->BeginSplashRender();
-			graphics->drawLoadScreen();
+			graphics->drawScreen(';');
 			return true;
 		}
 		else
@@ -650,8 +669,29 @@ bool Game::loadScreen()
 
 bool Game::save()
 {
+	//local variables to check if exceeded maximum saves
+	int saves = 0;
+	char buffer[256];
+
+	ifstream infile;
+	infile.open("saved_game.txt");
+	
+	if(infile.is_open())
+	{
+		while(!infile.eof())
+		{
+			infile.getline(buffer,256,'\n');
+			++saves;
+		}
+		
+	}
+	infile.close();
+
 	ofstream fout;
-	fout.open("saved_game.txt");
+	if(saves >= 4)
+		fout.open("saved_game.txt");
+	else
+		fout.open("saved_game.txt",ofstream::app);
 
 	if(!fout.is_open())
 		return false;
@@ -661,15 +701,18 @@ bool Game::save()
 	fout << player->getScore();
 	fout << ' ';
 	fout << player->getLives();
+	fout << '\n';
 
 	fout.close();
 	return true;
 }
 
 //if false is return then there's no saved data
-bool Game::load(int &prog, int &score, int &lives)
+bool Game::load(int prog[], int score[], int lives[])
 {
 	ifstream fin;
+	int i=0;
+	int p,s,l;
 
 	//open file
 	fin.open("saved_game.txt");
@@ -677,9 +720,18 @@ bool Game::load(int &prog, int &score, int &lives)
 	if(!fin.is_open())
 		return false;
 	//read from file
-	fin >> prog;
-	fin >> score;
-	fin >> lives;
+	while(fin.good())
+	{
+		fin >> p;
+		fin >> s;
+		fin >> l;
+
+		//pass ints to the array
+		prog[i] = p;
+		score[i] = s;
+		lives[i] = l;
+		++i;
+	}		
 	//set data
 	//level->setProg(prog);
 	//player->setScore(score);
