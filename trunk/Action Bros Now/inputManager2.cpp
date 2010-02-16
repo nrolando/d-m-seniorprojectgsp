@@ -305,7 +305,7 @@ char InputManager2::comboCheck(char input)
 	{
 		for(i = 0; i < NUM_COMBOS; ++i)
 		{
-			if(input == comboDefinitions[i][iter])
+			if(input == comboDefinitions[i][0])
 			{
 				comboStart = now;
 				iter++;
@@ -365,9 +365,12 @@ char InputManager2::comboCheck(char input)
 			return '1';
 			break;
 		case 1:
-			return 'R';
+			return '2';
 			break;
 		case 2:
+			return 'R';
+			break;
+		case 3:
 			return 'L';
 			break;
 		default:

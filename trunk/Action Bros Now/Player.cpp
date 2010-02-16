@@ -403,6 +403,29 @@ void Player::DoAction(char input)
 			}
 		}
 	}
+	else if(input == '2')
+	{
+/***********	NOTE    *********
+~put "!=" any states we don't want player initiating combos during
+********************************/
+		if(special >= 50 && special > 0)
+		{
+			if(state != COMBO2)
+			{
+				this->UpdateStat(1,-50);
+				//the player stops to kick
+				vel.x = vel.y = vel.z = 0.0f;
+				anim = 0;
+				aniFStart = clock();
+				state = COMBO2;
+				lastAttFrame = -1;
+				//set hit frames
+				hitFrames[0] = 3;
+				hitFrames[1] = -1;
+				hitFrames[2] = -1;
+			}
+		}
+	}
 	else
 	{
 		if(state == WALK || state == RUN)	//or anything that's not supposed to idle itself
@@ -534,6 +557,21 @@ int Player::UpdatePlayerState()
 			aniFStart = now;
 		}
 		break;
+	case COMBO2:
+		if(now - aniFStart >= MAXCOMBO1ANIMATION)
+		{
+			if(anim < MAXCOMBO2FRAME-1)
+			{
+				anim++;
+			}
+			else
+			{
+				anim = 0;
+				state = IDLE;
+			}
+			aniFStart = now;
+		}
+		break;
 	case RUN:
 		//if time to switch frame of animation
 		if(now - aniFStart >= ANIMATIONGAP)
@@ -637,7 +675,7 @@ void Player::calcDrawRECT()
 			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
 		}
 	}
-	else if(state == KICK)
+	else if(state == KICK || state == COMBO2)
 	{
 		if(faceRight)
 		{
@@ -763,6 +801,9 @@ int Player::getDmg()
 			return K_POWER;
 		else if(anim == hitFrames[2])
 			return C1_POWER;
+		break;
+	case COMBO2:
+		return (K_POWER*2);
 		break;
 	default:
 		return 0;
