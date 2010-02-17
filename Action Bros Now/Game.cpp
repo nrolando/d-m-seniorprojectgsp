@@ -775,6 +775,8 @@ bool Game::resetGameToTitle()
 	player->setLives(3);
 	player->setAlive(true);
 	player->setState(IDLE);
+	player->setVel(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	player->setScore(0);
 	player->setFace(true);
 	player->setHealth(player->getMaxHealth());
 	if(soundManager::getInstance()->isBGMplaying())
