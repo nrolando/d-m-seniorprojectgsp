@@ -675,7 +675,7 @@ void Player::calcDrawRECT()
 			sprInfo.threatBox.bottom  = sprInfo.threatBox.top - 25;
 		}
 	}
-	else if(state == KICK || state == COMBO2)
+	else if(state == KICK)
 	{
 		if(faceRight)
 		{
@@ -731,7 +731,7 @@ void Player::calcDrawRECT()
 			}
 		}
 	}
-	else if(state == KICK2)
+	else if(state == KICK2 || state == COMBO2)
 	{
 		if(faceRight)
 		{
@@ -803,7 +803,7 @@ int Player::getDmg()
 			return C1_POWER;
 		break;
 	case COMBO2:
-		return (K_POWER*2);
+		return int(K_POWER*2.5);
 		break;
 	default:
 		return 0;

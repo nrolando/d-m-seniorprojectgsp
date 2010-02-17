@@ -316,7 +316,7 @@ int Game::checkAttacks()
 						{
 							//play the hit sfx
 							//shorten the sfx
-							if(player->getState() == PUNCH)
+							if(player->getState() == PUNCH || player->getState() == COMBO2)
 							{
 								player->UpdateStat(1, 5);
 								soundManager::getInstance()->playSound("punch_kick_impact");
@@ -354,7 +354,17 @@ int Game::checkAttacks()
 							}
 							else
 							{
-								E[i]->stun();
+								switch(player->getState())
+								{
+								case PUNCH:
+									E[i]->stun(-50);
+									break;
+								case COMBO1:
+									E[i]->stun(50);
+									break;
+								default:
+									E[i]->stun();
+								};
 								index = i;	//last enemy hit
 							}
 						}
