@@ -421,7 +421,7 @@ void Player::DoAction(char input)
 				lastAttFrame = -1;
 				//set hit frames
 				hitFrames[0] = 3;
-				hitFrames[1] = -1;
+				hitFrames[1] = 4;
 				hitFrames[2] = -1;
 			}
 		}
@@ -803,7 +803,7 @@ int Player::getDmg()
 			return C1_POWER;
 		break;
 	case COMBO2:
-		return int(K_POWER*2.5);
+		return int(K_POWER*2);
 		break;
 	default:
 		return 0;
