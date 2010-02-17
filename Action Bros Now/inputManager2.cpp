@@ -177,7 +177,7 @@ char InputManager2::getInput(int screen, bool game_paused)
 					return 'z';
 			}
 
-			//Player movement//
+			//this is non-diagonal movement
 			if(inputflag & INPUT_UP)
 			{
 				if(downflag & INPUT_UP)
@@ -189,7 +189,13 @@ char InputManager2::getInput(int screen, bool game_paused)
 
 				char tempC = charReturn();
 				if(tempC != 'i')
-					return tempC;
+				{
+					combo = comboCheck(tempC);
+					if(combo != 'i')
+						return combo;
+					else
+						return tempC;
+				}
 				else
 					return 'u'; //move player up
 			}
@@ -204,7 +210,13 @@ char InputManager2::getInput(int screen, bool game_paused)
 
 				char tempC = charReturn();
 				if(tempC != 'i')
-					return tempC;
+				{
+					combo = comboCheck(tempC);
+					if(combo != 'i')
+						return combo;
+					else
+						return tempC;
+				}
 				else
 					return 'd'; //move player down
 			}
@@ -219,7 +231,13 @@ char InputManager2::getInput(int screen, bool game_paused)
 
 				char tempC = charReturn();
 				if(tempC != 'i')
-					return tempC;
+				{
+					combo = comboCheck(tempC);
+					if(combo != 'i')
+						return combo;
+					else
+						return tempC;
+				}
 				else
 					return 'l'; //move player left
 			}
@@ -234,7 +252,13 @@ char InputManager2::getInput(int screen, bool game_paused)
 
 				char tempC = charReturn();
 				if(tempC != 'i')
-					return tempC;
+				{
+					combo = comboCheck(tempC);
+					if(combo != 'i')
+						return combo;
+					else
+						return tempC;
+				}
 				else			//else if only movement
 					return 'r';
 			}
@@ -247,7 +271,6 @@ char InputManager2::getInput(int screen, bool game_paused)
 			if(combo != 'i')
 				return combo;
 
-			//move camera right
 			return 'p';
 		}
 		
@@ -257,7 +280,6 @@ char InputManager2::getInput(int screen, bool game_paused)
 			if(combo != 'i')
 				return combo;
 
-			//move camera right
 			return 'k';
 		}
 		
@@ -267,7 +289,6 @@ char InputManager2::getInput(int screen, bool game_paused)
 			if(combo != 'i')
 				return combo;
 
-			//move camera right
 			return 's';
 		}
 		
